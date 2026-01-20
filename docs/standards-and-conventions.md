@@ -17,6 +17,7 @@ https://github.com/wphillipmoore/standards-and-conventions/tree/develop
 - Release and versioning policy: https://github.com/wphillipmoore/standards-and-conventions/blob/develop/docs/code-management/release-versioning.md
 - Shared actions library: https://github.com/wphillipmoore/standards-and-conventions/blob/develop/docs/code-management/shared-actions-library.md
 - Markdown standards: https://github.com/wphillipmoore/standards-and-conventions/blob/develop/docs/foundation/markdown-standards.md
+- Development overview: docs/development/overview.md
 
 ## Project-specific overlay
 - Repository profile:

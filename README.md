@@ -8,6 +8,7 @@ repositories.
 - [Repository layout](#repository-layout)
 - [Branching and releases](#branching-and-releases)
 - [Versioning](#versioning)
+- [Validation](#validation)
 
 ## Purpose
 Provide a centralized, versioned set of GitHub Actions that can be reused across
@@ -30,3 +31,7 @@ actions/
 ## Versioning
 - Repository-level SemVer tags (for example, `v1`, `v1.2.0`).
 - Consumers must pin actions by tag or commit SHA.
+
+## Validation
+- Full validation: `scripts/dev/validate_local.sh`
+- Docs-only validation: `scripts/dev/validate_docs.sh`
