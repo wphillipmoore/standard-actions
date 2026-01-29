@@ -4,7 +4,10 @@ set -euo pipefail
 root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 if command -v markdownlint >/dev/null 2>&1; then
-  mapfile -t markdown_files < <(
+  markdown_files=()
+  while IFS= read -r file; do
+    markdown_files+=("$file")
+  done < <(
     find "$root_dir" \( -path "$root_dir/.git" -o -path "$root_dir/.venv" \) -prune -o \
       -type f \( -path "$root_dir/docs/*.md" -o -path "$root_dir/docs/**/*.md" -o -path "$root_dir/README.md" \) -print
   )
