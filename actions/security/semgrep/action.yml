@@ -1,0 +1,50 @@
+name: Semgrep SAST scan
+description: >-
+  Runs Semgrep static analysis with language-specific and cross-cutting
+  security rulesets. The calling workflow must grant security-events: write
+  permission.
+
+inputs:
+  language:
+    description: >-
+      Language ruleset to enable (maps to "p/<language>", e.g. "python",
+      "java", "golang").
+    required: true
+  extra-config:
+    description: >-
+      Additional Semgrep config strings, space-separated (e.g.
+      "p/owasp-top-ten").
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Install Semgrep
+      shell: bash
+      run: pip install semgrep
+
+    - name: Run Semgrep scan
+      shell: bash
+      env:
+        LANGUAGE: ${{ inputs.language }}
+        EXTRA_CONFIG: ${{ inputs.extra-config }}
+      run: |
+        config="p/$LANGUAGE p/security-audit p/secrets"
+        if [ -n "$EXTRA_CONFIG" ]; then
+          config="$config $EXTRA_CONFIG"
+        fi
+
+        config_args=""
+        for c in $config; do
+          config_args="$config_args --config $c"
+        done
+
+        semgrep scan $config_args --sarif --output semgrep-results.sarif
+
+    - name: Upload SARIF
+      if: always()
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: semgrep-results.sarif
+        category: semgrep
