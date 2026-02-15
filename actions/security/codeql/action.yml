@@ -21,6 +21,9 @@ runs:
         languages: ${{ inputs.language }}
         queries: ${{ inputs.queries }}
 
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
+
     - name: Run CodeQL analysis
       uses: github/codeql-action/analyze@v3
       with:
