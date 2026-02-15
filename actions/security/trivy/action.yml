@@ -1,0 +1,82 @@
+name: Trivy security scan
+description: >-
+  Runs Trivy vulnerability scanning, SBOM generation, or container image
+  scanning. The calling workflow must grant security-events: write permission
+  when scan-type is "fs" or "image".
+
+inputs:
+  scan-type:
+    description: >-
+      Scan mode: "fs" (filesystem vuln scan → SARIF), "sbom" (CycloneDX SBOM
+      generation), or "image" (container image scan → SARIF).
+    required: true
+  scan-ref:
+    description: Filesystem path or container image reference to scan.
+    required: false
+    default: "."
+  severity:
+    description: Comma-separated severity levels to report.
+    required: false
+    default: "CRITICAL,HIGH"
+  exit-code:
+    description: Exit code when vulnerabilities are found (0 = advisory only).
+    required: false
+    default: "1"
+  scanners:
+    description: Comma-separated Trivy scanners to enable.
+    required: false
+    default: "vuln"
+  output-file:
+    description: Output file path for SARIF or SBOM results.
+    required: false
+    default: "trivy-results.sarif"
+
+runs:
+  using: composite
+  steps:
+    - name: Run Trivy filesystem scan
+      if: inputs.scan-type == 'fs'
+      uses: aquasecurity/trivy-action@0.34.0
+      with:
+        scan-type: fs
+        scan-ref: ${{ inputs.scan-ref }}
+        severity: ${{ inputs.severity }}
+        exit-code: ${{ inputs.exit-code }}
+        scanners: ${{ inputs.scanners }}
+        format: sarif
+        output: ${{ inputs.output-file }}
+
+    - name: Upload SARIF (filesystem scan)
+      if: inputs.scan-type == 'fs' && always()
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ inputs.output-file }}
+        category: trivy-fs
+
+    - name: Run Trivy image scan
+      if: inputs.scan-type == 'image'
+      uses: aquasecurity/trivy-action@0.34.0
+      with:
+        scan-type: image
+        image-ref: ${{ inputs.scan-ref }}
+        severity: ${{ inputs.severity }}
+        exit-code: ${{ inputs.exit-code }}
+        scanners: ${{ inputs.scanners }}
+        format: sarif
+        output: ${{ inputs.output-file }}
+
+    - name: Upload SARIF (image scan)
+      if: inputs.scan-type == 'image' && always()
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ inputs.output-file }}
+        category: trivy-image
+
+    - name: Generate SBOM
+      if: inputs.scan-type == 'sbom'
+      uses: aquasecurity/trivy-action@0.34.0
+      with:
+        scan-type: fs
+        scan-ref: ${{ inputs.scan-ref }}
+        format: cyclonedx
+        output: ${{ inputs.output-file }}
