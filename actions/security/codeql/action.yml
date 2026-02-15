@@ -1,0 +1,27 @@
+name: CodeQL analysis
+description: >-
+  Runs GitHub CodeQL static analysis (init + analyze) for a single language.
+  The calling workflow must grant security-events: write permission.
+
+inputs:
+  language:
+    description: CodeQL language to analyze (e.g. "python", "javascript").
+    required: true
+  queries:
+    description: Query suite to run.
+    required: false
+    default: "+security-extended"
+
+runs:
+  using: composite
+  steps:
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ inputs.language }}
+        queries: ${{ inputs.queries }}
+
+    - name: Run CodeQL analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{ inputs.language }}"
