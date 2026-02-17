@@ -1,0 +1,90 @@
+name: CI - Test and Validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - develop
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docs-only:
+    name: docs-only
+    runs-on: ubuntu-latest
+    outputs:
+      docs-only: ${{ steps.detect.outputs.docs-only }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Detect docs-only changes
+        id: detect
+        uses: ./actions/docs-only-detect
+
+  standards-compliance:
+    name: standards-compliance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Validate standards
+        uses: ./actions/standards-compliance
+
+  actionlint:
+    name: actionlint
+    runs-on: ubuntu-latest
+    needs: docs-only
+    steps:
+      - name: Docs-only short-circuit
+        if: needs.docs-only.outputs.docs-only == 'true'
+        run: echo "Docs-only changes detected; skipping actionlint."
+
+      - name: Checkout code
+        if: needs.docs-only.outputs.docs-only != 'true'
+        uses: actions/checkout@v6
+
+      - name: Install actionlint
+        if: needs.docs-only.outputs.docs-only != 'true'
+        run: |
+          bash <(curl -s https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+          echo "$PWD" >> "$GITHUB_PATH"
+
+      - name: Run actionlint
+        if: needs.docs-only.outputs.docs-only != 'true'
+        run: actionlint
+
+  shellcheck:
+    name: shellcheck
+    runs-on: ubuntu-latest
+    needs: docs-only
+    steps:
+      - name: Docs-only short-circuit
+        if: needs.docs-only.outputs.docs-only == 'true'
+        run: echo "Docs-only changes detected; skipping shellcheck."
+
+      - name: Checkout code
+        if: needs.docs-only.outputs.docs-only != 'true'
+        uses: actions/checkout@v6
+
+      - name: Run shellcheck
+        if: needs.docs-only.outputs.docs-only != 'true'
+        run: |
+          files=$(find . -path ./.git -prune -o -type f \( \
+            -path './actions/*/scripts/*.sh' -o \
+            -path './scripts/*.sh' -o \
+            -path './scripts/**/*.sh' \
+          \) -print)
+          if [ -n "$files" ]; then
+            echo "$files" | xargs shellcheck
+          else
+            echo "No shell scripts found."
+          fi

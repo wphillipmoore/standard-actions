@@ -10,6 +10,12 @@ inputs:
       commits after their initial history pass their cutoff here.
     required: false
     default: ""
+  skip-sync-check:
+    description: >-
+      Skip the shared tooling staleness check.  Set to true for repositories
+      that ARE the canonical source for synced scripts (e.g. standard-tooling).
+    required: false
+    default: "false"
 
 runs:
   using: composite
@@ -53,6 +59,7 @@ runs:
 
     - name: Validate shared tooling is up to date
       if: >-
+        inputs.skip-sync-check != 'true' &&
         github.event_name == 'pull_request' &&
         github.base_ref == 'develop'
       shell: bash
