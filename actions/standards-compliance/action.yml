@@ -50,3 +50,13 @@ runs:
       if: github.event_name == 'pull_request'
       shell: bash
       run: ${{ github.action_path }}/scripts/pr-issue-linkage.sh
+
+    - name: Validate shared tooling is up to date
+      if: >-
+        github.event_name == 'pull_request' &&
+        github.base_ref == 'develop'
+      shell: bash
+      run: |
+        if [[ -x scripts/dev/sync-tooling.sh ]]; then
+          scripts/dev/sync-tooling.sh --check
+        fi
