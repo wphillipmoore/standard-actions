@@ -80,11 +80,12 @@ runs:
       shell: bash
       env:
         GH_TOKEN: ${{ github.token }}
+        RELEASE_NOTES: ${{ inputs.release-notes }}
       run: |
         release_args=(
           "${{ steps.meta.outputs.tag }}"
           --title "${{ inputs.release-title }} ${{ inputs.version }}"
-          --notes "${{ inputs.release-notes }}"
+          --notes "$RELEASE_NOTES"
         )
         if [ -n "${{ inputs.release-artifacts }}" ]; then
           release_args+=( ${{ inputs.release-artifacts }} )
