@@ -11,6 +11,9 @@ Thumbs.db
 .env.*
 *.log
 
+# Python
+__pycache__/
+
 # Temp/build artifacts (only if created)
 dist/
 build/
