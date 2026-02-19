@@ -1,0 +1,51 @@
+name: Version divergence gate
+description: >-
+  Verifies that the PR branch version differs from the main branch version.
+  Fails the step if the two versions are identical.
+
+inputs:
+  head-version-command:
+    description: >-
+      Shell command that prints the HEAD (PR branch) version to stdout.
+    required: true
+  main-version-command:
+    description: >-
+      Shell command that prints the main branch version to stdout.
+    required: true
+
+outputs:
+  head-version:
+    description: The version extracted from the PR branch.
+    value: ${{ steps.compare.outputs.head-version }}
+  main-version:
+    description: The version extracted from the main branch.
+    value: ${{ steps.compare.outputs.main-version }}
+  diverged:
+    description: "'true' if versions differ, 'false' otherwise."
+    value: ${{ steps.compare.outputs.diverged }}
+
+runs:
+  using: composite
+  steps:
+    - name: Fetch main branch
+      shell: bash
+      run: git fetch origin main --depth=1
+
+    - name: Compare versions
+      id: compare
+      shell: bash
+      run: |
+        head_version=$(${{ inputs.head-version-command }})
+        main_version=$(${{ inputs.main-version-command }})
+
+        echo "head-version=$head_version" >> "$GITHUB_OUTPUT"
+        echo "main-version=$main_version" >> "$GITHUB_OUTPUT"
+
+        if [ "$main_version" = "$head_version" ]; then
+          echo "diverged=false" >> "$GITHUB_OUTPUT"
+          echo "FAIL: PR version ($head_version) must differ from main ($main_version)."
+          exit 1
+        fi
+
+        echo "diverged=true" >> "$GITHUB_OUTPUT"
+        echo "OK: PR version ($head_version) differs from main ($main_version)."
