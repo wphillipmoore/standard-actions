@@ -1,0 +1,182 @@
+name: Version bump PR
+description: >-
+  Computes the next patch version, creates a branch from develop that merges
+  main, updates the version file(s) via regex replacement, and opens an
+  auto-merge PR.  Skips if develop already has the expected next version.
+
+inputs:
+  current-version:
+    description: The version that was just published (e.g. 1.2.3).
+    required: true
+  version-file:
+    description: Path to the file containing the version string.
+    required: true
+  version-regex:
+    description: >-
+      Python regex to match the version line.  Use capture groups for the
+      parts you want to preserve (e.g. prefix and suffix around the version).
+    required: true
+  version-replacement:
+    description: >-
+      Python replacement string.  Use {version} as a placeholder for the
+      computed next version (e.g. '\g<1>{version}\2').
+    required: true
+  version-regex-multiline:
+    description: >-
+      Set to "true" to pass re.MULTILINE to the regex substitution.
+    required: false
+    default: "false"
+  develop-version-command:
+    description: >-
+      Shell command to extract the version from the version file on develop.
+      Receives the file content on stdin and must print the version to stdout.
+    required: true
+  post-bump-command:
+    description: >-
+      Shell command to run after version file edit and before commit
+      (e.g. "uv lock --upgrade && uv export ...").  Leave empty to skip.
+    required: false
+    default: ""
+  extra-files:
+    description: >-
+      Space-separated list of additional files to git add before committing
+      (e.g. "uv.lock requirements.txt").
+    required: false
+    default: ""
+  app-token:
+    description: >-
+      GitHub App token used for PR creation.  Must be passed from the caller
+      because composite actions cannot access secrets directly.
+    required: true
+  pr-body-extra:
+    description: >-
+      Additional text appended to the PR body (e.g. dependency refresh notes).
+    required: false
+    default: ""
+
+outputs:
+  next-version:
+    description: The computed next patch version.
+    value: ${{ steps.next.outputs.version }}
+  pr-url:
+    description: URL of the created PR (empty if bump was not needed).
+    value: ${{ steps.create-pr.outputs.pr-url }}
+  bump-needed:
+    description: "'true' if a bump PR was created, 'false' if skipped."
+    value: ${{ steps.check.outputs.needed }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python 3
+      uses: actions/setup-python@v6
+      with:
+        python-version: "3.x"
+
+    - name: Compute next patch version
+      id: next
+      shell: bash
+      run: |
+        next=$(python3 -c "
+        v = '${{ inputs.current-version }}'.split('.')
+        v[2] = str(int(v[2]) + 1)
+        print('.'.join(v))
+        ")
+        echo "version=$next" >> "$GITHUB_OUTPUT"
+        echo "branch=chore/bump-version-$next" >> "$GITHUB_OUTPUT"
+
+    - name: Check if develop already has next version
+      id: check
+      shell: bash
+      run: |
+        git fetch origin develop
+        current=$(git show "origin/develop:${{ inputs.version-file }}" \
+          | ${{ inputs.develop-version-command }})
+        if [ "$current" = "${{ steps.next.outputs.version }}" ]; then
+          echo "needed=false" >> "$GITHUB_OUTPUT"
+        else
+          echo "needed=true" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Create bump branch and merge main
+      if: steps.check.outputs.needed == 'true'
+      shell: bash
+      run: |
+        git checkout -b "${{ steps.next.outputs.branch }}" origin/develop
+        git merge origin/main --no-edit
+
+    - name: Update version file
+      if: steps.check.outputs.needed == 'true'
+      shell: bash
+      run: |
+        python3 -c "
+        from pathlib import Path
+        import re
+        p = Path('${{ inputs.version-file }}')
+        content = p.read_text()
+        flags = re.MULTILINE if '${{ inputs.version-regex-multiline }}' == 'true' else 0
+        content = re.sub(
+            r'${{ inputs.version-regex }}',
+            r'${{ inputs.version-replacement }}'.replace('{version}', '${{ steps.next.outputs.version }}'),
+            content,
+            count=1,
+            flags=flags,
+        )
+        p.write_text(content)
+        "
+
+    - name: Run post-bump command
+      if: steps.check.outputs.needed == 'true' && inputs.post-bump-command != ''
+      shell: bash
+      run: ${{ inputs.post-bump-command }}
+
+    - name: Commit and push
+      if: steps.check.outputs.needed == 'true'
+      shell: bash
+      run: |
+        git add "${{ inputs.version-file }}"
+        if [ -n "${{ inputs.extra-files }}" ]; then
+          git add ${{ inputs.extra-files }}
+        fi
+        git commit -m "chore: bump version to ${{ steps.next.outputs.version }}"
+        git push origin "${{ steps.next.outputs.branch }}"
+
+    - name: Create and configure PR
+      id: create-pr
+      if: steps.check.outputs.needed == 'true'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.app-token }}
+      run: |
+        pr_url=$(gh pr create \
+          --base develop \
+          --head "${{ steps.next.outputs.branch }}" \
+          --title "chore: bump version to ${{ steps.next.outputs.version }}" \
+          --body "Automated patch version bump after publishing ${{ inputs.current-version }}.")
+        echo "pr-url=$pr_url" >> "$GITHUB_OUTPUT"
+
+        pr_number="${pr_url##*/}"
+
+        extra=""
+        if [ -n "${{ inputs.pr-body-extra }}" ]; then
+          extra=$'\n'"${{ inputs.pr-body-extra }}"
+        fi
+
+        gh pr edit "$pr_number" --body "$(cat <<EOF
+        Automated patch version bump after publishing ${{ inputs.current-version }}.
+
+        Ref #${pr_number}
+
+        This merges \`main\` back into \`develop\` to pick up the release tag and any
+        other release-branch artifacts, then sets the working version to the next
+        expected patch release. Change this to a minor or major bump if the next
+        release warrants it.${extra}
+        EOF
+        )"
+
+        gh pr close "$pr_number"
+        gh pr reopen "$pr_number"
+
+        gh pr merge \
+          --auto --merge --delete-branch \
+          "${{ steps.next.outputs.branch }}"
