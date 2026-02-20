@@ -1423,6 +1423,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#branch-targeting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Branch targeting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#modifying-rulesets-via-api" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1797,6 +1808,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#branch-targeting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Branch targeting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#modifying-rulesets-via-api" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2003,6 +2025,13 @@ tags.</p>
 <li>Verify the check name matches exactly — matrix-expanded names like
    <code>test: unit (3.14)</code> must be added individually.</li>
 </ol>
+<h2 id="branch-targeting">Branch targeting<a class="headerlink" href="#branch-targeting" title="Permanent link">&para;</a></h2>
+<p>All rulesets use explicit branch references (<code>refs/heads/main</code>,
+<code>refs/heads/develop</code>). <strong>Never use <code>~DEFAULT_BRANCH</code></strong> in ruleset conditions.</p>
+<p>The <code>~DEFAULT_BRANCH</code> macro resolves to the repository's configured default
+branch. In this project family, the default branch is <code>develop</code> (not <code>main</code>),
+so <code>~DEFAULT_BRANCH</code> resolves to <code>develop</code> — silently leaving <code>main</code>
+unprotected. Always use explicit <code>refs/heads/</code> references for both branches.</p>
 <h2 id="modifying-rulesets-via-api">Modifying rulesets via API<a class="headerlink" href="#modifying-rulesets-via-api" title="Permanent link">&para;</a></h2>
 <p>Rulesets can be updated programmatically using the GitHub API:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># List rulesets for a repository</span>
