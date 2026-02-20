@@ -62,9 +62,7 @@ This is a shared GitHub Actions library providing reusable composite actions for
 ### Validation
 
 ```bash
-scripts/dev/validate_local.sh    # Canonical validation (runs all checks below)
-scripts/dev/validate_actions.sh  # actionlint + shellcheck
-scripts/dev/validate_docs.sh     # markdownlint on docs/ and README.md
+scripts/dev/validate_local.sh    # Canonical validation (dispatches to common + custom checks)
 ```
 
 ## Architecture

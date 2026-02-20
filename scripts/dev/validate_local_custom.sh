@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# validate_local_custom.sh — standard-actions repo-specific checks.
+# This file is NOT synced from standard-tooling.
+set -euo pipefail
+
+run() {
+  echo "Running: $*"
+  "$@"
+}
+
+# -- required tools ----------------------------------------------------------
+
+if ! command -v actionlint >/dev/null 2>&1; then
+  echo "ERROR: required tool not found: actionlint" >&2
+  exit 1
+fi
+
+# -- GitHub Actions workflow lint --------------------------------------------
+
+run actionlint
