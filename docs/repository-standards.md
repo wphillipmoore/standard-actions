@@ -14,6 +14,7 @@
 - branching_model: library-release
 - release_model: artifact-publishing
 - supported_release_lines: 0.x (pre-release)
+- primary_language: shell
 
 ## AI co-authors
 
