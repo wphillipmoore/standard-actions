@@ -26,6 +26,7 @@ These patterns can be customized per-repository using the `docs-patterns` input.
 | ----- | ------------------- |
 | `ci: docs-only` | Always runs (this is the detection job itself) |
 | `ci: standards-compliance` | **Always runs** — markdown linting and repo profile checks apply to docs changes |
+| `ci: dependency-audit` | **Always runs** — not gated by docs-only |
 | `ci: actionlint` | Skipped on docs-only PRs |
 | `ci: shellcheck` | Skipped on docs-only PRs |
 | `test: unit` | Skipped on docs-only PRs |
@@ -33,16 +34,18 @@ These patterns can be customized per-repository using the `docs-patterns` input.
 | `security: codeql` | Skipped on docs-only PRs |
 | `security: semgrep` | Skipped on docs-only PRs |
 | `security: trivy` | Skipped on docs-only PRs |
-| `release: version-divergence` | Skipped on docs-only PRs |
+| `release: gates` | **Always runs** — not gated by docs-only |
 
 ## Implementation pattern
 
 The docs-only detection runs as the first job and exports its result as a job
-output. Downstream jobs depend on this output:
+output. Downstream jobs declare `needs: docs-only` and guard each step with the
+docs-only condition:
 
 ```yaml
 jobs:
   docs-only:
+    name: "ci: docs-only"
     runs-on: ubuntu-latest
     outputs:
       docs-only: ${{ steps.detect.outputs.docs-only }}
@@ -51,24 +54,31 @@ jobs:
       - id: detect
         uses: wphillipmoore/standard-actions/actions/docs-only-detect@develop
 
-  build:
-    needs: docs-only
+  codeql:
+    name: "security: codeql"
     runs-on: ubuntu-latest
+    needs: docs-only
+    permissions:
+      security-events: write
     steps:
-      - if: needs.docs-only.outputs.docs-only == 'true'
-        run: echo "Docs-only changes; skipping."
-      - if: needs.docs-only.outputs.docs-only != 'true'
+      - name: Docs-only short-circuit
+        if: needs.docs-only.outputs.docs-only == 'true'
+        run: echo "Docs-only changes detected; skipping CodeQL."
+
+      - name: Checkout code
+        if: needs.docs-only.outputs.docs-only != 'true'
         uses: actions/checkout@v6
-      # ... remaining steps guarded by the same condition
+
+      - name: Run CodeQL analysis
+        if: needs.docs-only.outputs.docs-only != 'true'
+        uses: wphillipmoore/standard-actions/actions/security/codeql@develop
+        with:
+          language: python
 ```
 
-!!! note "Required checks and docs-only"
-    Jobs that are required status checks must still **run** on docs-only PRs
-    (they cannot be skipped entirely with an `if` on the job). Instead, each
-    step within the job is guarded by the docs-only condition. This ensures
-    GitHub sees the check as passing.
-
-## Non-PR events
-
-For push events (e.g., pushes to `develop`), docs-only detection always returns
-`false`. All checks run on non-PR events regardless of the files changed.
+!!! warning "Per-step guards, not job-level `if`"
+    Jobs that are required status checks must still **run** on docs-only PRs —
+    they cannot be skipped entirely with a job-level `if` condition. Instead,
+    each step within the job is guarded by the docs-only condition. This ensures
+    GitHub sees the check as passing. A job-level `if: false` causes the job to
+    be "skipped", which does not satisfy required status checks.
