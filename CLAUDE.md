@@ -56,6 +56,8 @@ This is a shared GitHub Actions library providing reusable composite actions for
 
 - **Git hooks**: `git config core.hooksPath scripts/git-hooks` (required before committing)
 - **markdownlint**: `npm install --global markdownlint-cli`
+- **mkdocs-material**: `pip install mkdocs-material`
+- **mike**: `pip install mike`
 - **actionlint**: `brew install actionlint`
 - **shellcheck**: `brew install shellcheck`
 
