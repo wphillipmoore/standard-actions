@@ -14,8 +14,8 @@
 ## Testing
 
 - markdownlint
-- actionlint
-- shellcheck
+- ci: actionlint
+- ci: shellcheck
 
 ## Notes
 
