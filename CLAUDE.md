@@ -68,6 +68,41 @@ Shared lint scripts in `actions/standards-compliance/scripts/` are kept synchron
 - **Release PRs** target `main` with regular merge: `gh pr merge --auto --merge --delete-branch`
 - **Pre-flight**: Always check branch with `git status -sb` before modifying files. If on `develop`, create a `feature/*` branch first.
 
+## Commit and PR Scripts
+
+**NEVER use raw `git commit`** — always use `scripts/dev/commit.sh`.
+**NEVER use raw `gh pr create`** — always use `scripts/dev/submit-pr.sh`.
+
+### Committing
+
+```bash
+scripts/dev/commit.sh --type feat --scope ci --message "add category prefixes" --agent claude
+scripts/dev/commit.sh --type fix --message "correct action input name" --agent claude
+scripts/dev/commit.sh --type docs --message "update README" --body "Expanded usage section" --agent claude
+```
+
+- `--type` (required): `feat|fix|docs|style|refactor|test|chore|ci|build`
+- `--message` (required): commit description
+- `--agent` (required): `claude` or `codex` — resolves the correct `Co-Authored-By` identity
+- `--scope` (optional): conventional commit scope
+- `--body` (optional): detailed commit body
+
+### Submitting PRs
+
+```bash
+scripts/dev/submit-pr.sh --issue 42 --summary "Add category prefixes to CI job names"
+scripts/dev/submit-pr.sh --issue 42 --linkage Ref --summary "Update docs" --docs-only
+scripts/dev/submit-pr.sh --issue 42 --summary "Fix action input" --notes "Tested locally"
+```
+
+- `--issue` (required): GitHub issue number (just the number)
+- `--summary` (required): one-line PR summary
+- `--linkage` (optional, default: `Fixes`): `Fixes|Closes|Resolves|Ref`
+- `--title` (optional): PR title (default: most recent commit subject)
+- `--notes` (optional): additional notes
+- `--docs-only` (optional): applies docs-only testing exception
+- `--dry-run` (optional): print generated PR without executing
+
 ## Key References
 
 **Canonical Standards**: <https://github.com/wphillipmoore/standards-and-conventions>
