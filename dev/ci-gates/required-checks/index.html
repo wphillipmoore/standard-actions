@@ -16,7 +16,7 @@
         <link rel="prev" href="../">
       
       
-        <link rel="next" href="../docs-only-optimization/">
+        <link rel="next" href="../repository-rulesets/">
       
       
         
@@ -1323,49 +1323,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#branch-protection-configuration" class="md-nav__link">
+  <a href="#ruleset-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Branch protection configuration
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Branch protection configuration">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#develop-branch" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        develop branch
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#main-branch" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        main branch
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-new-required-checks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Adding new required checks
+        Ruleset configuration
       
     </span>
   </a>
@@ -1376,6 +1337,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../repository-rulesets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository Rulesets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1664,49 +1653,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#branch-protection-configuration" class="md-nav__link">
+  <a href="#ruleset-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Branch protection configuration
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Branch protection configuration">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#develop-branch" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        develop branch
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#main-branch" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        main branch
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-new-required-checks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Adding new required checks
+        Ruleset configuration
       
     </span>
   </a>
@@ -1733,8 +1683,8 @@
 <h1 id="required-checks">Required Checks<a class="headerlink" href="#required-checks" title="Permanent link">&para;</a></h1>
 <h2 id="check-matrix">Check matrix<a class="headerlink" href="#check-matrix" title="Permanent link">&para;</a></h2>
 <p>The following table shows which CI checks apply to each repository category.
-Checks marked <strong>Required</strong> must be configured as required status checks in
-GitHub branch protection rules.</p>
+Checks marked <strong>Required</strong> must be configured as required status checks in the
+<a href="../repository-rulesets/#ci-gates-ruleset">CI gates ruleset</a>.</p>
 <table>
 <thead>
 <tr>
@@ -1853,30 +1803,12 @@ supports pattern-based branch protection rules.</p>
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">  </span><span class="nt">release-gates</span><span class="p">:</span>
 <a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;release:</span><span class="nv"> </span><span class="s">gates&quot;</span>
 </code></pre></div>
-<h2 id="branch-protection-configuration">Branch protection configuration<a class="headerlink" href="#branch-protection-configuration" title="Permanent link">&para;</a></h2>
-<h3 id="develop-branch">develop branch<a class="headerlink" href="#develop-branch" title="Permanent link">&para;</a></h3>
-<p>All checks from the matrix should be configured as required status checks.
-Enable:</p>
-<ul>
-<li><strong>Require status checks to pass before merging</strong></li>
-<li><strong>Require branches to be up to date before merging</strong></li>
-<li><strong>Require pull request reviews before merging</strong> (at least 1 approval)</li>
-</ul>
-<h3 id="main-branch">main branch<a class="headerlink" href="#main-branch" title="Permanent link">&para;</a></h3>
-<p>The <code>main</code> branch uses the same required checks as <code>develop</code>. Additionally:</p>
-<ul>
-<li><strong>Require linear history</strong> should be disabled (merge commits from release PRs
-  are expected)</li>
-<li><strong>Allow merge commits</strong> must be enabled for release PRs</li>
-</ul>
-<h2 id="adding-new-required-checks">Adding new required checks<a class="headerlink" href="#adding-new-required-checks" title="Permanent link">&para;</a></h2>
-<p>When adding a new check to a repository:</p>
-<ol>
-<li>Add the job to the CI workflow with the appropriate name prefix.</li>
-<li>Verify the check passes on a test PR.</li>
-<li>Add the check name to the branch protection required status checks list in
-   repository settings.</li>
-</ol>
+<h2 id="ruleset-configuration">Ruleset configuration<a class="headerlink" href="#ruleset-configuration" title="Permanent link">&para;</a></h2>
+<p>All required status checks are enforced via GitHub repository rulesets, not
+legacy branch protection rules. Both <code>main</code> and <code>develop</code> are covered by the
+same CI gates ruleset. See <a href="../repository-rulesets/">Repository Rulesets</a> for
+full configuration details including branch protection, CI gates, and tag
+protection.</p>
 
 
 
