@@ -1,0 +1,85 @@
+site_name: Standard Actions
+site_url: https://wphillipmoore.github.io/standard-actions/
+site_description: Shared GitHub Actions library for reusable CI and automation
+repo_url: https://github.com/wphillipmoore/standard-actions
+repo_name: standard-actions
+edit_uri: ""
+
+strict: true
+
+docs_dir: docs
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - search.highlight
+    - search.suggest
+  palette:
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+extra:
+  version:
+    provider: mike
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - def_list
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Action Reference:
+      - Overview: actions/index.md
+      - CI & Validation:
+          - docs-only-detect: actions/docs-only-detect.md
+          - standards-compliance: actions/standards-compliance.md
+      - Documentation:
+          - docs-deploy: actions/docs-deploy.md
+      - Python:
+          - python/setup: actions/python-setup.md
+      - Security:
+          - security/codeql: actions/security-codeql.md
+          - security/semgrep: actions/security-semgrep.md
+          - security/trivy: actions/security-trivy.md
+      - Publishing:
+          - publish/tag-and-release: actions/publish-tag-and-release.md
+          - publish/version-bump-pr: actions/publish-version-bump-pr.md
+      - Release Gates:
+          - release-gates/version-divergence: actions/release-gates-version-divergence.md
+  - CI Gate Requirements:
+      - Overview: ci-gates/index.md
+      - Required Checks: ci-gates/required-checks.md
+      - Docs-Only Optimization: ci-gates/docs-only-optimization.md
+      - Security Scanning: ci-gates/security-scanning.md
+  - Development:
+      - Overview: development/index.md
+      - Environment and Tooling: development/environment-and-tooling.md
+      - Validation: development/validation.md
+      - Contributing: development/contributing.md

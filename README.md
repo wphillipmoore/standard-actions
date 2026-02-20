@@ -37,6 +37,11 @@ actions/
 - Repository-level SemVer tags (for example, `v1`, `v1.2.0`).
 - Consumers must pin actions by tag or commit SHA.
 
+## Documentation
+
+Full documentation is available at
+<https://wphillipmoore.github.io/standard-actions/>.
+
 ## Validation
 
 - Full validation: `scripts/dev/validate_local.sh`

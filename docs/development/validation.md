@@ -1,5 +1,9 @@
 # Validation
 
+> **Note**: This document is superseded by the
+> [MkDocs documentation site](https://wphillipmoore.github.io/standard-actions/development/validation/).
+> It is retained for backward compatibility.
+
 ## Table of Contents
 
 - [Purpose](#purpose)
