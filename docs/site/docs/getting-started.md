@@ -17,12 +17,10 @@ uses: wphillipmoore/standard-actions/actions/<action-path>@develop
 ## Minimal workflow example
 
 ```yaml
-name: CI
+name: CI - Test and Validate
 
 on:
   pull_request:
-  push:
-    branches: [develop]
 
 permissions:
   contents: read

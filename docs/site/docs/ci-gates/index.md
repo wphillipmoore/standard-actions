@@ -1,21 +1,22 @@
 # CI Gate Requirements
 
-This section defines the target-state CI gate specification for repositories
-consuming standard-actions. It documents which checks are required, how they
-interact with docs-only optimization, and the security scanning requirements.
+This section documents the CI gate configuration for all repositories consuming
+standard-actions. It covers which checks are required, how they interact with
+docs-only optimization, and the security scanning requirements.
 
 ## Overview
 
-Every managed repository runs a common set of CI checks on pull requests and
-pushes to protected branches. These checks are organized by category using job
-name prefixes:
+Every managed repository runs a common set of CI checks on pull requests. CI
+workflows trigger on `pull_request` only — push triggers are not used because
+branch protection enforces that all changes go through PRs. These checks are
+organized by category using job name prefixes:
 
 | Prefix | Purpose | Example jobs |
 | -------- | --------- | ------------- |
 | `ci:` | Code quality and standards validation | `ci: standards-compliance`, `ci: actionlint` |
 | `security:` | SAST and vulnerability scanning | `security: codeql`, `security: semgrep` |
 | `test:` | Unit and integration tests | `test: unit`, `test: integration` |
-| `release:` | Release gate validations | `release: version-divergence` |
+| `release:` | Release gate validations | `release: gates` |
 
 ## Key concepts
 

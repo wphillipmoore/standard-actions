@@ -6,18 +6,19 @@ The following table shows which CI checks apply to each repository category.
 Checks marked **Required** must be configured as required status checks in
 GitHub branch protection rules.
 
-| Check | Go Library | Python Library | Infrastructure | Documentation |
-| ------- | ----------- | --------------- | ---------------- | --------------- |
-| `ci: docs-only` | Required | Required | Required | Required |
-| `ci: standards-compliance` | Required | Required | Required | Required |
-| `ci: actionlint` | — | — | Required | — |
-| `ci: shellcheck` | — | — | Required | — |
-| `test: unit` | Required | Required | — | — |
-| `test: integration` | Required | Required | — | — |
-| `security: codeql` | Required | Required | — | — |
-| `security: semgrep` | Required | Required | — | — |
-| `security: trivy` | Required | Required | — | — |
-| `release: version-divergence` | Required | Required | — | — |
+| Check | Go Library | Python Library | Java Library | Infrastructure | Documentation |
+| ------- | ----------- | --------------- | ------------- | ---------------- | --------------- |
+| `ci: docs-only` | Required | Required | Required | Required | Required |
+| `ci: standards-compliance` | Required | Required | Required | Required | Required |
+| `ci: dependency-audit` | Required | Required | Required | — | — |
+| `ci: actionlint` | — | — | — | Required | — |
+| `ci: shellcheck` | — | — | — | Required | — |
+| `test: unit` | Required | Required | Required | — | — |
+| `test: integration` | Required | Required | Required | — | — |
+| `security: codeql` | Required | Required | Required | — | — |
+| `security: semgrep` | Required | Required | Required | — | — |
+| `security: trivy` | Required | Required | Required | — | — |
+| `release: gates` | Required | Required | Required | — | — |
 
 ## Job name prefix convention
 
@@ -35,8 +36,8 @@ jobs:
     name: "test: unit"
   codeql:
     name: "security: codeql"
-  version-gate:
-    name: "release: version-divergence"
+  release-gates:
+    name: "release: gates"
 ```
 
 ## Branch protection configuration
