@@ -107,6 +107,16 @@ When adding a new CI job that should block merges:
 4. Verify the check name matches exactly — matrix-expanded names like
    `test: unit (3.14)` must be added individually.
 
+## Branch targeting
+
+All rulesets use explicit branch references (`refs/heads/main`,
+`refs/heads/develop`). **Never use `~DEFAULT_BRANCH`** in ruleset conditions.
+
+The `~DEFAULT_BRANCH` macro resolves to the repository's configured default
+branch. In this project family, the default branch is `develop` (not `main`),
+so `~DEFAULT_BRANCH` resolves to `develop` — silently leaving `main`
+unprotected. Always use explicit `refs/heads/` references for both branches.
+
 ## Modifying rulesets via API
 
 Rulesets can be updated programmatically using the GitHub API:
