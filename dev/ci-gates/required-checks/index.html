@@ -1741,6 +1741,7 @@ GitHub branch protection rules.</p>
 <th>Check</th>
 <th>Go Library</th>
 <th>Python Library</th>
+<th>Java Library</th>
 <th>Infrastructure</th>
 <th>Documentation</th>
 </tr>
@@ -1752,6 +1753,7 @@ GitHub branch protection rules.</p>
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
+<td>Required</td>
 </tr>
 <tr>
 <td><code>ci: standards-compliance</code></td>
@@ -1759,9 +1761,19 @@ GitHub branch protection rules.</p>
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>ci: dependency-audit</code></td>
+<td>Required</td>
+<td>Required</td>
+<td>Required</td>
+<td>—</td>
+<td>—</td>
 </tr>
 <tr>
 <td><code>ci: actionlint</code></td>
+<td>—</td>
 <td>—</td>
 <td>—</td>
 <td>Required</td>
@@ -1771,11 +1783,13 @@ GitHub branch protection rules.</p>
 <td><code>ci: shellcheck</code></td>
 <td>—</td>
 <td>—</td>
+<td>—</td>
 <td>Required</td>
 <td>—</td>
 </tr>
 <tr>
 <td><code>test: unit</code></td>
+<td>Required</td>
 <td>Required</td>
 <td>Required</td>
 <td>—</td>
@@ -1785,11 +1799,13 @@ GitHub branch protection rules.</p>
 <td><code>test: integration</code></td>
 <td>Required</td>
 <td>Required</td>
+<td>Required</td>
 <td>—</td>
 <td>—</td>
 </tr>
 <tr>
 <td><code>security: codeql</code></td>
+<td>Required</td>
 <td>Required</td>
 <td>Required</td>
 <td>—</td>
@@ -1799,6 +1815,7 @@ GitHub branch protection rules.</p>
 <td><code>security: semgrep</code></td>
 <td>Required</td>
 <td>Required</td>
+<td>Required</td>
 <td>—</td>
 <td>—</td>
 </tr>
@@ -1806,11 +1823,13 @@ GitHub branch protection rules.</p>
 <td><code>security: trivy</code></td>
 <td>Required</td>
 <td>Required</td>
+<td>Required</td>
 <td>—</td>
 <td>—</td>
 </tr>
 <tr>
-<td><code>release: version-divergence</code></td>
+<td><code>release: gates</code></td>
+<td>Required</td>
 <td>Required</td>
 <td>Required</td>
 <td>—</td>
@@ -1831,8 +1850,8 @@ supports pattern-based branch protection rules.</p>
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;test:</span><span class="nv"> </span><span class="s">unit&quot;</span>
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="nt">codeql</span><span class="p">:</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;security:</span><span class="nv"> </span><span class="s">codeql&quot;</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">  </span><span class="nt">version-gate</span><span class="p">:</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;release:</span><span class="nv"> </span><span class="s">version-divergence&quot;</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">  </span><span class="nt">release-gates</span><span class="p">:</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;release:</span><span class="nv"> </span><span class="s">gates&quot;</span>
 </code></pre></div>
 <h2 id="branch-protection-configuration">Branch protection configuration<a class="headerlink" href="#branch-protection-configuration" title="Permanent link">&para;</a></h2>
 <h3 id="develop-branch">develop branch<a class="headerlink" href="#develop-branch" title="Permanent link">&para;</a></h3>
