@@ -76,6 +76,7 @@ nav:
   - CI Gate Requirements:
       - Overview: ci-gates/index.md
       - Required Checks: ci-gates/required-checks.md
+      - Repository Rulesets: ci-gates/repository-rulesets.md
       - Docs-Only Optimization: ci-gates/docs-only-optimization.md
       - Security Scanning: ci-gates/security-scanning.md
   - Development:

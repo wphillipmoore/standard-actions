@@ -3,8 +3,8 @@
 ## Check matrix
 
 The following table shows which CI checks apply to each repository category.
-Checks marked **Required** must be configured as required status checks in
-GitHub branch protection rules.
+Checks marked **Required** must be configured as required status checks in the
+[CI gates ruleset](repository-rulesets.md#ci-gates-ruleset).
 
 | Check | Go Library | Python Library | Java Library | Infrastructure | Documentation |
 | ------- | ----------- | --------------- | ------------- | ---------------- | --------------- |
@@ -40,30 +40,10 @@ jobs:
     name: "release: gates"
 ```
 
-## Branch protection configuration
+## Ruleset configuration
 
-### develop branch
-
-All checks from the matrix should be configured as required status checks.
-Enable:
-
-- **Require status checks to pass before merging**
-- **Require branches to be up to date before merging**
-- **Require pull request reviews before merging** (at least 1 approval)
-
-### main branch
-
-The `main` branch uses the same required checks as `develop`. Additionally:
-
-- **Require linear history** should be disabled (merge commits from release PRs
-  are expected)
-- **Allow merge commits** must be enabled for release PRs
-
-## Adding new required checks
-
-When adding a new check to a repository:
-
-1. Add the job to the CI workflow with the appropriate name prefix.
-2. Verify the check passes on a test PR.
-3. Add the check name to the branch protection required status checks list in
-   repository settings.
+All required status checks are enforced via GitHub repository rulesets, not
+legacy branch protection rules. Both `main` and `develop` are covered by the
+same CI gates ruleset. See [Repository Rulesets](repository-rulesets.md) for
+full configuration details including branch protection, CI gates, and tag
+protection.

@@ -20,7 +20,7 @@ organized by category using job name prefixes:
 
 ## Key concepts
 
-- **Required status checks** — Configured in GitHub branch protection rules.
+- **Required status checks** — Configured in GitHub repository rulesets.
   PRs cannot merge until all required checks pass.
 - **Docs-only optimization** — Documentation-only PRs skip expensive checks
   (builds, tests, security scans) while still running standards compliance.
@@ -31,6 +31,8 @@ organized by category using job name prefixes:
 
 - [Required Checks](required-checks.md) — Matrix of checks by repository
   category
+- [Repository Rulesets](repository-rulesets.md) — Branch protection, CI gates,
+  and tag protection ruleset configuration
 - [Docs-Only Optimization](docs-only-optimization.md) — How docs-only detection
   works and which jobs are gated
 - [Security Scanning](security-scanning.md) — CodeQL, Semgrep, and Trivy
