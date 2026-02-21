@@ -174,9 +174,6 @@ runs:
         EOF
         )"
 
-        gh pr close "$pr_number"
-        gh pr reopen "$pr_number"
-
         gh pr merge \
           --auto --merge --delete-branch \
           "${{ steps.next.outputs.branch }}"
