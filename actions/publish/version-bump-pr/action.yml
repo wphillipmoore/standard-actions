@@ -48,6 +48,13 @@ inputs:
       GitHub App token used for PR creation.  Must be passed from the caller
       because composite actions cannot access secrets directly.
     required: true
+  tracking-issue:
+    description: >-
+      Issue number for the release tracking issue (e.g. 42).  Used for PR body
+      issue linkage.  If omitted, the action searches for an open issue titled
+      "release: <current-version>" in the current repository.
+    required: false
+    default: ""
   pr-body-extra:
     description: >-
       Additional text appended to the PR body (e.g. dependency refresh notes).
@@ -141,6 +148,28 @@ runs:
         git commit -m "chore: bump version to ${{ steps.next.outputs.version }}"
         git push origin "${{ steps.next.outputs.branch }}"
 
+    - name: Resolve tracking issue
+      id: tracking
+      if: steps.check.outputs.needed == 'true'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.app-token }}
+      run: |
+        issue="${{ inputs.tracking-issue }}"
+        if [ -z "$issue" ]; then
+          issue=$(gh issue list \
+            --state open \
+            --search "release: ${{ inputs.current-version }} in:title" \
+            --json number --jq '.[0].number // empty' 2>/dev/null || true)
+        fi
+        if [ -n "$issue" ]; then
+          echo "number=$issue" >> "$GITHUB_OUTPUT"
+          echo "linkage=Ref #${issue}" >> "$GITHUB_OUTPUT"
+        else
+          echo "number=" >> "$GITHUB_OUTPUT"
+          echo "linkage=" >> "$GITHUB_OUTPUT"
+        fi
+
     - name: Create and configure PR
       id: create-pr
       if: steps.check.outputs.needed == 'true'
@@ -148,31 +177,34 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.app-token }}
       run: |
-        pr_url=$(gh pr create \
-          --base develop \
-          --head "${{ steps.next.outputs.branch }}" \
-          --title "chore: bump version to ${{ steps.next.outputs.version }}" \
-          --body "Automated patch version bump after publishing ${{ inputs.current-version }}.")
-        echo "pr-url=$pr_url" >> "$GITHUB_OUTPUT"
-
-        pr_number="${pr_url##*/}"
-
         extra=""
         if [ -n "${{ inputs.pr-body-extra }}" ]; then
           extra=$'\n'"${{ inputs.pr-body-extra }}"
         fi
 
-        gh pr edit "$pr_number" --body "$(cat <<EOF
-        Automated patch version bump after publishing ${{ inputs.current-version }}.
+        linkage="${{ steps.tracking.outputs.linkage }}"
 
-        Ref #${pr_number}
+        body_file=$(mktemp)
+        {
+          echo "Automated patch version bump after publishing ${{ inputs.current-version }}."
+          echo ""
+          if [ -n "$linkage" ]; then
+            echo "$linkage"
+            echo ""
+          fi
+          echo "This merges \`main\` back into \`develop\` to pick up the release tag and any"
+          echo "other release-branch artifacts, then sets the working version to the next"
+          echo "expected patch release. Change this to a minor or major bump if the next"
+          echo "release warrants it.${extra}"
+        } > "$body_file"
 
-        This merges \`main\` back into \`develop\` to pick up the release tag and any
-        other release-branch artifacts, then sets the working version to the next
-        expected patch release. Change this to a minor or major bump if the next
-        release warrants it.${extra}
-        EOF
-        )"
+        pr_url=$(gh pr create \
+          --base develop \
+          --head "${{ steps.next.outputs.branch }}" \
+          --title "chore: bump version to ${{ steps.next.outputs.version }}" \
+          --body-file "$body_file")
+        echo "pr-url=$pr_url" >> "$GITHUB_OUTPUT"
+        rm -f "$body_file"
 
         gh pr merge \
           --auto --merge --delete-branch \
