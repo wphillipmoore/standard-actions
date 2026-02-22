@@ -55,6 +55,7 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
+  - Repository Configuration: configuration.md
   - Action Reference:
       - Overview: actions/index.md
       - CI & Validation:
