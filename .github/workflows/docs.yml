@@ -2,7 +2,7 @@ name: Documentation
 
 on:
   push:
-    branches: [develop]
+    branches: [develop, main]
   workflow_dispatch:
 
 permissions:
@@ -17,10 +17,12 @@ jobs:
     name: "deploy: docs"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout code
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - uses: ./actions/docs-deploy
+      - name: Deploy docs
+        uses: ./actions/docs-deploy
         with:
           version-command: cat VERSION | cut -d. -f1,2

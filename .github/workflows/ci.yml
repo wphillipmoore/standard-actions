@@ -36,7 +36,7 @@ jobs:
       - name: Validate standards
         uses: ./actions/standards-compliance
         with:
-          commit-cutoff-sha: "0ea4d08325a3aa175884456b9d53b69d2489def6"
+          commit-cutoff-sha: "0ea4d08"
 
   actionlint:
     name: "ci: actionlint"
