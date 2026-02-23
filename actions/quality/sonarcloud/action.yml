@@ -1,0 +1,105 @@
+name: SonarQube Cloud scan
+description: >-
+  Runs SonarQube Cloud (SonarCloud) static analysis for code quality, security
+  vulnerabilities, and maintainability. The calling workflow is responsible for
+  checkout (with fetch-depth: 0), language setup, compilation, and coverage
+  report generation.
+
+inputs:
+  sonar-token:
+    description: >-
+      SonarQube Cloud authentication token (from repository or organization
+      secrets).
+    required: true
+  organization:
+    description: >-
+      SonarCloud organization key.
+    required: true
+  project-key:
+    description: >-
+      SonarCloud project key.
+    required: true
+  sources:
+    description: >-
+      Comma-separated source directories.
+    required: false
+    default: "src"
+  tests:
+    description: >-
+      Comma-separated test directories.
+    required: false
+    default: ""
+  coverage-report:
+    description: >-
+      Path to coverage report (format auto-detected by SonarCloud).
+    required: false
+    default: ""
+  java-binaries:
+    description: >-
+      Path to compiled Java classes (required for Java projects).
+    required: false
+    default: ""
+  extra-args:
+    description: >-
+      Additional sonar properties as -D flags, newline-separated.
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Validate inputs
+      shell: bash
+      env:
+        SONAR_TOKEN: ${{ inputs.sonar-token }}
+      run: |
+        if [ -z "$SONAR_TOKEN" ]; then
+          echo "::error::sonar-token is empty. Forks and PRs from forks typically cannot access secrets. Skipping scan."
+          exit 1
+        fi
+
+    - name: Build scanner arguments
+      id: build-args
+      shell: bash
+      env:
+        ORGANIZATION: ${{ inputs.organization }}
+        PROJECT_KEY: ${{ inputs.project-key }}
+        SOURCES: ${{ inputs.sources }}
+        TESTS: ${{ inputs.tests }}
+        COVERAGE_REPORT: ${{ inputs.coverage-report }}
+        JAVA_BINARIES: ${{ inputs.java-binaries }}
+        EXTRA_ARGS: ${{ inputs.extra-args }}
+      run: |
+        args="-Dsonar.organization=$ORGANIZATION"
+        args="$args -Dsonar.projectKey=$PROJECT_KEY"
+        args="$args -Dsonar.sources=$SOURCES"
+
+        if [ -n "$TESTS" ]; then
+          args="$args -Dsonar.tests=$TESTS"
+        fi
+
+        if [ -n "$COVERAGE_REPORT" ]; then
+          args="$args -Dsonar.coverage.reportPaths=$COVERAGE_REPORT"
+        fi
+
+        if [ -n "$JAVA_BINARIES" ]; then
+          args="$args -Dsonar.java.binaries=$JAVA_BINARIES"
+        fi
+
+        if [ -n "$EXTRA_ARGS" ]; then
+          while IFS= read -r line; do
+            line="$(echo "$line" | xargs)"
+            if [ -n "$line" ]; then
+              args="$args $line"
+            fi
+          done <<< "$EXTRA_ARGS"
+        fi
+
+        echo "args=$args" >> "$GITHUB_OUTPUT"
+
+    - name: Run SonarQube Cloud scan
+      uses: SonarSource/sonarqube-scan-action@v5
+      env:
+        SONAR_TOKEN: ${{ inputs.sonar-token }}
+      with:
+        args: ${{ steps.build-args.outputs.args }}

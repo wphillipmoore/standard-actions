@@ -32,6 +32,11 @@ supporting scripts.
 - **[security/trivy](security-trivy.md)** — Runs Trivy vulnerability scanning,
   SBOM generation, or container image scanning.
 
+### Quality
+
+- **[quality/sonarcloud](quality-sonarcloud.md)** — Runs SonarQube Cloud static
+  analysis for code quality, security vulnerabilities, and maintainability.
+
 ### Publishing
 
 - **[publish/tag-and-release](publish-tag-and-release.md)** — Creates annotated
