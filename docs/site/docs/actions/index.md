@@ -36,6 +36,7 @@ supporting scripts.
 
 - **[quality/sonarcloud](quality-sonarcloud.md)** — Runs SonarQube Cloud static
   analysis for code quality, security vulnerabilities, and maintainability.
+  Optional, advisory gate (limited beta).
 
 ### Publishing
 

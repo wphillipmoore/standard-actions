@@ -3,7 +3,26 @@
 Runs SonarQube Cloud (SonarCloud) static analysis for code quality, security
 vulnerabilities, and maintainability across all supported languages.
 
+> **Status**: Optional, advisory gate — currently in limited beta on the
+> mq-rest-admin language implementation repos (Python, Go, Java). SonarCloud's
+> free tier does not support custom quality gates, so this action provides
+> informational analysis rather than enforcement. Language-specific tooling
+> (ruff, mypy, golangci-lint, spotbugs, etc.) remains the primary enforcement
+> mechanism.
+
 ## Usage
+
+There are two recommended deployment patterns:
+
+1. **PR analysis** — Add a `sonarcloud` job to your CI workflow (`ci.yml`) so
+   every pull request receives a SonarCloud quality gate comment.
+2. **Post-merge baseline** — Add a dedicated `sonarcloud.yml` workflow triggered
+   on `push` to `develop` so the SonarCloud project dashboard stays current
+   after each merge.
+
+Both patterns are shown in the examples below.
+
+### PR job (in ci.yml)
 
 ```yaml
 - uses: wphillipmoore/standard-actions/actions/quality/sonarcloud@develop
@@ -13,6 +32,41 @@ vulnerabilities, and maintainability across all supported languages.
     project-key: my-org_my-repo
     sources: "src"
     coverage-report: "coverage.xml"
+```
+
+### Post-merge workflow (sonarcloud.yml)
+
+```yaml
+name: SonarCloud
+
+on:
+  push:
+    branches:
+      - develop
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sonarcloud
+  cancel-in-progress: false
+
+jobs:
+  sonarcloud:
+    name: "quality: sonarcloud"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      # ... language setup and test/coverage steps ...
+      - uses: wphillipmoore/standard-actions/actions/quality/sonarcloud@develop
+        with:
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
+          organization: my-org
+          project-key: my-org_my-repo
+          sources: "src"
+          coverage-report: "coverage.xml"
 ```
 
 ## Inputs
@@ -61,7 +115,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: "3.14"
       - run: pip install -e ".[dev]" && pytest --cov --cov-report=xml
       - uses: wphillipmoore/standard-actions/actions/quality/sonarcloud@develop
         with:
@@ -73,7 +127,11 @@ jobs:
           coverage-report: "coverage.xml"
 ```
 
-### Go with Cobertura coverage
+### Go with native coverage
+
+Go source and test files live in the same directory. Use `extra-args` to pass
+the Go-specific coverage path and separate test files from source files using
+inclusion/exclusion patterns.
 
 ```yaml
 jobs:
@@ -86,23 +144,26 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
-      - name: Run tests with coverage
-        run: |
-          go test -coverprofile=coverage.out ./...
-          go install github.com/boumenot/gocover-cobertura@latest
-          gocover-cobertura < coverage.out > coverage.xml
+      - run: go test -race -count=1 -coverprofile=coverage.out ./...
       - uses: wphillipmoore/standard-actions/actions/quality/sonarcloud@develop
         with:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           organization: my-org
           project-key: my-org_my-repo
-          sources: "."
-          tests: "."
-          coverage-report: "coverage.xml"
+          sources: "pkg"
+          tests: "pkg"
+          extra-args: >-
+            -Dsonar.go.coverage.reportPaths=coverage.out
+            -Dsonar.test.inclusions=**/*_test.go
+            -Dsonar.exclusions=**/*_test.go
 ```
+
+> **Important**: Do not set both `sources` and `tests` to `"."` — SonarCloud
+> cannot index the same file in both sets. Scope to the package directory and
+> use `sonar.test.inclusions` / `sonar.exclusions` to separate test files.
 
 ### Java with Maven
 
@@ -117,11 +178,11 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "21"
-      - run: mvn -B verify
+      - run: ./mvnw verify -B
       - uses: wphillipmoore/standard-actions/actions/quality/sonarcloud@develop
         with:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
@@ -133,17 +194,35 @@ jobs:
           java-binaries: "target/classes"
 ```
 
-## GitHub configuration
+## SonarCloud configuration
 
-- **SonarCloud organization** — Link your GitHub organization at
-  [sonarcloud.io](https://sonarcloud.io) and note the organization key.
-- **Project setup** — Import the repository in SonarCloud to obtain the project
-  key (typically `<org>_<repo>`).
-- **Authentication token** — Generate a token under **My Account > Security** in
-  SonarCloud and store it as a repository or organization secret named
-  `SONAR_TOKEN`.
-- **Quality gate** — Configure quality gate thresholds in SonarCloud project
-  settings. The default "Sonar way" gate covers new code coverage, duplications,
-  reliability, security, and maintainability ratings.
+- **Account setup** — Log in at [sonarcloud.io](https://sonarcloud.io) with
+  your GitHub account. For personal accounts, your GitHub username becomes the
+  organization key.
+- **Project import** — Import each repository in SonarCloud to obtain the
+  project key (typically `<org>_<repo>`).
+- **Disable automatic analysis** — Under each project's **Administration >
+  Analysis Method**, turn off automatic analysis. CI-based analysis and
+  automatic analysis cannot run simultaneously.
+- **Authentication token** — Generate a user token under **My Account >
+  Security** in SonarCloud. Store it as a GitHub secret named `SONAR_TOKEN` on
+  each repository that uses this action.
+- **Quality gate** — The free tier uses the default "Sonar way" quality gate,
+  which covers new code coverage, duplications, reliability, security, and
+  maintainability ratings. Custom quality gates require a paid plan.
 - **Fetch depth** — The calling workflow must check out with `fetch-depth: 0` so
   SonarCloud can perform blame-based new code detection.
+- **Branch mapping** — SonarCloud treats the branch from the first scan as the
+  "main" branch. If your default branch is `develop`, the post-merge workflow
+  will establish `develop` as the baseline for PR comparisons.
+
+## Limitations
+
+- **Custom quality gates** require the paid tier ($32/month for up to 110k lines
+  of code, $190/month above that). The free tier only supports the default
+  "Sonar way" gate.
+- **Branch rename** — There is no straightforward way to change the main branch
+  in SonarCloud after the first scan. Plan your post-merge workflow trigger
+  accordingly.
+- **Fork PRs** — Forks cannot access repository secrets, so the scan will fail
+  gracefully at the input validation step.
