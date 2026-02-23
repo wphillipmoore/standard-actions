@@ -156,11 +156,19 @@ runs:
         GH_TOKEN: ${{ inputs.app-token }}
       run: |
         issue="${{ inputs.tracking-issue }}"
-        if [ -z "$issue" ]; then
+        if [ -n "$issue" ]; then
+          echo "Using explicit tracking-issue input: #${issue}"
+        else
+          echo "Searching for open issue titled \"release: ${{ inputs.current-version }}\"..."
           issue=$(gh issue list \
             --state open \
             --search "release: ${{ inputs.current-version }} in:title" \
-            --json number --jq '.[0].number // empty' 2>/dev/null || true)
+            --json number --jq '.[0].number // empty') || true
+          if [ -n "$issue" ]; then
+            echo "Found tracking issue: #${issue}"
+          else
+            echo "No tracking issue found — PR will have no issue linkage"
+          fi
         fi
         if [ -n "$issue" ]; then
           echo "number=$issue" >> "$GITHUB_OUTPUT"

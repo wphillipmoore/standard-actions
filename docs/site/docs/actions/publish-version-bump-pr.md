@@ -29,6 +29,7 @@ Skips if develop already has the expected next version.
 | `app-token` | **Yes** | — | GitHub App token for PR creation. Must be passed from the caller because composite actions cannot access secrets directly. |
 | `version-regex-multiline` | No | `false` | Set to `true` to pass `re.MULTILINE` to the regex substitution. |
 | `post-bump-command` | No | `""` | Shell command to run after version file edit and before commit (e.g. `uv lock --upgrade && uv export ...`). |
+| `tracking-issue` | No | `""` | Issue number for the release tracking issue (e.g. `42`). If omitted, the action searches for an open issue titled `release: <current-version>`. |
 | `extra-files` | No | `""` | Space-separated list of additional files to `git add` before committing. |
 | `pr-body-extra` | No | `""` | Additional text appended to the PR body. |
 
@@ -63,7 +64,11 @@ Skips if develop already has the expected next version.
 5. **Post-bump command** — Optionally runs a command (e.g. lock file refresh).
 6. **Commit and push** — Commits the version file (and any extra files) with
    message `chore: bump version to <next>`.
-7. **Create PR** — Opens a PR targeting `develop`, edits the body with context,
+7. **Resolve tracking issue** — If `tracking-issue` is provided, uses that issue
+   number. Otherwise, searches for an open issue titled
+   `release: <current-version>`. If found, a `Ref #<number>` linkage line is
+   added to the PR body. Diagnostic output is logged in either case.
+8. **Create PR** — Opens a PR targeting `develop`, edits the body with context,
    then closes/reopens to trigger CI. Enables auto-merge with merge commit
    strategy.
 
