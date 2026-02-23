@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# validate_local_custom.sh — standard-actions repo-specific checks.
-# This file is NOT synced from standard-tooling.
+# validate-local-custom — standard-actions repo-specific checks.
+# This file is NOT managed by standard-tooling.
 set -euo pipefail
 
 run() {
