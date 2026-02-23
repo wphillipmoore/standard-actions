@@ -77,11 +77,7 @@ jobs:
       - name: Run shellcheck
         if: needs.docs-only.outputs.docs-only != 'true'
         run: |
-          files=$(find . -path ./.git -prune -o -type f \( \
-            -path './actions/*/scripts/*.sh' -o \
-            -path './scripts/*.sh' -o \
-            -path './scripts/**/*.sh' \
-          \) -print)
+          files=$(find ./scripts/bin -type f 2>/dev/null)
           if [ -n "$files" ]; then
             echo "$files" | xargs shellcheck
           else

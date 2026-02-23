@@ -54,7 +54,14 @@ This is a shared GitHub Actions library providing reusable composite actions for
 
 ### Environment Setup
 
-- **Git hooks**: `git config core.hooksPath scripts/git-hooks` (required before committing)
+```bash
+cd ../standard-tooling && uv sync                                                # Install standard-tooling
+export PATH="../standard-tooling/.venv/bin:../standard-tooling/scripts/bin:$PATH" # Put tools on PATH
+git config core.hooksPath ../standard-tooling/scripts/lib/git-hooks               # Enable git hooks
+```
+
+Additional tools required:
+
 - **markdownlint**: `npm install --global markdownlint-cli`
 - **mkdocs-material**: `pip install mkdocs-material`
 - **mike**: `pip install mike`
@@ -64,7 +71,7 @@ This is a shared GitHub Actions library providing reusable composite actions for
 ### Validation
 
 ```bash
-scripts/dev/validate_local.sh    # Canonical validation (dispatches to common + custom checks)
+st-validate-local    # Canonical validation (dispatches to common + custom checks)
 ```
 
 ## Architecture
@@ -74,7 +81,7 @@ scripts/dev/validate_local.sh    # Canonical validation (dispatches to common + 
 All actions live under `actions/` as composite GitHub Actions:
 
 - `actions/docs-only-detect` — Detects documentation-only PRs to short-circuit expensive CI jobs
-- `actions/standards-compliance` — Validates repo profile, markdown, commit messages, PR linkage, and shared tooling staleness
+- `actions/standards-compliance` — Validates repo profile, markdown, commit messages, and PR linkage (delegates to standard-tooling validators via PATH)
 - `actions/python/setup` — Python environment setup with uv and caching
 - `actions/security/codeql` — CodeQL static analysis
 - `actions/security/semgrep` — Semgrep SAST scanning
@@ -84,29 +91,37 @@ All actions live under `actions/` as composite GitHub Actions:
 
 This repository's CI workflow uses **local paths** (`./actions/...`) rather than remote references. This enables self-testing: changes to an action are validated by the same PR that modifies them.
 
-### Sync Mechanism
+### Standard-Tooling Integration
 
-Shared lint scripts in `actions/standards-compliance/scripts/` are kept synchronized with `standard-tooling` via `scripts/dev/sync-tooling.sh --actions-compat`. The standards-compliance action validates this staleness in consuming repos.
+Shared validators (`repo-profile`, `markdown-standards`, `commit-messages`, `pr-issue-linkage`) are provided by `standard-tooling` via PATH. The `standards-compliance` action checks out `standard-tooling` and prepends its `scripts/bin/` to `$GITHUB_PATH`. Locally, the same tools are available by adding `../standard-tooling/scripts/bin` to your PATH.
+
+### Repo-Specific Scripts
+
+```
+scripts/
+└── bin/
+    └── validate-local-custom    # actionlint (repo-specific)
+```
 
 ## Branching and PR Workflow
 
 - **Protected branches**: `main`, `develop` — no direct commits (enforced by pre-commit hook)
-- **Branch naming**: `feature/*`, `bugfix/*`, or `hotfix/*` only
+- **Branch naming**: `feature/*`, `bugfix/*`, `hotfix/*`, or `release/*` only
 - **Feature/bugfix PRs** target `develop` with squash merge: `gh pr merge --auto --squash --delete-branch`
 - **Release PRs** target `main` with regular merge: `gh pr merge --auto --merge --delete-branch`
 - **Pre-flight**: Always check branch with `git status -sb` before modifying files. If on `develop`, create a `feature/*` branch first.
 
 ## Commit and PR Scripts
 
-**NEVER use raw `git commit`** — always use `scripts/dev/commit.sh`.
-**NEVER use raw `gh pr create`** — always use `scripts/dev/submit-pr.sh`.
+**NEVER use raw `git commit`** — always use `st-commit`.
+**NEVER use raw `gh pr create`** — always use `st-submit-pr`.
 
 ### Committing
 
 ```bash
-scripts/dev/commit.sh --type feat --scope ci --message "add category prefixes" --agent claude
-scripts/dev/commit.sh --type fix --message "correct action input name" --agent claude
-scripts/dev/commit.sh --type docs --message "update README" --body "Expanded usage section" --agent claude
+st-commit --type feat --scope ci --message "add category prefixes" --agent claude
+st-commit --type fix --message "correct action input name" --agent claude
+st-commit --type docs --message "update README" --body "Expanded usage section" --agent claude
 ```
 
 - `--type` (required): `feat|fix|docs|style|refactor|test|chore|ci|build`
@@ -118,9 +133,9 @@ scripts/dev/commit.sh --type docs --message "update README" --body "Expanded usa
 ### Submitting PRs
 
 ```bash
-scripts/dev/submit-pr.sh --issue 42 --summary "Add category prefixes to CI job names"
-scripts/dev/submit-pr.sh --issue 42 --linkage Ref --summary "Update docs" --docs-only
-scripts/dev/submit-pr.sh --issue 42 --summary "Fix action input" --notes "Tested locally"
+st-submit-pr --issue 42 --summary "Add category prefixes to CI job names"
+st-submit-pr --issue 42 --linkage Ref --summary "Update docs" --docs-only
+st-submit-pr --issue 42 --summary "Fix action input" --notes "Tested locally"
 ```
 
 - `--issue` (required): GitHub issue number (just the number)

@@ -10,16 +10,27 @@ inputs:
       commits after their initial history pass their cutoff here.
     required: false
     default: ""
-  skip-sync-check:
+  standard-tooling-ref:
     description: >-
-      Skip the shared tooling staleness check.  Set to true for repositories
-      that ARE the canonical source for synced scripts (e.g. standard-tooling).
+      Git ref (branch or tag) of standard-tooling to check out.
+      Use a tag (e.g. v1.2) for stable consumption.
     required: false
-    default: "false"
+    default: "develop"
 
 runs:
   using: composite
   steps:
+    - name: Checkout standard-tooling
+      uses: actions/checkout@v6
+      with:
+        repository: wphillipmoore/standard-tooling
+        ref: ${{ inputs.standard-tooling-ref }}
+        path: .standard-tooling
+
+    - name: Add standard-tooling to PATH
+      shell: bash
+      run: echo "${{ github.workspace }}/.standard-tooling/scripts/bin" >> "$GITHUB_PATH"
+
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
@@ -36,11 +47,11 @@ runs:
 
     - name: Validate repository profile
       shell: bash
-      run: ${{ github.action_path }}/scripts/repo-profile.sh
+      run: repo-profile
 
     - name: Validate markdown standards
       shell: bash
-      run: ${{ github.action_path }}/scripts/markdown-standards.sh
+      run: markdown-standards
 
     - name: Validate commit messages
       if: github.event_name == 'pull_request'
@@ -48,22 +59,11 @@ runs:
       env:
         COMMIT_CUTOFF_SHA: ${{ inputs.commit-cutoff-sha }}
       run: >-
-        ${{ github.action_path }}/scripts/commit-messages.sh
+        commit-messages
         ${{ github.event.pull_request.base.sha }}
         ${{ github.event.pull_request.head.sha }}
 
     - name: Validate pull request issue linkage
       if: github.event_name == 'pull_request'
       shell: bash
-      run: ${{ github.action_path }}/scripts/pr-issue-linkage.sh
-
-    - name: Validate shared tooling is up to date
-      if: >-
-        inputs.skip-sync-check != 'true' &&
-        github.event_name == 'pull_request' &&
-        github.base_ref == 'develop'
-      shell: bash
-      run: |
-        if [[ -x scripts/dev/sync-tooling.sh ]]; then
-          scripts/dev/sync-tooling.sh --check
-        fi
+      run: pr-issue-linkage
