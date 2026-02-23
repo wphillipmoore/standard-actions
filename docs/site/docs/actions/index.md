@@ -34,6 +34,9 @@ supporting scripts.
 
 ### Quality
 
+- **[quality/codeclimate](quality-codeclimate.md)** — Uploads test coverage data
+  to Qlty Cloud (formerly Code Climate) for coverage tracking and PR comments.
+  Optional, advisory gate (limited beta).
 - **[quality/sonarcloud](quality-sonarcloud.md)** — Runs SonarQube Cloud static
   analysis for code quality, security vulnerabilities, and maintainability.
   Optional, advisory gate (limited beta).
