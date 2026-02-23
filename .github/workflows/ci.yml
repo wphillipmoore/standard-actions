@@ -30,13 +30,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
 
       - name: Validate standards
         uses: ./actions/standards-compliance
-        with:
-          commit-cutoff-sha: "0ea4d08"
 
   actionlint:
     name: "ci: actionlint"
