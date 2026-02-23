@@ -1964,6 +1964,12 @@ Skips if develop already has the expected next version.</p>
 <td>Shell command to run after version file edit and before commit (e.g. <code>uv lock --upgrade &amp;&amp; uv export ...</code>).</td>
 </tr>
 <tr>
+<td><code>tracking-issue</code></td>
+<td>No</td>
+<td><code>""</code></td>
+<td>Issue number for the release tracking issue (e.g. <code>42</code>). If omitted, the action searches for an open issue titled <code>release: &lt;current-version&gt;</code>.</td>
+</tr>
+<tr>
 <td><code>extra-files</code></td>
 <td>No</td>
 <td><code>""</code></td>
@@ -2024,6 +2030,10 @@ default <code>GITHUB_TOKEN</code>). This is necessary because PRs created by
 <li><strong>Post-bump command</strong> — Optionally runs a command (e.g. lock file refresh).</li>
 <li><strong>Commit and push</strong> — Commits the version file (and any extra files) with
    message <code>chore: bump version to &lt;next&gt;</code>.</li>
+<li><strong>Resolve tracking issue</strong> — If <code>tracking-issue</code> is provided, uses that issue
+   number. Otherwise, searches for an open issue titled
+   <code>release: &lt;current-version&gt;</code>. If found, a <code>Ref #&lt;number&gt;</code> linkage line is
+   added to the PR body. Diagnostic output is logged in either case.</li>
 <li><strong>Create PR</strong> — Opens a PR targeting <code>develop</code>, edits the body with context,
    then closes/reopens to trigger CI. Enables auto-merge with merge commit
    strategy.</li>
