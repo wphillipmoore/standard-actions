@@ -1,15 +1,9 @@
 name: Standards compliance
 description: >-
-  Validates repository standards: markdown formatting, commit messages,
+  Validates repository standards: markdown formatting,
   PR issue linkage, and repository profile.
 
 inputs:
-  commit-cutoff-sha:
-    description: >-
-      Skip commits at or before this SHA.  Repos that adopted conventional
-      commits after their initial history pass their cutoff here.
-    required: false
-    default: ""
   standard-tooling-ref:
     description: >-
       Git ref (branch or tag) of standard-tooling to check out.
@@ -40,11 +34,6 @@ runs:
       shell: bash
       run: npm install --global markdownlint-cli
 
-    - name: Fetch base branch for commit linting
-      if: github.event_name == 'pull_request'
-      shell: bash
-      run: git fetch origin ${{ github.base_ref }} --depth=1
-
     - name: Validate repository profile
       shell: bash
       run: repo-profile
@@ -52,16 +41,6 @@ runs:
     - name: Validate markdown standards
       shell: bash
       run: markdown-standards
-
-    - name: Validate commit messages
-      if: github.event_name == 'pull_request'
-      shell: bash
-      env:
-        COMMIT_CUTOFF_SHA: ${{ inputs.commit-cutoff-sha }}
-      run: >-
-        commit-messages
-        ${{ github.event.pull_request.base.sha }}
-        ${{ github.event.pull_request.head.sha }}
 
     - name: Validate pull request issue linkage
       if: github.event_name == 'pull_request'
