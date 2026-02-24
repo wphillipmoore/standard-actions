@@ -47,7 +47,7 @@ checks that must pass before a PR can merge.
 The required checks vary by repository category. See the
 [check matrix](required-checks.md#check-matrix) for the full list.
 
-### Library repositories (Go, Python, Java)
+### Library repositories (Go, Python, Ruby, Java)
 
 ```text
 ci: docs-only
@@ -55,16 +55,18 @@ ci: standards-compliance
 ci: dependency-audit
 release: gates
 test: unit (per matrix version)
-test: integration
+test: integration (per matrix version)
 security: codeql
 security: semgrep
 security: trivy
 ```
 
 !!! note "Matrix-expanded check names"
-    The `test: unit` check appears once per matrix version. For example,
-    mq-rest-admin-go requires `test: unit (1.25)` and `test: unit (1.26)`.
-    Each matrix expansion is a separate required check.
+    Both `test: unit` and `test: integration` appear once per matrix version.
+    For example, mq-rest-admin-go requires `test: unit (1.25)`,
+    `test: unit (1.26)`, `test: integration (1.25)`, and
+    `test: integration (1.26)`. Each matrix expansion is a separate required
+    check.
 
 ### Infrastructure repositories
 
