@@ -19,6 +19,22 @@ requires **GitHub Advanced Security (GHAS)**:
 - **Private repositories** — A GHAS license is required. Contact your GitHub
   administrator.
 
+## Check names in the PR status area
+
+Each security scanner produces **two** check runs on a pull request:
+
+| CI workflow job | SARIF analysis check |
+| ----------------- | ---------------------- |
+| `security: codeql` | `CodeQL` |
+| `security: semgrep` | `Semgrep OSS` |
+| `security: trivy` | `Trivy` |
+
+The first column shows our CI workflow jobs — these are the checks gated in the
+[CI gates ruleset](repository-rulesets.md#ci-gates-ruleset). The second column
+shows checks that GitHub creates automatically when SARIF results are uploaded
+via the `security-events: write` permission. The SARIF analysis checks are
+informational and are **not** included in the required status checks.
+
 ## Viewing results
 
 Security scan results appear in the repository's **Security** tab:
@@ -33,7 +49,7 @@ Security scan results appear in the repository's **Security** tab:
 CodeQL performs deep semantic analysis of source code. It understands data flow,
 control flow, and language-specific patterns.
 
-- **Languages supported**: Python, Go, Java, JavaScript/TypeScript, and more.
+- **Languages supported**: Python, Go, Ruby, Java, JavaScript/TypeScript, and more.
 - **Query suite**: `+security-extended` (default) includes the standard security
   queries plus extended checks.
 - **Autobuild**: CodeQL automatically detects the build system and compiles the
