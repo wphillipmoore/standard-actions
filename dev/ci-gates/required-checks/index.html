@@ -1355,6 +1355,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Check matrix">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matrix-expanded-check-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Matrix-expanded check names
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1685,6 +1702,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Check matrix">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matrix-expanded-check-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Matrix-expanded check names
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1737,6 +1771,7 @@ Checks marked <strong>Required</strong> must be configured as required status ch
 <th>Check</th>
 <th>Go Library</th>
 <th>Python Library</th>
+<th>Ruby Library</th>
 <th>Java Library</th>
 <th>Infrastructure</th>
 <th>Documentation</th>
@@ -1750,9 +1785,11 @@ Checks marked <strong>Required</strong> must be configured as required status ch
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
+<td>Required</td>
 </tr>
 <tr>
 <td><code>ci: standards-compliance</code></td>
+<td>Required</td>
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
@@ -1764,11 +1801,13 @@ Checks marked <strong>Required</strong> must be configured as required status ch
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
+<td>Required</td>
 <td>—</td>
 <td>—</td>
 </tr>
 <tr>
 <td><code>ci: actionlint</code></td>
+<td>—</td>
 <td>—</td>
 <td>—</td>
 <td>—</td>
@@ -1780,11 +1819,13 @@ Checks marked <strong>Required</strong> must be configured as required status ch
 <td>—</td>
 <td>—</td>
 <td>—</td>
+<td>—</td>
 <td>Required</td>
 <td>—</td>
 </tr>
 <tr>
 <td><code>test: unit</code></td>
+<td>Required</td>
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
@@ -1796,11 +1837,13 @@ Checks marked <strong>Required</strong> must be configured as required status ch
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
+<td>Required</td>
 <td>—</td>
 <td>—</td>
 </tr>
 <tr>
 <td><code>security: codeql</code></td>
+<td>Required</td>
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
@@ -1812,11 +1855,13 @@ Checks marked <strong>Required</strong> must be configured as required status ch
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
+<td>Required</td>
 <td>—</td>
 <td>—</td>
 </tr>
 <tr>
 <td><code>security: trivy</code></td>
+<td>Required</td>
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
@@ -1828,8 +1873,39 @@ Checks marked <strong>Required</strong> must be configured as required status ch
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
+<td>Required</td>
 <td>—</td>
 <td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="matrix-expanded-check-names">Matrix-expanded check names<a class="headerlink" href="#matrix-expanded-check-names" title="Permanent link">&para;</a></h3>
+<p>Both <code>test: unit</code> and <code>test: integration</code> appear once per version in the
+language matrix. Each matrix expansion is a separate required check in the
+CI gates ruleset.</p>
+<table>
+<thead>
+<tr>
+<th>Repository</th>
+<th><code>test: unit</code> checks</th>
+<th><code>test: integration</code> checks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mq-rest-admin-go</td>
+<td><code>test: unit (1.25)</code>, <code>test: unit (1.26)</code></td>
+<td><code>test: integration (1.25)</code>, <code>test: integration (1.26)</code></td>
+</tr>
+<tr>
+<td>mq-rest-admin-python</td>
+<td><code>test: unit (3.12)</code>, <code>test: unit (3.13)</code>, <code>test: unit (3.14)</code></td>
+<td><code>test: integration (3.12)</code>, <code>test: integration (3.13)</code>, <code>test: integration (3.14)</code></td>
+</tr>
+<tr>
+<td>mq-rest-admin-ruby</td>
+<td><code>test: unit (3.2)</code>, <code>test: unit (3.3)</code>, <code>test: unit (3.4)</code></td>
+<td><code>test: integration (3.2)</code>, <code>test: integration (3.3)</code>, <code>test: integration (3.4)</code></td>
 </tr>
 </tbody>
 </table>

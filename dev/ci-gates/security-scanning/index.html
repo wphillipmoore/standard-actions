@@ -1453,6 +1453,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#check-names-in-the-pr-status-area" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check names in the PR status area
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#viewing-results" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1782,6 +1793,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#check-names-in-the-pr-status-area" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check names in the PR status area
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#viewing-results" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1929,6 +1951,35 @@ requires <strong>GitHub Advanced Security (GHAS)</strong>:</p>
 <li><strong>Private repositories</strong> — A GHAS license is required. Contact your GitHub
   administrator.</li>
 </ul>
+<h2 id="check-names-in-the-pr-status-area">Check names in the PR status area<a class="headerlink" href="#check-names-in-the-pr-status-area" title="Permanent link">&para;</a></h2>
+<p>Each security scanner produces <strong>two</strong> check runs on a pull request:</p>
+<table>
+<thead>
+<tr>
+<th>CI workflow job</th>
+<th>SARIF analysis check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>security: codeql</code></td>
+<td><code>CodeQL</code></td>
+</tr>
+<tr>
+<td><code>security: semgrep</code></td>
+<td><code>Semgrep OSS</code></td>
+</tr>
+<tr>
+<td><code>security: trivy</code></td>
+<td><code>Trivy</code></td>
+</tr>
+</tbody>
+</table>
+<p>The first column shows our CI workflow jobs — these are the checks gated in the
+<a href="../repository-rulesets/#ci-gates-ruleset">CI gates ruleset</a>. The second column
+shows checks that GitHub creates automatically when SARIF results are uploaded
+via the <code>security-events: write</code> permission. The SARIF analysis checks are
+informational and are <strong>not</strong> included in the required status checks.</p>
 <h2 id="viewing-results">Viewing results<a class="headerlink" href="#viewing-results" title="Permanent link">&para;</a></h2>
 <p>Security scan results appear in the repository's <strong>Security</strong> tab:</p>
 <ol>
@@ -1941,7 +1992,7 @@ requires <strong>GitHub Advanced Security (GHAS)</strong>:</p>
 <p>CodeQL performs deep semantic analysis of source code. It understands data flow,
 control flow, and language-specific patterns.</p>
 <ul>
-<li><strong>Languages supported</strong>: Python, Go, Java, JavaScript/TypeScript, and more.</li>
+<li><strong>Languages supported</strong>: Python, Go, Ruby, Java, JavaScript/TypeScript, and more.</li>
 <li><strong>Query suite</strong>: <code>+security-extended</code> (default) includes the standard security
   queries plus extended checks.</li>
 <li><strong>Autobuild</strong>: CodeQL automatically detects the build system and compiles the
