@@ -36,7 +36,14 @@ runs:
       shell: bash
       run: |
         head_version=$(${{ inputs.head-version-command }})
-        main_version=$(${{ inputs.main-version-command }})
+
+        if ! main_version=$(${{ inputs.main-version-command }} 2>/dev/null) || [ -z "$main_version" ]; then
+          echo "head-version=$head_version" >> "$GITHUB_OUTPUT"
+          echo "main-version=" >> "$GITHUB_OUTPUT"
+          echo "diverged=true" >> "$GITHUB_OUTPUT"
+          echo "OK: no version found on main (no prior release). Skipping divergence check."
+          exit 0
+        fi
 
         echo "head-version=$head_version" >> "$GITHUB_OUTPUT"
         echo "main-version=$main_version" >> "$GITHUB_OUTPUT"
