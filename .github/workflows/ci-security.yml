@@ -4,9 +4,16 @@ on:
   workflow_call:
     inputs:
       language:
-        description: Language for CodeQL and Semgrep (e.g., ruby, python, go, java)
+        description: Language for CodeQL (e.g., ruby, python, go, java)
         type: string
         required: true
+      semgrep-language:
+        description: >-
+          Language for Semgrep rulesets (maps to "p/<value>").
+          Defaults to the language input. Override for cases where
+          Semgrep uses a different name (e.g., "golang" instead of "go").
+        type: string
+        default: ""
       run-standards:
         description: Run standards-compliance job (set to 'false' to skip)
         type: string
@@ -75,4 +82,4 @@ jobs:
       - name: Run Semgrep SAST scan
         uses: wphillipmoore/standard-actions/actions/security/semgrep@develop
         with:
-          language: ${{ inputs.language }}
+          language: ${{ inputs.semgrep-language || inputs.language }}
