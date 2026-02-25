@@ -32,15 +32,6 @@ supporting scripts.
 - **[security/trivy](security-trivy.md)** — Runs Trivy vulnerability scanning,
   SBOM generation, or container image scanning.
 
-### Quality
-
-- **[quality/codeclimate](quality-codeclimate.md)** — Uploads test coverage data
-  to Qlty Cloud (formerly Code Climate) for coverage tracking and PR comments.
-  Optional, advisory gate (limited beta).
-- **[quality/sonarcloud](quality-sonarcloud.md)** — Runs SonarQube Cloud static
-  analysis for code quality, security vulnerabilities, and maintainability.
-  Optional, advisory gate (limited beta).
-
 ### Publishing
 
 - **[publish/tag-and-release](publish-tag-and-release.md)** — Creates annotated
