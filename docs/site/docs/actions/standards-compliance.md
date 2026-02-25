@@ -38,8 +38,8 @@ linkage, and repository profile.
 7. **Validate PR issue linkage** — On pull requests, runs `pr-issue-linkage.sh`
    to verify the PR body references a GitHub issue.
 8. **Validate shared tooling** — On PRs targeting `develop`, checks whether
-   synced scripts are up to date by running `scripts/dev/sync-tooling.sh --check`
-   (if present).
+   shared scripts are up to date with the canonical versions in the
+   `standard-tooling` package.
 
 ## Examples
 

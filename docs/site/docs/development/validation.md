@@ -19,9 +19,9 @@ validation (shared across repositories) from repository-specific checks:
 2. **Custom checks** — Repository-specific validations defined locally, such as
    actionlint for this repository's workflow files.
 
-The sync mechanism (`scripts/dev/sync-tooling.sh`) keeps the common validation
-scripts in sync with the canonical versions in `standard-tooling`. The
-`standards-compliance` action validates this staleness in CI.
+The `standard-tooling` package provides the common validation scripts via
+`st-*` CLI commands. The `standards-compliance` action checks script freshness
+in CI to ensure local copies stay in sync with the canonical versions.
 
 ## Docs-only validation
 

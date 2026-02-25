@@ -47,7 +47,7 @@ provides integration testing without a separate test repository.
 Always use the commit script:
 
 ```bash
-scripts/dev/commit.sh \
+st-commit \
   --type feat \
   --scope ci \
   --message "add new validation check" \
@@ -70,7 +70,7 @@ Optional flags:
 Always use the PR script:
 
 ```bash
-scripts/dev/submit-pr.sh \
+st-submit-pr \
   --issue 42 \
   --summary "Add new validation check"
 ```
