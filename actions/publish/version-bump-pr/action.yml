@@ -159,9 +159,9 @@ runs:
         if [ -n "$issue" ]; then
           echo "Using explicit tracking-issue input: #${issue}"
         else
-          echo "Searching for open issue titled \"release: ${{ inputs.current-version }}\"..."
+          echo "Searching for issue titled \"release: ${{ inputs.current-version }}\"..."
           issue=$(gh issue list \
-            --state open \
+            --state all \
             --search "release: ${{ inputs.current-version }} in:title" \
             --json number --jq '.[0].number // empty') || true
           if [ -n "$issue" ]; then
