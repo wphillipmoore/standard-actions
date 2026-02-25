@@ -1763,9 +1763,9 @@ validation (shared across repositories) from repository-specific checks:</p>
 <li><strong>Custom checks</strong> — Repository-specific validations defined locally, such as
    actionlint for this repository's workflow files.</li>
 </ol>
-<p>The sync mechanism (<code>scripts/dev/sync-tooling.sh</code>) keeps the common validation
-scripts in sync with the canonical versions in <code>standard-tooling</code>. The
-<code>standards-compliance</code> action validates this staleness in CI.</p>
+<p>The <code>standard-tooling</code> package provides the common validation scripts via
+<code>st-*</code> CLI commands. The <code>standards-compliance</code> action checks script freshness
+in CI to ensure local copies stay in sync with the canonical versions.</p>
 <h2 id="docs-only-validation">Docs-only validation<a class="headerlink" href="#docs-only-validation" title="Permanent link">&para;</a></h2>
 <p>For changes that only affect documentation:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>scripts/dev/validate_docs.sh
