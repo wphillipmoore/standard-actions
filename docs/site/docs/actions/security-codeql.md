@@ -26,11 +26,11 @@ language.
 
 ## Behavior
 
-1. **Initialize CodeQL** — Uses `github/codeql-action/init@v3` to set up the
+1. **Initialize CodeQL** — Uses `github/codeql-action/init@v4` to set up the
    CodeQL database for the specified language and query suite.
-2. **Autobuild** — Uses `github/codeql-action/autobuild@v3` to automatically
+2. **Autobuild** — Uses `github/codeql-action/autobuild@v4` to automatically
    detect and build the project.
-3. **Run analysis** — Uses `github/codeql-action/analyze@v3` to perform the
+3. **Run analysis** — Uses `github/codeql-action/analyze@v4` to perform the
    analysis and upload results. Results are categorized by
    `/language:<language>`.
 

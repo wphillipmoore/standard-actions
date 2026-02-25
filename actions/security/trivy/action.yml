@@ -48,7 +48,7 @@ runs:
 
     - name: Upload SARIF (filesystem scan)
       if: inputs.scan-type == 'fs' && always()
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@v4
       with:
         sarif_file: ${{ inputs.output-file }}
         category: trivy-fs
@@ -67,7 +67,7 @@ runs:
 
     - name: Upload SARIF (image scan)
       if: inputs.scan-type == 'image' && always()
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@v4
       with:
         sarif_file: ${{ inputs.output-file }}
         category: trivy-image

@@ -33,7 +33,7 @@ rulesets.
     - `p/secrets` — Secret detection rules
     - Any additional rulesets from `extra-config`
 3. **Upload SARIF** — Uploads the SARIF output file to GitHub code scanning
-   using `github/codeql-action/upload-sarif@v3`, categorized as `semgrep`.
+   using `github/codeql-action/upload-sarif@v4`, categorized as `semgrep`.
    This step runs even if the scan finds issues (`if: always()`).
 
 ## Examples
