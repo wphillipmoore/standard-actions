@@ -75,9 +75,10 @@ runs:
       run: |
         DOCS_DIR=$(dirname "${{ inputs.mkdocs-config }}")/docs
 
-        # Stage CHANGELOG.md
+        # Stage CHANGELOG.md with TOC hidden
         if [ -f CHANGELOG.md ]; then
-          cp CHANGELOG.md "$DOCS_DIR/changelog.md"
+          printf -- '---\nhide:\n  - toc\n---\n' > "$DOCS_DIR/changelog.md"
+          cat CHANGELOG.md >> "$DOCS_DIR/changelog.md"
         fi
 
         # Stage release notes
@@ -85,21 +86,74 @@ runs:
           mkdir -p "$DOCS_DIR/releases"
           cp releases/*.md "$DOCS_DIR/releases/"
 
-          # Generate releases/index.md with version table (newest first)
-          {
-            echo "# Release Notes"
-            echo ""
-            echo "| Version | Date |"
-            echo "|---------|------|"
-            for f in $(ls -r "$DOCS_DIR/releases"/v*.md 2>/dev/null); do
-              basename=$(basename "$f" .md)
-              version=${basename#v}
-              # Extract date from H1: "# Release X.Y.Z (YYYY-MM-DD)"
-              date=$(head -5 "$f" | grep -oP '\d{4}-\d{2}-\d{2}' | head -1)
-              echo "| [$version](${basename}.md) | $date |"
-            done
-          } > "$DOCS_DIR/releases/index.md"
+          # Generate releases/index.md with version table (semver descending)
+          python3 -c "
+import os, re, pathlib
+
+docs_dir = '$DOCS_DIR'
+release_dir = pathlib.Path(docs_dir) / 'releases'
+files = sorted(
+    release_dir.glob('v*.md'),
+    key=lambda f: [int(x) for x in re.findall(r'\d+', f.stem)],
+    reverse=True,
+)
+
+lines = ['# Release Notes', '', '| Version | Date |', '|---------|------|']
+for f in files:
+    stem = f.stem
+    version = stem.lstrip('v')
+    text = f.read_text()
+    m = re.search(r'\d{4}-\d{2}-\d{2}', text[:200])
+    date = m.group(0) if m else ''
+    lines.append(f'| [{version}]({stem}.md) | {date} |')
+
+(release_dir / 'index.md').write_text('\n'.join(lines) + '\n')
+"
         fi
+
+    - name: Patch mkdocs nav with release versions
+      shell: bash
+      run: |
+        DOCS_DIR=$(dirname "${{ inputs.mkdocs-config }}")/docs
+
+        # Only patch if release note files were staged
+        if [ ! -d "$DOCS_DIR/releases" ] || ! ls "$DOCS_DIR/releases"/v*.md >/dev/null 2>&1; then
+          echo "No release notes found — skipping nav patch"
+          exit 0
+        fi
+
+        python3 -c "
+import re, pathlib, yaml
+
+config_path = pathlib.Path('${{ inputs.mkdocs-config }}')
+docs_dir = pathlib.Path('$DOCS_DIR') / 'releases'
+
+# Collect version files sorted by semver descending
+versions = sorted(
+    [f.stem for f in docs_dir.glob('v*.md')],
+    key=lambda s: [int(x) for x in re.findall(r'\d+', s)],
+    reverse=True,
+)
+
+config = yaml.safe_load(config_path.read_text())
+nav = config.get('nav', [])
+
+# Find the Releases section
+for i, item in enumerate(nav):
+    if isinstance(item, dict) and 'Releases' in item:
+        release_entries = [
+            {'Changelog': 'changelog.md'},
+            {'Release Notes': [
+                'releases/index.md',
+                *[{v: f'releases/{v}.md'} for v in versions],
+            ]},
+        ]
+        nav[i] = {'Releases': release_entries}
+        break
+
+config['nav'] = nav
+config_path.write_text(yaml.dump(config, default_flow_style=False, sort_keys=False))
+"
 
     - name: Deploy docs
       shell: bash
