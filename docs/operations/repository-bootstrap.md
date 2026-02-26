@@ -87,12 +87,10 @@ Keep the overlay concise and avoid restating canonical rules.
 
 ## Validation
 
-- Run the docs-only validation command.
-- If full validation is required, run the repository’s canonical command.
+- Run the repository’s canonical validation command.
 - Fix markdownlint failures before submitting a PR.
 
 ## Follow-up tasks
 
 - Add a bootstrap log entry if the repository tracks operational history.
-- Confirm CI includes a docs-only detection gate.
 - Document any local tooling requirements.

@@ -62,7 +62,6 @@ nav:
   - Action Reference:
       - Overview: actions/index.md
       - CI & Validation:
-          - docs-only-detect: actions/docs-only-detect.md
           - standards-compliance: actions/standards-compliance.md
       - Documentation:
           - docs-deploy: actions/docs-deploy.md
@@ -81,7 +80,6 @@ nav:
       - Overview: ci-gates/index.md
       - Required Checks: ci-gates/required-checks.md
       - Repository Rulesets: ci-gates/repository-rulesets.md
-      - Docs-Only Optimization: ci-gates/docs-only-optimization.md
       - Security Scanning: ci-gates/security-scanning.md
   - Development:
       - Overview: development/index.md

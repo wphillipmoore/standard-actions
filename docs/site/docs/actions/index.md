@@ -8,8 +8,6 @@ supporting scripts.
 
 ### CI & Validation
 
-- **[docs-only-detect](docs-only-detect.md)** — Detects whether a pull request
-  contains only documentation changes.
 - **[standards-compliance](standards-compliance.md)** — Validates repository
   standards: markdown, commit messages, PR linkage, and repository profile.
 

@@ -8,7 +8,6 @@ Checks marked **Required** must be configured as required status checks in the
 
 | Check | Go Library | Python Library | Ruby Library | Java Library | Infrastructure | Documentation |
 | ------- | ----------- | --------------- | ------------- | ------------- | ---------------- | --------------- |
-| `ci: docs-only` | Required | Required | Required | Required | Required | Required |
 | `ci: standards-compliance` | Required | Required | Required | Required | Required | Required |
 | `ci: dependency-audit` | Required | Required | Required | Required | — | — |
 | `ci: actionlint` | — | — | — | — | Required | — |
@@ -40,8 +39,6 @@ supports pattern-based branch protection rules.
 
 ```yaml
 jobs:
-  docs-only:
-    name: "ci: docs-only"
   standards:
     name: "ci: standards-compliance"
   unit-tests:

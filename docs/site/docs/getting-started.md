@@ -26,15 +26,6 @@ permissions:
   contents: read
 
 jobs:
-  docs-only:
-    runs-on: ubuntu-latest
-    outputs:
-      docs-only: ${{ steps.detect.outputs.docs-only }}
-    steps:
-      - uses: actions/checkout@v6
-      - id: detect
-        uses: wphillipmoore/standard-actions/actions/docs-only-detect@develop
-
   standards:
     runs-on: ubuntu-latest
     steps:
@@ -50,7 +41,7 @@ Each action documents its required workflow permissions. Common patterns:
 
 | Permission | Actions that require it |
 | ------------ | ---------------------- |
-| `contents: read` | docs-only-detect, standards-compliance |
+| `contents: read` | standards-compliance |
 | `contents: write` | docs-deploy, publish/tag-and-release, publish/version-bump-pr |
 | `security-events: write` | security/codeql, security/semgrep, security/trivy |
 

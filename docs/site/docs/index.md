@@ -12,7 +12,7 @@ Versioned tag-based publishing is planned for a future release.
 
 | Category | Actions | Purpose |
 | ---------- | --------- | --------- |
-| CI & Validation | [docs-only-detect](actions/docs-only-detect.md), [standards-compliance](actions/standards-compliance.md) | PR validation and docs-only short-circuiting |
+| CI & Validation | [standards-compliance](actions/standards-compliance.md) | PR validation and standards enforcement |
 | Documentation | [docs-deploy](actions/docs-deploy.md) | MkDocs Material + mike versioned deployment |
 | Python | [python/setup](actions/python-setup.md) | Python environment with uv and caching |
 | Security | [security/codeql](actions/security-codeql.md), [security/semgrep](actions/security-semgrep.md), [security/trivy](actions/security-trivy.md) | SAST and vulnerability scanning |

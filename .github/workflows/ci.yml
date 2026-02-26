@@ -11,19 +11,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  docs-only:
-    name: "ci: docs-only"
-    runs-on: ubuntu-latest
-    outputs:
-      docs-only: ${{ steps.detect.outputs.docs-only }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Detect docs-only changes
-        id: detect
-        uses: ./actions/docs-only-detect
-
   standards-compliance:
     name: "ci: standards-compliance"
     runs-on: ubuntu-latest
@@ -37,41 +24,26 @@ jobs:
   actionlint:
     name: "ci: actionlint"
     runs-on: ubuntu-latest
-    needs: docs-only
     steps:
-      - name: Docs-only short-circuit
-        if: needs.docs-only.outputs.docs-only == 'true'
-        run: echo "Docs-only changes detected; skipping actionlint."
-
       - name: Checkout code
-        if: needs.docs-only.outputs.docs-only != 'true'
         uses: actions/checkout@v6
 
       - name: Install actionlint
-        if: needs.docs-only.outputs.docs-only != 'true'
         run: |
           bash <(curl -s https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
           echo "$PWD" >> "$GITHUB_PATH"
 
       - name: Run actionlint
-        if: needs.docs-only.outputs.docs-only != 'true'
         run: actionlint
 
   shellcheck:
     name: "ci: shellcheck"
     runs-on: ubuntu-latest
-    needs: docs-only
     steps:
-      - name: Docs-only short-circuit
-        if: needs.docs-only.outputs.docs-only == 'true'
-        run: echo "Docs-only changes detected; skipping shellcheck."
-
       - name: Checkout code
-        if: needs.docs-only.outputs.docs-only != 'true'
         uses: actions/checkout@v6
 
       - name: Run shellcheck
-        if: needs.docs-only.outputs.docs-only != 'true'
         run: |
           files=$(find ./scripts/bin -type f 2>/dev/null)
           if [ -n "$files" ]; then

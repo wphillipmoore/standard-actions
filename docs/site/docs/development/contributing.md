@@ -29,7 +29,7 @@ This repository tests its own actions by using local path references in the CI
 workflow:
 
 ```yaml
-- uses: ./actions/docs-only-detect   # Not the remote reference
+- uses: ./actions/standards-compliance   # Not the remote reference
 ```
 
 When you modify an action, the PR's CI run uses your modified version. This
@@ -85,5 +85,4 @@ Optional flags:
 - `--linkage`: `Fixes|Closes|Resolves|Ref` (default: `Fixes`)
 - `--title`: PR title (default: most recent commit subject)
 - `--notes`: Additional notes
-- `--docs-only`: Apply docs-only testing exception
 - `--dry-run`: Print without executing
