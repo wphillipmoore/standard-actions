@@ -37,6 +37,10 @@ inputs:
       "trivy-image" based on scan-type.
     required: false
     default: ""
+  trivyignores:
+    description: Comma-separated list of .trivyignore file paths.
+    required: false
+    default: ""
 
 runs:
   using: composite
@@ -50,6 +54,7 @@ runs:
         severity: ${{ inputs.severity }}
         exit-code: ${{ inputs.exit-code }}
         scanners: ${{ inputs.scanners }}
+        trivyignores: ${{ inputs.trivyignores }}
         format: sarif
         output: ${{ inputs.output-file }}
 
@@ -69,6 +74,7 @@ runs:
         severity: ${{ inputs.severity }}
         exit-code: ${{ inputs.exit-code }}
         scanners: ${{ inputs.scanners }}
+        trivyignores: ${{ inputs.trivyignores }}
         format: sarif
         output: ${{ inputs.output-file }}
 
