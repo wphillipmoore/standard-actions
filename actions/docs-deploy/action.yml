@@ -87,11 +87,12 @@ runs:
           cp releases/*.md "$DOCS_DIR/releases/"
 
           # Generate releases/index.md with version table (semver descending)
-          python3 -c "
-import os, re, pathlib
+          PYSCRIPT=$(mktemp)
+          trap 'rm -f "$PYSCRIPT"' EXIT
+          cat > "$PYSCRIPT" << 'PYEOF'
+import re, pathlib, sys
 
-docs_dir = '$DOCS_DIR'
-release_dir = pathlib.Path(docs_dir) / 'releases'
+release_dir = pathlib.Path(sys.argv[1]) / 'releases'
 files = sorted(
     release_dir.glob('v*.md'),
     key=lambda f: [int(x) for x in re.findall(r'\d+', f.stem)],
@@ -108,7 +109,8 @@ for f in files:
     lines.append(f'| [{version}]({stem}.md) | {date} |')
 
 (release_dir / 'index.md').write_text('\n'.join(lines) + '\n')
-"
+PYEOF
+          python3 "$PYSCRIPT" "$DOCS_DIR"
         fi
 
     - name: Patch mkdocs nav with release versions
@@ -122,11 +124,13 @@ for f in files:
           exit 0
         fi
 
-        python3 -c "
-import re, pathlib, yaml
+        PYSCRIPT=$(mktemp)
+        trap 'rm -f "$PYSCRIPT"' EXIT
+        cat > "$PYSCRIPT" << 'PYEOF'
+import re, pathlib, sys, yaml
 
-config_path = pathlib.Path('${{ inputs.mkdocs-config }}')
-docs_dir = pathlib.Path('$DOCS_DIR') / 'releases'
+config_path = pathlib.Path(sys.argv[1])
+docs_dir = pathlib.Path(sys.argv[2]) / 'releases'
 
 # Collect version files sorted by semver descending
 versions = sorted(
@@ -153,7 +157,8 @@ for i, item in enumerate(nav):
 
 config['nav'] = nav
 config_path.write_text(yaml.dump(config, default_flow_style=False, sort_keys=False))
-"
+PYEOF
+        python3 "$PYSCRIPT" "${{ inputs.mkdocs-config }}" "$DOCS_DIR"
 
     - name: Deploy docs
       shell: bash
