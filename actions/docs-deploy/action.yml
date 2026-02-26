@@ -1,0 +1,124 @@
+name: Deploy documentation
+description: >-
+  Deploys MkDocs documentation using mike for versioned documentation.
+  Handles git configuration, version detection, and mike deploy/set-default.
+
+inputs:
+  version-command:
+    description: >-
+      Shell command to extract the version string on main
+      (e.g. "cat VERSION", "grep -oP ... version.go").
+    required: true
+  mkdocs-config:
+    description: Path to mkdocs.yml configuration file.
+    required: false
+    default: docs/site/mkdocs.yml
+  mike-command:
+    description: >-
+      Command to run mike. Set to "uv run mike" for Python repos that
+      manage their own dependencies. When not "mike", the action skips
+      Python setup and MkDocs installation.
+    required: false
+    default: mike
+  checkout-common:
+    description: Whether to checkout mq-rest-admin-common.
+    required: false
+    default: "false"
+  checkout-common-ref:
+    description: Ref to checkout for mq-rest-admin-common.
+    required: false
+    default: develop
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout mq-rest-admin-common
+      if: inputs.checkout-common == 'true'
+      uses: actions/checkout@v6
+      with:
+        repository: wphillipmoore/mq-rest-admin-common
+        ref: ${{ inputs.checkout-common-ref }}
+        path: .mq-rest-admin-common
+
+    - name: Set up Python 3.12
+      if: inputs.mike-command == 'mike'
+      uses: actions/setup-python@v6
+      with:
+        python-version: "3.12"
+
+    - name: Install MkDocs and mike
+      if: inputs.mike-command == 'mike'
+      shell: bash
+      run: pip install mkdocs-material mike
+
+    - name: Install pyyaml for nav patching
+      if: inputs.mike-command != 'mike'
+      shell: bash
+      run: pip install pyyaml
+
+    - name: Configure git identity
+      shell: bash
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Determine version
+      id: version
+      shell: bash
+      run: |
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          VERSION=$(${{ inputs.version-command }})
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "alias=latest" >> "$GITHUB_OUTPUT"
+        else
+          echo "version=dev" >> "$GITHUB_OUTPUT"
+          echo "alias=" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Stage changelog and release notes
+      shell: bash
+      run: |
+        DOCS_DIR=$(dirname "${{ inputs.mkdocs-config }}")/docs
+
+        # Stage CHANGELOG.md with TOC hidden
+        if [ -f CHANGELOG.md ]; then
+          printf -- '---\nhide:\n  - toc\n---\n' > "$DOCS_DIR/changelog.md"
+          cat CHANGELOG.md >> "$DOCS_DIR/changelog.md"
+        fi
+
+        # Stage release notes
+        if [ -d releases ] && ls releases/*.md >/dev/null 2>&1; then
+          mkdir -p "$DOCS_DIR/releases"
+          cp releases/*.md "$DOCS_DIR/releases/"
+
+          # Generate releases/index.md with version table (semver descending)
+          python3 "${{ github.action_path }}/generate-release-index.py" "$DOCS_DIR"
+        fi
+
+    - name: Patch mkdocs nav with release versions
+      shell: bash
+      run: |
+        DOCS_DIR=$(dirname "${{ inputs.mkdocs-config }}")/docs
+
+        # Only patch if release note files were staged
+        if [ ! -d "$DOCS_DIR/releases" ] || ! ls "$DOCS_DIR/releases"/v*.md >/dev/null 2>&1; then
+          echo "No release notes found — skipping nav patch"
+          exit 0
+        fi
+
+        python3 "${{ github.action_path }}/patch-nav.py" "${{ inputs.mkdocs-config }}" "$DOCS_DIR"
+
+    - name: Deploy docs
+      shell: bash
+      run: |
+        if [ -n "${{ steps.version.outputs.alias }}" ]; then
+          ${{ inputs.mike-command }} deploy -F ${{ inputs.mkdocs-config }} --push --update-aliases ${{ steps.version.outputs.version }} ${{ steps.version.outputs.alias }}
+          ${{ inputs.mike-command }} set-default -F ${{ inputs.mkdocs-config }} --push latest
+        else
+          ${{ inputs.mike-command }} deploy -F ${{ inputs.mkdocs-config }} --push ${{ steps.version.outputs.version }}
+          # Set dev as default if no default exists yet (pre-release repos)
+          CURRENT_DEFAULT=$(${{ inputs.mike-command }} list -F ${{ inputs.mkdocs-config }} 2>/dev/null | grep '\[default\]' || true)
+          if [ -z "$CURRENT_DEFAULT" ]; then
+            ${{ inputs.mike-command }} set-default -F ${{ inputs.mkdocs-config }} --push dev
+          fi
+        fi

@@ -1,0 +1,85 @@
+name: CI Security and Standards
+
+on:
+  workflow_call:
+    inputs:
+      language:
+        description: Language for CodeQL (e.g., ruby, python, go, java)
+        type: string
+        required: true
+      semgrep-language:
+        description: >-
+          Language for Semgrep rulesets (maps to "p/<value>").
+          Defaults to the language input. Override for cases where
+          Semgrep uses a different name (e.g., "golang" instead of "go").
+        type: string
+        default: ""
+      run-standards:
+        description: Run standards-compliance job (set to 'false' to skip)
+        type: string
+        default: 'true'
+      run-security:
+        description: Run security scanner jobs (set to 'false' to skip)
+        type: string
+        default: 'true'
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  standards-compliance:
+    name: "ci: standards-compliance"
+    if: ${{ inputs.run-standards != 'false' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Validate standards
+        uses: wphillipmoore/standard-actions/actions/standards-compliance@develop
+
+  codeql:
+    name: "security: codeql"
+    if: ${{ inputs.run-security != 'false' }}
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Run CodeQL analysis
+        uses: wphillipmoore/standard-actions/actions/security/codeql@develop
+        with:
+          language: ${{ inputs.language }}
+
+  trivy:
+    name: "security: trivy"
+    if: ${{ inputs.run-security != 'false' }}
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Run Trivy vulnerability scan
+        uses: wphillipmoore/standard-actions/actions/security/trivy@develop
+        with:
+          scan-type: fs
+
+  semgrep:
+    name: "security: semgrep"
+    if: ${{ inputs.run-security != 'false' }}
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Run Semgrep SAST scan
+        uses: wphillipmoore/standard-actions/actions/security/semgrep@develop
+        with:
+          language: ${{ inputs.semgrep-language || inputs.language }}

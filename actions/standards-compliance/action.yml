@@ -1,19 +1,30 @@
 name: Standards compliance
 description: >-
-  Validates repository standards: markdown formatting, commit messages,
+  Validates repository standards: markdown formatting,
   PR issue linkage, and repository profile.
 
 inputs:
-  commit-cutoff-sha:
+  standard-tooling-ref:
     description: >-
-      Skip commits at or before this SHA.  Repos that adopted conventional
-      commits after their initial history pass their cutoff here.
+      Git ref (branch or tag) of standard-tooling to check out.
+      Use a tag (e.g. v1.2) for stable consumption.
     required: false
-    default: ""
+    default: "develop"
 
 runs:
   using: composite
   steps:
+    - name: Checkout standard-tooling
+      uses: actions/checkout@v6
+      with:
+        repository: wphillipmoore/standard-tooling
+        ref: ${{ inputs.standard-tooling-ref }}
+        path: .standard-tooling
+
+    - name: Add standard-tooling to PATH
+      shell: bash
+      run: echo "${{ github.workspace }}/.standard-tooling/scripts/bin" >> "$GITHUB_PATH"
+
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
@@ -23,40 +34,15 @@ runs:
       shell: bash
       run: npm install --global markdownlint-cli
 
-    - name: Fetch base branch for commit linting
-      if: github.event_name == 'pull_request'
-      shell: bash
-      run: git fetch origin ${{ github.base_ref }} --depth=1
-
     - name: Validate repository profile
       shell: bash
-      run: ${{ github.action_path }}/scripts/repo-profile.sh
+      run: repo-profile
 
     - name: Validate markdown standards
       shell: bash
-      run: ${{ github.action_path }}/scripts/markdown-standards.sh
-
-    - name: Validate commit messages
-      if: github.event_name == 'pull_request'
-      shell: bash
-      env:
-        COMMIT_CUTOFF_SHA: ${{ inputs.commit-cutoff-sha }}
-      run: >-
-        ${{ github.action_path }}/scripts/commit-messages.sh
-        ${{ github.event.pull_request.base.sha }}
-        ${{ github.event.pull_request.head.sha }}
+      run: markdown-standards
 
     - name: Validate pull request issue linkage
       if: github.event_name == 'pull_request'
       shell: bash
-      run: ${{ github.action_path }}/scripts/pr-issue-linkage.sh
-
-    - name: Validate shared tooling is up to date
-      if: >-
-        github.event_name == 'pull_request' &&
-        github.base_ref == 'develop'
-      shell: bash
-      run: |
-        if [[ -x scripts/dev/sync-tooling.sh ]]; then
-          scripts/dev/sync-tooling.sh --check
-        fi
+      run: pr-issue-linkage

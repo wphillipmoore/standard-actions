@@ -1,0 +1,93 @@
+name: Tag and release
+description: >-
+  Creates an annotated git tag, a develop changelog boundary tag, and a
+  GitHub Release.  All mutating steps are skipped when the tag already exists,
+  making the action safe to re-run.
+
+inputs:
+  version:
+    description: Semver version string (e.g. 1.2.3).
+    required: true
+  release-title:
+    description: Release title prefix (e.g. mqrestadmin, pymqrest).
+    required: true
+  release-notes:
+    description: Full markdown body for the GitHub Release.
+    required: true
+  release-artifacts:
+    description: >-
+      Space-separated glob of files to attach to the GitHub Release.
+      Leave empty to create a release with no artifacts.
+    required: false
+    default: ""
+  tag-prefix:
+    description: Prefix prepended to the version to form the git tag.
+    required: false
+    default: v
+
+outputs:
+  tag:
+    description: The full tag name that was (or would be) created.
+    value: ${{ steps.meta.outputs.tag }}
+  tag-created:
+    description: "'true' if a new tag was created, 'false' if it already existed."
+    value: ${{ steps.check.outputs.created }}
+
+runs:
+  using: composite
+  steps:
+    - name: Compute tag name
+      id: meta
+      shell: bash
+      run: |
+        echo "tag=${{ inputs.tag-prefix }}${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+
+    - name: Check if tag already exists
+      id: check
+      shell: bash
+      run: |
+        if git rev-parse "${{ steps.meta.outputs.tag }}" >/dev/null 2>&1; then
+          echo "created=false" >> "$GITHUB_OUTPUT"
+        else
+          echo "created=true" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Configure git identity
+      if: steps.check.outputs.created == 'true'
+      shell: bash
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Create annotated tag
+      if: steps.check.outputs.created == 'true'
+      shell: bash
+      run: |
+        git tag -a "${{ steps.meta.outputs.tag }}" \
+          -m "Release ${{ inputs.version }}"
+        git push origin "${{ steps.meta.outputs.tag }}"
+
+    - name: Tag develop for changelog boundaries
+      if: steps.check.outputs.created == 'true'
+      shell: bash
+      run: |
+        git fetch origin develop
+        git tag "develop-${{ steps.meta.outputs.tag }}" origin/develop
+        git push origin "develop-${{ steps.meta.outputs.tag }}"
+
+    - name: Create GitHub Release
+      if: steps.check.outputs.created == 'true'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        RELEASE_NOTES: ${{ inputs.release-notes }}
+      run: |
+        release_args=(
+          "${{ steps.meta.outputs.tag }}"
+          --title "${{ inputs.release-title }} ${{ inputs.version }}"
+          --notes "$RELEASE_NOTES"
+        )
+        if [ -n "${{ inputs.release-artifacts }}" ]; then
+          release_args+=( ${{ inputs.release-artifacts }} )
+        fi
+        gh release create "${release_args[@]}"

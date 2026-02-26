@@ -1,0 +1,56 @@
+# Getting Started
+
+## Consuming actions
+
+Reference actions from this repository using the full path with a branch or tag
+pin:
+
+```yaml
+uses: wphillipmoore/standard-actions/actions/<action-path>@develop
+```
+
+!!! note "Branch pinning"
+    During the pre-release period (0.x), all consumers pin to `@develop`.
+    Versioned tag-based pinning will be available once publishing automation is
+    complete.
+
+## Minimal workflow example
+
+```yaml
+name: CI - Test and Validate
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  standards:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: wphillipmoore/standard-actions/actions/standards-compliance@develop
+```
+
+## Permissions
+
+Each action documents its required workflow permissions. Common patterns:
+
+| Permission | Actions that require it |
+| ------------ | ---------------------- |
+| `contents: read` | standards-compliance |
+| `contents: write` | docs-deploy, publish/tag-and-release, publish/version-bump-pr |
+| `security-events: write` | security/codeql, security/semgrep, security/trivy |
+
+## Self-referencing CI
+
+This repository uses **local paths** (`./actions/...`) rather than remote
+references in its own CI workflow. This means changes to an action are validated
+by the same PR that modifies them — no separate integration testing step is
+needed.
+
+Consuming repositories use the full remote reference
+(`wphillipmoore/standard-actions/actions/...@develop`).
