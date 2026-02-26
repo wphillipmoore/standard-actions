@@ -11,6 +11,7 @@ repositories.
 - [Why this order matters](#why-this-order-matters)
 - [Gating the registry publish step](#gating-the-registry-publish-step)
 - [Go exception](#go-exception)
+- [Version bump PR](#version-bump-pr)
 - [Idempotency gates](#idempotency-gates)
 
 ## Canonical step order
@@ -93,6 +94,47 @@ version bump PRs.
 Go modules are published by pushing a tag — there is no separate publish step.
 The Go workflow naturally has the correct order because `tag-and-release` is the
 publish mechanism.
+
+## Version bump PR
+
+The `version-bump-pr` action computes the next patch version, creates a branch
+from develop that merges main, updates the version file, and opens an auto-merge
+PR. Key configuration points:
+
+### Regex quoting
+
+The action interpolates `version-regex` into a Python raw string `r'...'`.
+Single quotes in the regex will break the Python string. Use `\x27` (regex hex
+escape) instead of literal `'`:
+
+```yaml
+# Wrong — single quotes conflict with Python r'...' wrapper
+version-regex: "(VERSION\\s*=\\s*').*(')"
+
+# Correct — \x27 is interpreted by the regex engine as '
+version-regex: '(VERSION\s*=\s*\x27).*(\x27)'
+```
+
+Double quotes work naturally since Go and Python use them:
+
+```yaml
+version-regex: '(Version\s*=\s*\").*(\"\s*)'
+```
+
+### Lock file updates
+
+Languages with lock files (Ruby's `Gemfile.lock`, Python's `uv.lock`) must
+include `post-bump-command` and `extra-files` so the lock file stays in sync:
+
+```yaml
+# Ruby
+post-bump-command: bundle lock --update mq-rest-admin
+extra-files: Gemfile.lock
+
+# Python
+post-bump-command: uv lock --upgrade && uv export --no-hashes -o requirements.txt
+extra-files: uv.lock requirements.txt requirements-dev.txt
+```
 
 ## Idempotency gates
 
