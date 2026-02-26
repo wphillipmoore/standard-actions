@@ -5,6 +5,10 @@
          <lastmod>2026-02-26</lastmod>
     </url>
     <url>
+         <loc>https://wphillipmoore.github.io/standard-actions/dev/changelog/</loc>
+         <lastmod>2026-02-26</lastmod>
+    </url>
+    <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/configuration/</loc>
          <lastmod>2026-02-26</lastmod>
     </url>
@@ -18,10 +22,6 @@
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/docs-deploy/</loc>
-         <lastmod>2026-02-26</lastmod>
-    </url>
-    <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/docs-only-detect/</loc>
          <lastmod>2026-02-26</lastmod>
     </url>
     <url>
@@ -61,10 +61,6 @@
          <lastmod>2026-02-26</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/ci-gates/docs-only-optimization/</loc>
-         <lastmod>2026-02-26</lastmod>
-    </url>
-    <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/ci-gates/repository-rulesets/</loc>
          <lastmod>2026-02-26</lastmod>
     </url>
@@ -90,6 +86,14 @@
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/development/validation/</loc>
+         <lastmod>2026-02-26</lastmod>
+    </url>
+    <url>
+         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/</loc>
+         <lastmod>2026-02-26</lastmod>
+    </url>
+    <url>
+         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.1.0/</loc>
          <lastmod>2026-02-26</lastmod>
     </url>
 </urlset>
