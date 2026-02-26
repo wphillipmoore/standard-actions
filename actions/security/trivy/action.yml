@@ -30,6 +30,13 @@ inputs:
     description: Output file path for SARIF or SBOM results.
     required: false
     default: "trivy-results.sarif"
+  sarif-category:
+    description: >-
+      Category for SARIF upload. Use unique values when multiple matrix entries
+      upload SARIF to avoid overwrites. When empty, defaults to "trivy-fs" or
+      "trivy-image" based on scan-type.
+    required: false
+    default: ""
 
 runs:
   using: composite
@@ -51,7 +58,7 @@ runs:
       uses: github/codeql-action/upload-sarif@v4
       with:
         sarif_file: ${{ inputs.output-file }}
-        category: trivy-fs
+        category: ${{ inputs.sarif-category || 'trivy-fs' }}
 
     - name: Run Trivy image scan
       if: inputs.scan-type == 'image'
@@ -70,7 +77,7 @@ runs:
       uses: github/codeql-action/upload-sarif@v4
       with:
         sarif_file: ${{ inputs.output-file }}
-        category: trivy-image
+        category: ${{ inputs.sarif-category || 'trivy-image' }}
 
     - name: Generate SBOM
       if: inputs.scan-type == 'sbom'
