@@ -51,6 +51,11 @@ runs:
       shell: bash
       run: pip install mkdocs-material mike
 
+    - name: Install pyyaml for nav patching
+      if: inputs.mike-command != 'mike'
+      shell: bash
+      run: pip install pyyaml
+
     - name: Configure git identity
       shell: bash
       run: |
