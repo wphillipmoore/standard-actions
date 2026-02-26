@@ -54,6 +54,9 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Releases:
+      - Release Notes: releases/index.md
+      - Changelog: changelog.md
   - Getting Started: getting-started.md
   - Repository Configuration: configuration.md
   - Action Reference:
@@ -85,6 +88,3 @@ nav:
       - Environment and Tooling: development/environment-and-tooling.md
       - Validation: development/validation.md
       - Contributing: development/contributing.md
-  - Releases:
-      - Release Notes: releases/index.md
-      - Changelog: changelog.md
