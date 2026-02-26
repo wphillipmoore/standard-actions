@@ -50,20 +50,35 @@ idempotency gates.
 ## Gating the registry publish step
 
 The publish step should be gated on **both** the idempotency check (is this
-version already published?) and credential availability:
+version already published?) and credential availability.
+
+**Important**: The `secrets` context is not reliably available in step-level
+`if:` conditions. To gate on a secret, declare a job-level `env` variable
+that evaluates the secret in an expression context (where secrets **are**
+available), then reference the env var in the step condition:
 
 ```yaml
-# Secret-based credentials (Ruby, Java)
-- name: Publish to RubyGems
-  if: steps.gem_check.outputs.status == 'not_found' && secrets.RUBYGEMS_API_KEY != ''
-  env:
-    GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
-  run: gem push dist/my-gem-${{ steps.version.outputs.version }}.gem
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      # Evaluated in expression context where secrets are available.
+      # Produces 'true' or 'false' as a string.
+      HAS_REGISTRY_KEY: ${{ secrets.REGISTRY_API_KEY != '' }}
+    steps:
+      # ... build, attest, SBOM, tag steps ...
 
-# OIDC trusted publishing (Python)
-- name: Publish to PyPI
-  if: steps.pypi_check.outputs.status == 'not_found'
-  uses: pypa/gh-action-pypi-publish@release/v1
+      # Secret-based credentials (Ruby, Java)
+      - name: Publish to registry
+        if: steps.registry_check.outputs.status == 'not_found' && env.HAS_REGISTRY_KEY == 'true'
+        env:
+          REGISTRY_API_KEY: ${{ secrets.REGISTRY_API_KEY }}
+        run: publish-command
+
+      # OIDC trusted publishing (Python)
+      - name: Publish to PyPI
+        if: steps.pypi_check.outputs.status == 'not_found'
+        uses: pypa/gh-action-pypi-publish@release/v1
 ```
 
 For languages using OIDC trusted publishing (Python/PyPI), the secret gate is
