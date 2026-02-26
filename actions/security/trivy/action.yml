@@ -55,6 +55,7 @@ runs:
         exit-code: ${{ inputs.exit-code }}
         scanners: ${{ inputs.scanners }}
         trivyignores: ${{ inputs.trivyignores }}
+        limit-severities-for-sarif: "true"
         format: sarif
         output: ${{ inputs.output-file }}
 
@@ -75,6 +76,7 @@ runs:
         exit-code: ${{ inputs.exit-code }}
         scanners: ${{ inputs.scanners }}
         trivyignores: ${{ inputs.trivyignores }}
+        limit-severities-for-sarif: "true"
         format: sarif
         output: ${{ inputs.output-file }}
 
