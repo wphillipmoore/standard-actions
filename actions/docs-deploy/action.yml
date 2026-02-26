@@ -75,9 +75,10 @@ runs:
       run: |
         DOCS_DIR=$(dirname "${{ inputs.mkdocs-config }}")/docs
 
-        # Stage CHANGELOG.md
+        # Stage CHANGELOG.md with TOC hidden
         if [ -f CHANGELOG.md ]; then
-          cp CHANGELOG.md "$DOCS_DIR/changelog.md"
+          printf -- '---\nhide:\n  - toc\n---\n' > "$DOCS_DIR/changelog.md"
+          cat CHANGELOG.md >> "$DOCS_DIR/changelog.md"
         fi
 
         # Stage release notes
@@ -85,21 +86,22 @@ runs:
           mkdir -p "$DOCS_DIR/releases"
           cp releases/*.md "$DOCS_DIR/releases/"
 
-          # Generate releases/index.md with version table (newest first)
-          {
-            echo "# Release Notes"
-            echo ""
-            echo "| Version | Date |"
-            echo "|---------|------|"
-            for f in $(ls -r "$DOCS_DIR/releases"/v*.md 2>/dev/null); do
-              basename=$(basename "$f" .md)
-              version=${basename#v}
-              # Extract date from H1: "# Release X.Y.Z (YYYY-MM-DD)"
-              date=$(head -5 "$f" | grep -oP '\d{4}-\d{2}-\d{2}' | head -1)
-              echo "| [$version](${basename}.md) | $date |"
-            done
-          } > "$DOCS_DIR/releases/index.md"
+          # Generate releases/index.md with version table (semver descending)
+          python3 "${{ github.action_path }}/generate-release-index.py" "$DOCS_DIR"
         fi
+
+    - name: Patch mkdocs nav with release versions
+      shell: bash
+      run: |
+        DOCS_DIR=$(dirname "${{ inputs.mkdocs-config }}")/docs
+
+        # Only patch if release note files were staged
+        if [ ! -d "$DOCS_DIR/releases" ] || ! ls "$DOCS_DIR/releases"/v*.md >/dev/null 2>&1; then
+          echo "No release notes found — skipping nav patch"
+          exit 0
+        fi
+
+        python3 "${{ github.action_path }}/patch-nav.py" "${{ inputs.mkdocs-config }}" "$DOCS_DIR"
 
     - name: Deploy docs
       shell: bash
