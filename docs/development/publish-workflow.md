@@ -5,6 +5,14 @@ Each consuming repository has a `publish.yml` workflow that runs on push to
 language-specific, the **ordering of phases** must be consistent across all
 repositories.
 
+## Table of Contents
+
+- [Canonical step order](#canonical-step-order)
+- [Why this order matters](#why-this-order-matters)
+- [Gating the registry publish step](#gating-the-registry-publish-step)
+- [Go exception](#go-exception)
+- [Idempotency gates](#idempotency-gates)
+
 ## Canonical step order
 
 ```text
