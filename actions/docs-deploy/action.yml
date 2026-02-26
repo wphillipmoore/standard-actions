@@ -70,6 +70,37 @@ runs:
           echo "alias=" >> "$GITHUB_OUTPUT"
         fi
 
+    - name: Stage changelog and release notes
+      shell: bash
+      run: |
+        DOCS_DIR=$(dirname "${{ inputs.mkdocs-config }}")/docs
+
+        # Stage CHANGELOG.md
+        if [ -f CHANGELOG.md ]; then
+          cp CHANGELOG.md "$DOCS_DIR/changelog.md"
+        fi
+
+        # Stage release notes
+        if [ -d releases ] && ls releases/*.md >/dev/null 2>&1; then
+          mkdir -p "$DOCS_DIR/releases"
+          cp releases/*.md "$DOCS_DIR/releases/"
+
+          # Generate releases/index.md with version table (newest first)
+          {
+            echo "# Release Notes"
+            echo ""
+            echo "| Version | Date |"
+            echo "|---------|------|"
+            for f in $(ls -r "$DOCS_DIR/releases"/v*.md 2>/dev/null); do
+              basename=$(basename "$f" .md)
+              version=${basename#v}
+              # Extract date from H1: "# Release X.Y.Z (YYYY-MM-DD)"
+              date=$(head -5 "$f" | grep -oP '\d{4}-\d{2}-\d{2}' | head -1)
+              echo "| [$version](${basename}.md) | $date |"
+            done
+          } > "$DOCS_DIR/releases/index.md"
+        fi
+
     - name: Deploy docs
       shell: bash
       run: |
