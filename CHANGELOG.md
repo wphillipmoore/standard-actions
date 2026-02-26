@@ -1,0 +1,73 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/)
+and this project adheres to [Semantic Versioning](https://semver.org/).
+
+## [1.1.0] - 2026-02-26
+
+### Bug fixes
+
+- bootstrap standards documentation
+- add autobuild step for compiled language support
+- sync shared tooling to v1.0.2
+- sync lint scripts from standards-and-conventions (#28)
+- pass release notes via env var to prevent shell injection (#44)
+- replace mapfile with bash 3.2-compatible alternative (#49)
+- set dev as default version when no default exists (#57)
+- remove redundant close/reopen cycle (#66)
+- update add-to-project action to v1.0.2 (#69)
+- resolve event-payload race in version-bump-pr issue linkage (#73)
+- add diagnostics to version-bump-pr tracking issue resolution (#81)
+- handle missing version on main in version-divergence check (#87)
+- search all issue states when resolving bump PR tracking issue (#95)
+- add semgrep-language input for Go compatibility (#101)
+- preserve severity filter in SARIF output for Trivy scans (#123)
+- install pyyaml when mike-command is not mike (#128)
+
+### Documentation
+
+- align standards entrypoint with repo type
+- add repository bootstrap guide
+- ban MEMORY.md usage in CLAUDE.md (#48)
+- ban heredocs in shell commands (#50)
+- update CI gate docs to reflect actual state (#56)
+- add repository rulesets documentation (#58)
+- add branch targeting guidance to rulesets page (#59)
+- add branch targeting guidance to rulesets page (#60)
+- add repository configuration documentation (#76)
+- update SonarCloud documentation with lessons learned and beta status (#83)
+- document version matrix for unit and integration tests, add Ruby column, explain duplicate security checks (#88)
+- replace stale script references with st-* commands (#94)
+- add publish workflow ordering guide (#117)
+- fix secret gate example in publish workflow guide (#118)
+- add version bump PR guidance to publish workflow guide (#121)
+
+### Features
+
+- add initial composite actions for docs-only detection, standards compliance, and Python setup (#10)
+- exempt docs/site from structural markdown checks (#11)
+- add CodeQL SAST composite action
+- add Trivy and Semgrep composite actions for Tier 2 security tooling
+- add shared tooling staleness gate and sync scripts
+- add CI workflow, CLAUDE.md, and repository infrastructure (#24)
+- add add-to-project workflow for standards project
+- add ci and build to allowed conventional commit types (#32)
+- add composite action for MkDocs/mike deployment (#33)
+- add VERSION file for release automation (#37)
+- add reusable composite actions for tag-and-release, version-bump-pr, and version-divergence (#41)
+- add category prefixes to CI job names (#45)
+- adopt validate_local.sh dispatch architecture (#51)
+- add MkDocs documentation site with action reference and CI gate specs (#53)
+- migrate to PATH-based standard-tooling consumption (#77)
+- add SonarCloud composite action (#82)
+- add Code Climate (Qlty) coverage upload action (#84)
+- add reusable security and standards workflow (#99)
+- add sarif-category input for unique SARIF uploads (#115)
+- add trivyignores input for suppressing known-acceptable CVEs (#120)
+
+### Refactoring
+
+- remove commit message validation from CI (#78)
+- remove docs-only-detect action and CI special-casing (#111)
