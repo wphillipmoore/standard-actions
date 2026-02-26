@@ -80,7 +80,6 @@ st-validate-local    # Canonical validation (dispatches to common + custom check
 
 All actions live under `actions/` as composite GitHub Actions:
 
-- `actions/docs-only-detect` — Detects documentation-only PRs to short-circuit expensive CI jobs
 - `actions/standards-compliance` — Validates repo profile, markdown, commit messages, and PR linkage (delegates to standard-tooling validators via PATH)
 - `actions/python/setup` — Python environment setup with uv and caching
 - `actions/security/codeql` — CodeQL static analysis
@@ -134,7 +133,7 @@ st-commit --type docs --message "update README" --body "Expanded usage section" 
 
 ```bash
 st-submit-pr --issue 42 --summary "Add category prefixes to CI job names"
-st-submit-pr --issue 42 --linkage Ref --summary "Update docs" --docs-only
+st-submit-pr --issue 42 --linkage Ref --summary "Update docs"
 st-submit-pr --issue 42 --summary "Fix action input" --notes "Tested locally"
 ```
 
@@ -143,7 +142,6 @@ st-submit-pr --issue 42 --summary "Fix action input" --notes "Tested locally"
 - `--linkage` (optional, default: `Fixes`): `Fixes|Closes|Resolves|Ref`
 - `--title` (optional): PR title (default: most recent commit subject)
 - `--notes` (optional): additional notes
-- `--docs-only` (optional): applies docs-only testing exception
 - `--dry-run` (optional): print generated PR without executing
 
 ## Key References

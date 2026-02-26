@@ -1,8 +1,8 @@
 # CI Gate Requirements
 
 This section documents the CI gate configuration for all repositories consuming
-standard-actions. It covers which checks are required, how they interact with
-docs-only optimization, and the security scanning requirements.
+standard-actions. It covers which checks are required and the security scanning
+requirements.
 
 ## Overview
 
@@ -22,8 +22,6 @@ organized by category using job name prefixes:
 
 - **Required status checks** — Configured in GitHub repository rulesets.
   PRs cannot merge until all required checks pass.
-- **Docs-only optimization** — Documentation-only PRs skip expensive checks
-  (builds, tests, security scans) while still running standards compliance.
 - **Self-referencing CI** — The standard-actions repository tests its own
   actions using local paths (`./actions/...`).
 
@@ -33,7 +31,5 @@ organized by category using job name prefixes:
   category
 - [Repository Rulesets](repository-rulesets.md) — Branch protection, CI gates,
   and tag protection ruleset configuration
-- [Docs-Only Optimization](docs-only-optimization.md) — How docs-only detection
-  works and which jobs are gated
 - [Security Scanning](security-scanning.md) — CodeQL, Semgrep, and Trivy
   configuration details

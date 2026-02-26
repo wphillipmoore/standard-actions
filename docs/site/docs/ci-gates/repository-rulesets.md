@@ -50,7 +50,6 @@ The required checks vary by repository category. See the
 ### Library repositories (Go, Python, Ruby, Java)
 
 ```text
-ci: docs-only
 ci: standards-compliance
 ci: dependency-audit
 release: gates
@@ -71,7 +70,6 @@ security: trivy
 ### Infrastructure repositories
 
 ```text
-ci: docs-only
 ci: standards-compliance
 ci: shellcheck
 ```
@@ -81,7 +79,6 @@ The standard-actions repository additionally requires `ci: actionlint`.
 ### Documentation repositories
 
 ```text
-ci: docs-only
 ci: standards-compliance
 ```
 
