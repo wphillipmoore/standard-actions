@@ -49,6 +49,36 @@ jobs:
     name: "release: gates"
 ```
 
+## Reusable workflow flags
+
+The `ci-security.yml` reusable workflow accepts two independent flags that
+control which inner jobs run:
+
+| Flag | Controls | Default |
+| ---- | -------- | ------- |
+| `run-standards` | `ci: standards-compliance` job | `'true'` |
+| `run-security` | `security: codeql`, `security: semgrep`, `security: trivy` jobs | `'true'` |
+
+Consuming repos must pass both flags explicitly so that push CI (tier 2) can
+skip standards and security while PR CI (tier 3) runs the full suite:
+
+```yaml
+security-and-standards:
+  uses: wphillipmoore/standard-actions/.github/workflows/ci-security.yml@develop
+  with:
+    language: <lang>
+    run-standards: ${{ inputs.run-release-gates || 'true' }}
+    run-security: ${{ inputs.run-security || 'true' }}
+  permissions:
+    contents: read
+    security-events: write
+```
+
+Using a job-level `if` on a single flag (e.g., `if: inputs.run-security !=
+'false'`) is **incorrect** because it conflates standards-compliance with
+security scanning. The two-flag pattern allows each concern to be toggled
+independently.
+
 ## Ruleset configuration
 
 All required status checks are enforced via GitHub repository rulesets, not
