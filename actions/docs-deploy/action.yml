@@ -87,12 +87,15 @@ runs:
         fi
 
         # Stage release notes
+        mkdir -p "$DOCS_DIR/releases"
         if [ -d releases ] && ls releases/*.md >/dev/null 2>&1; then
-          mkdir -p "$DOCS_DIR/releases"
           cp releases/*.md "$DOCS_DIR/releases/"
 
           # Generate releases/index.md with version table (semver descending)
           python3 "${{ github.action_path }}/generate-release-index.py" "$DOCS_DIR"
+        else
+          # Bootstrap: create placeholder index when no releases exist yet
+          printf '# Release Notes\n\nNo releases yet.\n' > "$DOCS_DIR/releases/index.md"
         fi
 
     - name: Patch mkdocs nav with release versions
