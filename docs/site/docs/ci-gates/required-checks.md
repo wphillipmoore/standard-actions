@@ -12,6 +12,7 @@ Checks marked **Required** must be configured as required status checks in the
 | `ci: dependency-audit` | Required | Required | Required | Required | Required | — | — |
 | `ci: actionlint` | — | — | — | — | — | Required | — |
 | `ci: shellcheck` | — | — | — | — | — | Required | — |
+| `ci: type-check` | — | Required | Required | — | — | — | — |
 | `test: unit` | Required | Required | Required | Required | Required | — | — |
 | `test: integration` | Required | Required | Required | Required | Required | — | — |
 | `security: codeql` | Required | Required | Required | Required | Required | — | — |
