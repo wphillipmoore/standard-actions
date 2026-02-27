@@ -6,18 +6,18 @@ The following table shows which CI checks apply to each repository category.
 Checks marked **Required** must be configured as required status checks in the
 [CI gates ruleset](repository-rulesets.md#ci-gates-ruleset).
 
-| Check | Go Library | Python Library | Ruby Library | Java Library | Infrastructure | Documentation |
-| ------- | ----------- | --------------- | ------------- | ------------- | ---------------- | --------------- |
-| `ci: standards-compliance` | Required | Required | Required | Required | Required | Required |
-| `ci: dependency-audit` | Required | Required | Required | Required | — | — |
-| `ci: actionlint` | — | — | — | — | Required | — |
-| `ci: shellcheck` | — | — | — | — | Required | — |
-| `test: unit` | Required | Required | Required | Required | — | — |
-| `test: integration` | Required | Required | Required | Required | — | — |
-| `security: codeql` | Required | Required | Required | Required | — | — |
-| `security: semgrep` | Required | Required | Required | Required | — | — |
-| `security: trivy` | Required | Required | Required | Required | — | — |
-| `release: gates` | Required | Required | Required | Required | — | — |
+| Check | Go Library | Python Library | Ruby Library | Java Library | Rust Library | Infrastructure | Documentation |
+| ------- | ----------- | --------------- | ------------- | ------------- | ------------- | ---------------- | --------------- |
+| `ci: standards-compliance` | Required | Required | Required | Required | Required | Required | Required |
+| `ci: dependency-audit` | Required | Required | Required | Required | Required | — | — |
+| `ci: actionlint` | — | — | — | — | — | Required | — |
+| `ci: shellcheck` | — | — | — | — | — | Required | — |
+| `test: unit` | Required | Required | Required | Required | Required | — | — |
+| `test: integration` | Required | Required | Required | Required | Required | — | — |
+| `security: codeql` | Required | Required | Required | Required | Required | — | — |
+| `security: semgrep` | Required | Required | Required | Required | Required | — | — |
+| `security: trivy` | Required | Required | Required | Required | Required | — | — |
+| `release: gates` | Required | Required | Required | Required | Required | — | — |
 
 ### Matrix-expanded check names
 
@@ -30,6 +30,7 @@ CI gates ruleset.
 | mq-rest-admin-go | `test: unit (1.25)`, `test: unit (1.26)` | `test: integration (1.25)`, `test: integration (1.26)` |
 | mq-rest-admin-python | `test: unit (3.12)`, `test: unit (3.13)`, `test: unit (3.14)` | `test: integration (3.12)`, `test: integration (3.13)`, `test: integration (3.14)` |
 | mq-rest-admin-ruby | `test: unit (3.2)`, `test: unit (3.3)`, `test: unit (3.4)` | `test: integration (3.2)`, `test: integration (3.3)`, `test: integration (3.4)` |
+| mq-rest-admin-rust | `test: unit (1.92)`, `test: unit (1.93)` | `test: integration (1.92)`, `test: integration (1.93)` |
 
 ## Job name prefix convention
 
