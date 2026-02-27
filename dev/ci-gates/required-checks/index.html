@@ -1980,6 +1980,7 @@ Checks marked <strong>Required</strong> must be configured as required status ch
 <th>Python Library</th>
 <th>Ruby Library</th>
 <th>Java Library</th>
+<th>Rust Library</th>
 <th>Infrastructure</th>
 <th>Documentation</th>
 </tr>
@@ -1993,9 +1994,11 @@ Checks marked <strong>Required</strong> must be configured as required status ch
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
+<td>Required</td>
 </tr>
 <tr>
 <td><code>ci: dependency-audit</code></td>
+<td>Required</td>
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
@@ -2009,11 +2012,13 @@ Checks marked <strong>Required</strong> must be configured as required status ch
 <td>—</td>
 <td>—</td>
 <td>—</td>
+<td>—</td>
 <td>Required</td>
 <td>—</td>
 </tr>
 <tr>
 <td><code>ci: shellcheck</code></td>
+<td>—</td>
 <td>—</td>
 <td>—</td>
 <td>—</td>
@@ -2027,11 +2032,13 @@ Checks marked <strong>Required</strong> must be configured as required status ch
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
+<td>Required</td>
 <td>—</td>
 <td>—</td>
 </tr>
 <tr>
 <td><code>test: integration</code></td>
+<td>Required</td>
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
@@ -2045,11 +2052,13 @@ Checks marked <strong>Required</strong> must be configured as required status ch
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
+<td>Required</td>
 <td>—</td>
 <td>—</td>
 </tr>
 <tr>
 <td><code>security: semgrep</code></td>
+<td>Required</td>
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
@@ -2063,11 +2072,13 @@ Checks marked <strong>Required</strong> must be configured as required status ch
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
+<td>Required</td>
 <td>—</td>
 <td>—</td>
 </tr>
 <tr>
 <td><code>release: gates</code></td>
+<td>Required</td>
 <td>Required</td>
 <td>Required</td>
 <td>Required</td>
@@ -2104,6 +2115,11 @@ CI gates ruleset.</p>
 <td>mq-rest-admin-ruby</td>
 <td><code>test: unit (3.2)</code>, <code>test: unit (3.3)</code>, <code>test: unit (3.4)</code></td>
 <td><code>test: integration (3.2)</code>, <code>test: integration (3.3)</code>, <code>test: integration (3.4)</code></td>
+</tr>
+<tr>
+<td>mq-rest-admin-rust</td>
+<td><code>test: unit (1.92)</code>, <code>test: unit (1.93)</code></td>
+<td><code>test: integration (1.92)</code>, <code>test: integration (1.93)</code></td>
 </tr>
 </tbody>
 </table>
