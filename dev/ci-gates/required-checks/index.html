@@ -1606,6 +1606,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#reusable-workflow-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reusable workflow flags
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#ruleset-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1918,6 +1929,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#reusable-workflow-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reusable workflow flags
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#ruleset-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2099,6 +2121,46 @@ supports pattern-based branch protection rules.</p>
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="nt">release-gates</span><span class="p">:</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;release:</span><span class="nv"> </span><span class="s">gates&quot;</span>
 </code></pre></div>
+<h2 id="reusable-workflow-flags">Reusable workflow flags<a class="headerlink" href="#reusable-workflow-flags" title="Permanent link">&para;</a></h2>
+<p>The <code>ci-security.yml</code> reusable workflow accepts two independent flags that
+control which inner jobs run:</p>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Controls</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>run-standards</code></td>
+<td><code>ci: standards-compliance</code> job</td>
+<td><code>'true'</code></td>
+</tr>
+<tr>
+<td><code>run-security</code></td>
+<td><code>security: codeql</code>, <code>security: semgrep</code>, <code>security: trivy</code> jobs</td>
+<td><code>'true'</code></td>
+</tr>
+</tbody>
+</table>
+<p>Consuming repos must pass both flags explicitly so that push CI (tier 2) can
+skip standards and security while PR CI (tier 3) runs the full suite:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">security-and-standards</span><span class="p">:</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/.github/workflows/ci-security.yml@develop</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;lang&gt;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">run-standards</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ inputs.run-release-gates || &#39;true&#39; }}</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nt">run-security</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ inputs.run-security || &#39;true&#39; }}</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="nt">permissions</span><span class="p">:</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="nt">security-events</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+</code></pre></div>
+<p>Using a job-level <code>if</code> on a single flag (e.g., <code>if: inputs.run-security !=
+'false'</code>) is <strong>incorrect</strong> because it conflates standards-compliance with
+security scanning. The two-flag pattern allows each concern to be toggled
+independently.</p>
 <h2 id="ruleset-configuration">Ruleset configuration<a class="headerlink" href="#ruleset-configuration" title="Permanent link">&para;</a></h2>
 <p>All required status checks are enforced via GitHub repository rulesets, not
 legacy branch protection rules. Both <code>main</code> and <code>develop</code> are covered by the
