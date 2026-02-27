@@ -32,6 +32,11 @@ outputs:
   tag-created:
     description: "'true' if a new tag was created, 'false' if it already existed."
     value: ${{ steps.check.outputs.created }}
+  rolling-tag:
+    description: >-
+      The rolling major.minor tag (e.g. v1.2) that was created or updated.
+      Empty when tag-created is false.
+    value: ${{ steps.rolling.outputs.tag }}
 
 runs:
   using: composite
@@ -91,3 +96,15 @@ runs:
           release_args+=( ${{ inputs.release-artifacts }} )
         fi
         gh release create "${release_args[@]}"
+
+    - name: Create or update rolling minor tag
+      id: rolling
+      if: steps.check.outputs.created == 'true'
+      shell: bash
+      run: |
+        minor="${{ inputs.version }}"
+        minor="${minor%.*}"
+        rolling_tag="${{ inputs.tag-prefix }}${minor}"
+        git tag -f "$rolling_tag" HEAD
+        git push -f origin "$rolling_tag"
+        echo "tag=${rolling_tag}" >> "$GITHUB_OUTPUT"
