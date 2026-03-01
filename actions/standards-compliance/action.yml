@@ -26,7 +26,7 @@ runs:
       run: echo "${{ github.workspace }}/.standard-tooling/scripts/bin" >> "$GITHUB_PATH"
 
     - name: Set up Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: "20"
 

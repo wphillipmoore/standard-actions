@@ -9,7 +9,7 @@ inputs:
   uv-version:
     description: uv version to install.
     required: false
-    default: "0.9.26"
+    default: "0.10.7"
   cache-prefix:
     description: Cache key prefix for uv dependency cache.
     required: false
@@ -19,7 +19,7 @@ runs:
   using: composite
   steps:
     - name: Set up Python ${{ inputs.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ inputs.python-version }}
 
@@ -28,7 +28,7 @@ runs:
       run: python3 -m pip install uv==${{ inputs.uv-version }}
 
     - name: Cache uv dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/uv
         key: ${{ inputs.cache-prefix }}-${{ runner.os }}-py${{ inputs.python-version }}-${{ hashFiles('uv.lock') }}

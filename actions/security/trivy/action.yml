@@ -45,7 +45,7 @@ inputs:
     description: >-
       Docker image to use for Trivy. Override to pin a specific version.
     required: false
-    default: "aquasec/trivy:0.69.1"
+    default: "aquasec/trivy:0.69.2"
 
 runs:
   using: composite
