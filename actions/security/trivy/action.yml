@@ -41,30 +41,35 @@ inputs:
     description: Comma-separated list of .trivyignore file paths.
     required: false
     default: ""
+  trivy-image:
+    description: >-
+      Docker image to use for Trivy. Override to pin a specific version.
+    required: false
+    default: "aquasec/trivy:0.69.1"
 
 runs:
   using: composite
   steps:
-    - name: Install Trivy
-      uses: aquasecurity/setup-trivy@v0.2.0
-      with:
-        version: v0.69.1
-        cache: "false"
-
     - name: Run Trivy filesystem scan
       if: inputs.scan-type == 'fs'
-      uses: aquasecurity/trivy-action@0.34.0
-      with:
-        skip-setup-trivy: true
-        scan-type: fs
-        scan-ref: ${{ inputs.scan-ref }}
-        severity: ${{ inputs.severity }}
-        exit-code: ${{ inputs.exit-code }}
-        scanners: ${{ inputs.scanners }}
-        trivyignores: ${{ inputs.trivyignores }}
-        limit-severities-for-sarif: "true"
-        format: sarif
-        output: ${{ inputs.output-file }}
+      shell: bash
+      run: |
+        TRIVYIGNORE_ARGS=""
+        if [ -n "${{ inputs.trivyignores }}" ]; then
+          TRIVYIGNORE_ARGS="--ignorefile ${{ inputs.trivyignores }}"
+        fi
+        docker run --rm \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          "${{ inputs.trivy-image }}" \
+          fs \
+          --scanners "${{ inputs.scanners }}" \
+          --severity "${{ inputs.severity }}" \
+          --exit-code "${{ inputs.exit-code }}" \
+          --format sarif \
+          --output "/workspace/${{ inputs.output-file }}" \
+          $TRIVYIGNORE_ARGS \
+          "${{ inputs.scan-ref }}"
 
     - name: Upload SARIF (filesystem scan)
       if: inputs.scan-type == 'fs' && always()
@@ -75,18 +80,25 @@ runs:
 
     - name: Run Trivy image scan
       if: inputs.scan-type == 'image'
-      uses: aquasecurity/trivy-action@0.34.0
-      with:
-        skip-setup-trivy: true
-        scan-type: image
-        image-ref: ${{ inputs.scan-ref }}
-        severity: ${{ inputs.severity }}
-        exit-code: ${{ inputs.exit-code }}
-        scanners: ${{ inputs.scanners }}
-        trivyignores: ${{ inputs.trivyignores }}
-        limit-severities-for-sarif: "true"
-        format: sarif
-        output: ${{ inputs.output-file }}
+      shell: bash
+      run: |
+        TRIVYIGNORE_ARGS=""
+        if [ -n "${{ inputs.trivyignores }}" ]; then
+          TRIVYIGNORE_ARGS="--ignorefile ${{ inputs.trivyignores }}"
+        fi
+        docker run --rm \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -w /workspace \
+          "${{ inputs.trivy-image }}" \
+          image \
+          --scanners "${{ inputs.scanners }}" \
+          --severity "${{ inputs.severity }}" \
+          --exit-code "${{ inputs.exit-code }}" \
+          --format sarif \
+          --output "/workspace/${{ inputs.output-file }}" \
+          $TRIVYIGNORE_ARGS \
+          "${{ inputs.scan-ref }}"
 
     - name: Upload SARIF (image scan)
       if: inputs.scan-type == 'image' && always()
@@ -97,10 +109,13 @@ runs:
 
     - name: Generate SBOM
       if: inputs.scan-type == 'sbom'
-      uses: aquasecurity/trivy-action@0.34.0
-      with:
-        skip-setup-trivy: true
-        scan-type: fs
-        scan-ref: ${{ inputs.scan-ref }}
-        format: cyclonedx
-        output: ${{ inputs.output-file }}
+      shell: bash
+      run: |
+        docker run --rm \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          "${{ inputs.trivy-image }}" \
+          fs \
+          --format cyclonedx \
+          --output "/workspace/${{ inputs.output-file }}" \
+          "${{ inputs.scan-ref }}"
