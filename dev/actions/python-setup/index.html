@@ -2089,7 +2089,7 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/python/setup@develop</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.14&quot;</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">uv-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0.9.26&quot;</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">uv-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0.10.7&quot;</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">cache-prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;uv&quot;</span>
 </code></pre></div>
 <h2 id="inputs">Inputs<a class="headerlink" href="#inputs" title="Permanent link">&para;</a></h2>
@@ -2112,7 +2112,7 @@
 <tr>
 <td><code>uv-version</code></td>
 <td>No</td>
-<td><code>0.9.26</code></td>
+<td><code>0.10.7</code></td>
 <td>uv version to install.</td>
 </tr>
 <tr>
@@ -2129,11 +2129,11 @@
 </ul>
 <h2 id="behavior">Behavior<a class="headerlink" href="#behavior" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>Set up Python</strong> — Uses <code>actions/setup-python@v5</code> to install the specified
+<li><strong>Set up Python</strong> — Uses <code>actions/setup-python@v6</code> to install the specified
    Python version.</li>
 <li><strong>Install uv</strong> — Runs <code>pip install uv==&lt;version&gt;</code> to install the pinned
    version of uv.</li>
-<li><strong>Cache dependencies</strong> — Uses <code>actions/cache@v4</code> to cache <code>~/.cache/uv</code>.
+<li><strong>Cache dependencies</strong> — Uses <code>actions/cache@v5</code> to cache <code>~/.cache/uv</code>.
    The cache key includes the OS, Python version, and a hash of <code>uv.lock</code> for
    precise invalidation.</li>
 </ol>
