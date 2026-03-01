@@ -2383,7 +2383,7 @@ secret.</p>
 <ul>
 <li><strong>Branch protection</strong> — PR requirements for <code>main</code> and <code>develop</code></li>
 <li><strong>CI gates</strong> — Required status checks for <code>main</code> and <code>develop</code></li>
-<li><strong>Tag protection</strong> — Prevent modification of <code>v*</code> release tags</li>
+<li><strong>Tag protection</strong> — Protect semver release tags (<code>v*.*.*</code>); allow rolling minor tags</li>
 </ul>
 <p>For detailed configuration including settings, check names per repository type,
 and API commands, see <a href="../ci-gates/repository-rulesets/">Repository Rulesets</a>.</p>
@@ -2457,7 +2457,7 @@ This allows PRs to merge automatically once all required status checks pass.</p>
   (<a href="../ci-gates/repository-rulesets/#branch-protection-ruleset">details</a>)</li>
 <li>[ ] <strong>CI gates</strong> — targeting <code>main</code> and <code>develop</code> with required checks
   (<a href="../ci-gates/repository-rulesets/#ci-gates-ruleset">details</a>)</li>
-<li>[ ] <strong>Tag protection</strong> — targeting <code>v*</code>
+<li>[ ] <strong>Tag protection</strong> — targeting <code>v*.*.*</code> with admin bypass
   (<a href="../ci-gates/repository-rulesets/#tag-protection-ruleset">details</a>)</li>
 </ul>
 <div class="admonition warning">
