@@ -543,6 +543,8 @@
       
         
       
+        
+      
     
     
     
@@ -595,6 +597,34 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../releases/v1.1.2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v1.1.2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -2148,6 +2178,10 @@ action safe to re-run.</p>
 <td><code>tag-created</code></td>
 <td><code>true</code> if a new tag was created, <code>false</code> if it already existed.</td>
 </tr>
+<tr>
+<td><code>rolling-tag</code></td>
+<td>The rolling <code>major.minor</code> tag that was created or updated (e.g. <code>v1.2</code>). Empty when <code>tag-created</code> is <code>false</code>.</td>
+</tr>
 </tbody>
 </table>
 <h2 id="permissions">Permissions<a class="headerlink" href="#permissions" title="Permanent link">&para;</a></h2>
@@ -2168,6 +2202,10 @@ action safe to re-run.</p>
    enables changelog generation between releases.</li>
 <li><strong>Create GitHub Release</strong> — Uses <code>gh release create</code> with the provided title,
    notes, and optional artifacts.</li>
+<li><strong>Create or update rolling minor tag</strong> — Extracts the <code>major.minor</code> portion
+   of the version (e.g. <code>1.2</code> from <code>1.2.3</code>), then force-creates and
+   force-pushes a rolling tag (e.g. <code>v1.2</code>). This allows consumers to pin
+   <code>@v1.2</code> and automatically receive patch releases.</li>
 </ol>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <h3 id="standard-library-release">Standard library release<a class="headerlink" href="#standard-library-release" title="Permanent link">&para;</a></h3>
