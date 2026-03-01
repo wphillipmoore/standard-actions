@@ -113,7 +113,7 @@ Every managed repository uses three rulesets to enforce merge requirements:
 
 - **Branch protection** — PR requirements for `main` and `develop`
 - **CI gates** — Required status checks for `main` and `develop`
-- **Tag protection** — Prevent modification of `v*` release tags
+- **Tag protection** — Protect semver release tags (`v*.*.*`); allow rolling minor tags
 
 For detailed configuration including settings, check names per repository type,
 and API commands, see [Repository Rulesets](ci-gates/repository-rulesets.md).
@@ -176,7 +176,7 @@ Create three rulesets per the standard configuration:
   ([details](ci-gates/repository-rulesets.md#branch-protection-ruleset))
 - [ ] **CI gates** — targeting `main` and `develop` with required checks
   ([details](ci-gates/repository-rulesets.md#ci-gates-ruleset))
-- [ ] **Tag protection** — targeting `v*`
+- [ ] **Tag protection** — targeting `v*.*.*` with admin bypass
   ([details](ci-gates/repository-rulesets.md#tag-protection-ruleset))
 
 !!! warning "Use explicit branch references"
