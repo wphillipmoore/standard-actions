@@ -32,6 +32,7 @@ action safe to re-run.
 | ------ | ------------- |
 | `tag` | The full tag name that was (or would be) created (e.g. `v1.2.3`). |
 | `tag-created` | `true` if a new tag was created, `false` if it already existed. |
+| `rolling-tag` | The rolling `major.minor` tag that was created or updated (e.g. `v1.2`). Empty when `tag-created` is `false`. |
 
 ## Permissions
 
@@ -51,6 +52,10 @@ action safe to re-run.
    enables changelog generation between releases.
 6. **Create GitHub Release** — Uses `gh release create` with the provided title,
    notes, and optional artifacts.
+7. **Create or update rolling minor tag** — Extracts the `major.minor` portion
+   of the version (e.g. `1.2` from `1.2.3`), then force-creates and
+   force-pushes a rolling tag (e.g. `v1.2`). This allows consumers to pin
+   `@v1.2` and automatically receive patch releases.
 
 ## Examples
 

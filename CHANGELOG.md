@@ -5,7 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.1.0] - 2026-02-26
+## [1.1.2] - 2026-03-01
+
+### Bug fixes
+
+- fix version-bump regex and correct VERSION to 1.1.2 (#136)
+- create placeholder releases/index.md when no releases exist (#148)
+- install Trivy binary directly to avoid setup-trivy cache fallback failure (#152)
+- use setup-trivy with cache disabled instead of manual binary download (#153)
+- replace aquasecurity GitHub actions with Docker-based Trivy execution (#154)
+
+### Documentation
+
+- document run-standards and run-security two-flag pattern (#138)
+- add Rust Library to required checks matrix (#142)
+- add ci: type-check to required checks matrix (#143)
+- update tag protection ruleset docs for rolling tag support (#158)
+
+### Features
+
+- add rolling vX.Y minor tags to tag-and-release action (#149)
+
+## [1.1.1] - 2026-02-26
 
 ### Bug fixes
 
@@ -25,6 +46,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - add semgrep-language input for Go compatibility (#101)
 - preserve severity filter in SARIF output for Trivy scans (#123)
 - install pyyaml when mike-command is not mike (#128)
+- correct corrupted VERSION file to 1.1.1 (#133)
+
+### CI
+
+- add publish workflow for tag, release, and version bump (#131)
 
 ### Documentation
 

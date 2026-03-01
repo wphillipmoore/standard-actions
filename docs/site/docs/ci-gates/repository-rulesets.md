@@ -10,7 +10,7 @@ three rulesets:
 | --------- | -------- | --------- |
 | Branch protection | `main`, `develop` | PR requirements, deletion and force-push prevention |
 | CI gates | `main`, `develop` | Required status checks |
-| Tag protection | `v*` tags | Prevent tag deletion, update, and non-fast-forward |
+| Tag protection | `v*.*.*` tags | Protect semver release tags; allow rolling minor tags |
 
 ## Branch protection ruleset
 
@@ -84,15 +84,36 @@ ci: standards-compliance
 
 ## Tag protection ruleset
 
-Applies to all tags matching `v*`. Prevents unauthorized modification of release
-tags.
+Applies to all tags matching `v*.*.*` (full semver tags such as `v1.1.1` or
+`v2.0.0`). Prevents unauthorized modification of release tags while allowing
+the publish workflow to create and update rolling minor tags (e.g., `v1.1`).
 
 | Setting | Value |
 | --------- | ------- |
+| Pattern | `refs/tags/v*.*.*` |
 | Block deletion | Yes |
 | Block non-fast-forward | Yes |
 | Block update | Yes |
-| Bypass actors | None |
+| Bypass actors | Repository admin (`actor_id: 5`, `bypass_mode: always`) |
+
+### Why `v*.*.*` instead of `v*`
+
+The publish workflow's `tag-and-release` action creates a rolling minor tag
+(e.g., `v1.1`) that always points to the latest patch release. Consumers
+reference these rolling tags to receive automatic patch updates. The broader
+`v*` pattern matches both `v1.1.1` (semver) and `v1.1` (rolling), which causes
+the rolling tag force-push to fail with a repository rule violation.
+
+The `v*.*.*` pattern requires three dot-separated components, so it protects
+immutable release tags (`v1.1.1`, `v1.1.2`) while leaving rolling tags (`v1.1`)
+unprotected for the workflow to update.
+
+### Admin bypass
+
+The repository admin bypass exists as a safety valve for cleanup operations
+(e.g., removing a tag created against the wrong branch). Normal publish
+operations do not require admin bypass — the rolling tag update succeeds because
+rolling tags fall outside the `v*.*.*` pattern.
 
 ## Adding a new required check
 

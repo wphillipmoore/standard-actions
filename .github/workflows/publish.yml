@@ -65,7 +65,7 @@ jobs:
         with:
           current-version: ${{ steps.version.outputs.version }}
           version-file: VERSION
-          version-regex: '^(\d+\.\d+\.)\d+$'
-          version-replacement: '\g<1>{version}'
+          version-regex: '^\d+\.\d+\.\d+$'
+          version-replacement: '{version}'
           develop-version-command: cat
           app-token: ${{ steps.app-token.outputs.token }}
