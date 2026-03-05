@@ -22,6 +22,12 @@ on:
         description: Run security scanner jobs (set to 'false' to skip)
         type: string
         default: 'true'
+      run-codeql:
+        description: >-
+          Run CodeQL analysis (set to 'false' to skip).
+          Disable for languages CodeQL does not support (e.g. shell).
+        type: string
+        default: 'true'
 
 permissions:
   contents: read
@@ -41,7 +47,7 @@ jobs:
 
   codeql:
     name: "security: codeql"
-    if: ${{ inputs.run-security != 'false' }}
+    if: ${{ inputs.run-security != 'false' && inputs.run-codeql != 'false' }}
     runs-on: ubuntu-latest
     permissions:
       security-events: write
