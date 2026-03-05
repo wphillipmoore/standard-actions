@@ -32,7 +32,7 @@ runs:
 
     - name: Install markdownlint-cli
       shell: bash
-      run: npm install --global markdownlint-cli
+      run: npm install --global markdownlint-cli@0.41.0
 
     - name: Validate repository profile
       shell: bash
