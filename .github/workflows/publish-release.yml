@@ -1,0 +1,369 @@
+name: Publish release
+
+on:
+  workflow_call:
+    inputs:
+      ecosystem:
+        description: >-
+          Language ecosystem: python, rust, ruby, go, java, or none.
+          Controls which setup action runs and ecosystem-specific publish
+          behavior.
+        type: string
+        required: true
+      python-version:
+        description: Python version for actions/setup-python.
+        type: string
+        default: "3.14"
+      rust-toolchain:
+        description: Rust toolchain for actions-rust-lang/setup-rust-toolchain.
+        type: string
+        default: "1.93"
+      ruby-version:
+        description: Ruby version for ruby/setup-ruby.
+        type: string
+        default: "3.4"
+      go-version-file:
+        description: Go version file for actions/setup-go.
+        type: string
+        default: "go.mod"
+      java-version:
+        description: Java version for actions/setup-java.
+        type: string
+        default: "17"
+      java-distribution:
+        description: Java distribution for actions/setup-java.
+        type: string
+        default: "temurin"
+      version-command:
+        description: >-
+          Shell command that prints the current version to stdout.
+          Runs after ecosystem setup so language-specific tools are
+          available.
+        type: string
+        required: true
+      registry-check-command:
+        description: >-
+          Shell command that prints "exists" or "not_found" to stdout.
+          $VERSION is available as an environment variable. Leave empty
+          to skip the registry check.
+        type: string
+        default: ""
+      build-command:
+        description: >-
+          Shell command to build artifacts. $VERSION is available as an
+          environment variable. Leave empty to skip the build step.
+        type: string
+        default: ""
+      attestation-subject-path:
+        description: >-
+          Glob pattern for build provenance attestation (passed to
+          actions/attest-build-provenance). Leave empty to skip.
+        type: string
+        default: ""
+      sbom-output-file:
+        description: >-
+          Output path for the CycloneDX SBOM. Use $VERSION as a
+          placeholder — it is substituted automatically. Leave empty
+          to skip SBOM generation.
+        type: string
+        default: ""
+      registry-publish-command:
+        description: >-
+          Shell command to publish to a package registry. Not used for
+          Python (PyPI uses OIDC trusted publishing via
+          pypa/gh-action-pypi-publish). $VERSION and ecosystem-specific
+          credential environment variables are set automatically from
+          secrets. Leave empty to skip registry publish.
+        type: string
+        default: ""
+      release-title:
+        description: >-
+          Release title prefix (e.g. "pymqrest", "mqrestadmin").
+        type: string
+        required: true
+      release-notes:
+        description: >-
+          Markdown body for the GitHub Release. Use $VERSION as a
+          placeholder — it is substituted automatically.
+        type: string
+        required: true
+      release-artifacts:
+        description: >-
+          Space-separated glob of files to attach to the GitHub Release.
+          Use $VERSION as a placeholder — it is substituted automatically.
+          Leave empty for no artifacts.
+        type: string
+        default: ""
+      version-file:
+        description: >-
+          Path to the file containing the version string (passed to
+          version-bump-pr action).
+        type: string
+        required: true
+      version-regex:
+        description: >-
+          Python regex to match the version line. Use capture groups for
+          the parts to preserve (passed to version-bump-pr action).
+        type: string
+        required: true
+      version-replacement:
+        description: >-
+          Python replacement string with {version} placeholder
+          (e.g. '\g<1>{version}\2', passed to version-bump-pr action).
+        type: string
+        required: true
+      version-regex-multiline:
+        description: >-
+          Set to "true" to pass re.MULTILINE to the version regex
+          substitution (passed to version-bump-pr action).
+        type: string
+        default: "false"
+      develop-version-command:
+        description: >-
+          Shell command to extract the version from the version file.
+          Receives file content on stdin, prints version to stdout
+          (passed to version-bump-pr action).
+        type: string
+        required: true
+      post-bump-command:
+        description: >-
+          Shell command to run after the version bump and before commit
+          (e.g. "uv lock --upgrade"). Leave empty to skip.
+        type: string
+        default: ""
+      extra-files:
+        description: >-
+          Space-separated list of additional files to git add in the
+          version bump commit (e.g. "uv.lock requirements.txt").
+        type: string
+        default: ""
+      pr-body-extra:
+        description: >-
+          Additional text appended to the version bump PR body.
+        type: string
+        default: ""
+    secrets:
+      APP_ID:
+        required: true
+      APP_PRIVATE_KEY:
+        required: true
+      CARGO_REGISTRY_TOKEN:
+        required: false
+      RUBYGEMS_API_KEY:
+        required: false
+      CENTRAL_USERNAME:
+        required: false
+      CENTRAL_TOKEN:
+        required: false
+      GPG_PRIVATE_KEY:
+        required: false
+      GPG_PASSPHRASE:
+        required: false
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: "publish: release"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      # ── Ecosystem setup (one per language) ─────────────────────────
+
+      - name: Set up Python
+        if: inputs.ecosystem == 'python'
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Set up Rust
+        if: inputs.ecosystem == 'rust'
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: ${{ inputs.rust-toolchain }}
+
+      - name: Set up Ruby
+        if: inputs.ecosystem == 'ruby'
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ inputs.ruby-version }}
+          bundler-cache: true
+
+      - name: Set up Go
+        if: inputs.ecosystem == 'go'
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: ${{ inputs.go-version-file }}
+
+      - name: Set up Java
+        if: inputs.ecosystem == 'java'
+        uses: actions/setup-java@v5
+        with:
+          distribution: ${{ inputs.java-distribution }}
+          java-version: ${{ inputs.java-version }}
+          cache: maven
+          server-id: central
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      # ── Version and gate checks ────────────────────────────────────
+
+      - name: Extract version
+        id: version
+        run: |
+          version=$(${{ inputs.version-command }})
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+
+      - name: Check if tag already exists
+        id: tag_check
+        run: |
+          if git rev-parse "${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check registry
+        if: inputs.registry-check-command != ''
+        id: registry_check
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          status=$(${{ inputs.registry-check-command }})
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+
+      # ── Release pipeline (gated on new tag) ────────────────────────
+
+      - name: Prepare version-dependent inputs
+        if: steps.tag_check.outputs.exists == 'false'
+        id: resolved
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          SBOM_OUTPUT_FILE: ${{ inputs.sbom-output-file }}
+          RELEASE_NOTES: ${{ inputs.release-notes }}
+          RELEASE_ARTIFACTS: ${{ inputs.release-artifacts }}
+        run: |
+          echo "sbom-output-file=${SBOM_OUTPUT_FILE//\$VERSION/$VERSION}" \
+            >> "$GITHUB_OUTPUT"
+          echo "release-artifacts=${RELEASE_ARTIFACTS//\$VERSION/$VERSION}" \
+            >> "$GITHUB_OUTPUT"
+
+          delimiter="NOTES_$(openssl rand -hex 8)"
+          {
+            echo "release-notes<<$delimiter"
+            echo "${RELEASE_NOTES//\$VERSION/$VERSION}"
+            echo "$delimiter"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Ensure dist directory
+        if: steps.tag_check.outputs.exists == 'false'
+        run: mkdir -p dist
+
+      - name: Build
+        if: >-
+          steps.tag_check.outputs.exists == 'false' &&
+          inputs.build-command != ''
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: ${{ inputs.build-command }}
+
+      - name: Attest build provenance
+        if: >-
+          steps.tag_check.outputs.exists == 'false' &&
+          inputs.attestation-subject-path != ''
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: ${{ inputs.attestation-subject-path }}
+
+      - name: Generate SBOM
+        if: >-
+          steps.tag_check.outputs.exists == 'false' &&
+          inputs.sbom-output-file != ''
+        uses: wphillipmoore/standard-actions/actions/security/trivy@develop
+        with:
+          scan-type: sbom
+          output-file: ${{ steps.resolved.outputs.sbom-output-file }}
+
+      - name: Publish to PyPI
+        if: >-
+          inputs.ecosystem == 'python' &&
+          steps.tag_check.outputs.exists == 'false' &&
+          steps.registry_check.outputs.status != 'exists'
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+      - name: Publish to registry
+        if: >-
+          inputs.ecosystem != 'python' &&
+          inputs.registry-publish-command != '' &&
+          steps.tag_check.outputs.exists == 'false' &&
+          steps.registry_check.outputs.status != 'exists'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
+          MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          # Credential guard — skip gracefully when secrets are not configured
+          case "${{ inputs.ecosystem }}" in
+            rust)
+              if [ "${{ secrets.CARGO_REGISTRY_TOKEN != '' }}" != "true" ]; then
+                echo "::notice::CARGO_REGISTRY_TOKEN not configured — skipping publish"
+                exit 0
+              fi ;;
+            ruby)
+              if [ "${{ secrets.RUBYGEMS_API_KEY != '' }}" != "true" ]; then
+                echo "::notice::RUBYGEMS_API_KEY not configured — skipping publish"
+                exit 0
+              fi ;;
+            java)
+              if [ "${{ secrets.CENTRAL_TOKEN != '' }}" != "true" ]; then
+                echo "::notice::CENTRAL_TOKEN not configured — skipping publish"
+                exit 0
+              fi ;;
+          esac
+          ${{ inputs.registry-publish-command }}
+
+      # ── Tag, release, and post-release ─────────────────────────────
+
+      - name: Tag and release
+        if: steps.tag_check.outputs.exists == 'false'
+        uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@develop
+        with:
+          version: ${{ steps.version.outputs.version }}
+          release-title: ${{ inputs.release-title }}
+          release-notes: ${{ steps.resolved.outputs.release-notes }}
+          release-artifacts: ${{ steps.resolved.outputs.release-artifacts }}
+
+      - name: Generate app token for bump PR
+        if: steps.tag_check.outputs.exists == 'false'
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Version bump PR
+        if: steps.tag_check.outputs.exists == 'false'
+        uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@develop
+        with:
+          current-version: ${{ steps.version.outputs.version }}
+          version-file: ${{ inputs.version-file }}
+          version-regex: ${{ inputs.version-regex }}
+          version-replacement: ${{ inputs.version-replacement }}
+          version-regex-multiline: ${{ inputs.version-regex-multiline }}
+          develop-version-command: ${{ inputs.develop-version-command }}
+          post-bump-command: ${{ inputs.post-bump-command }}
+          extra-files: ${{ inputs.extra-files }}
+          app-token: ${{ steps.app-token.outputs.token }}
+          pr-body-extra: ${{ inputs.pr-body-extra }}
