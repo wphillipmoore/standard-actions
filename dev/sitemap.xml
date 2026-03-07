@@ -2,102 +2,102 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/changelog/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/configuration/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/getting-started/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/docs-deploy/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/publish-tag-and-release/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/publish-version-bump-pr/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/python-setup/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/release-gates-version-divergence/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/security-codeql/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/security-semgrep/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/security-trivy/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/standards-compliance/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/ci-gates/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/ci-gates/repository-rulesets/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/ci-gates/required-checks/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/ci-gates/security-scanning/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/development/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/development/contributing/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/development/environment-and-tooling/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/development/validation/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.1.0/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.1.2/</loc>
-         <lastmod>2026-03-05</lastmod>
+         <lastmod>2026-03-07</lastmod>
     </url>
 </urlset>
