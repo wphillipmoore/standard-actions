@@ -17,13 +17,13 @@ runs:
 
     - name: Validate repository profile
       shell: bash
-      run: repo-profile
+      run: st-repo-profile
 
     - name: Validate markdown standards
       shell: bash
-      run: markdown-standards
+      run: st-markdown-standards
 
     - name: Validate pull request issue linkage
       if: github.event_name == 'pull_request'
       shell: bash
-      run: pr-issue-linkage
+      run: st-pr-issue-linkage
