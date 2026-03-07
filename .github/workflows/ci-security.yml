@@ -38,6 +38,7 @@ jobs:
     name: "ci: standards-compliance"
     if: ${{ inputs.run-standards != 'false' }}
     runs-on: ubuntu-latest
+    container: ghcr.io/wphillipmoore/dev-docs:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v6

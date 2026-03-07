@@ -2,47 +2,28 @@ name: Standards compliance
 description: >-
   Validates repository standards: markdown formatting,
   PR issue linkage, and repository profile.
-
-inputs:
-  standard-tooling-ref:
-    description: >-
-      Git ref (branch or tag) of standard-tooling to check out.
-      Use a tag (e.g. v1.2) for stable consumption.
-    required: false
-    default: "develop"
+  Requires the dev-docs container image (standard-tooling pre-installed).
 
 runs:
   using: composite
   steps:
-    - name: Checkout standard-tooling
-      uses: actions/checkout@v6
-      with:
-        repository: wphillipmoore/standard-tooling
-        ref: ${{ inputs.standard-tooling-ref }}
-        path: .standard-tooling
-
-    - name: Add standard-tooling to PATH
+    - name: Verify standard-tooling is installed
       shell: bash
-      run: echo "${{ github.workspace }}/.standard-tooling/scripts/bin" >> "$GITHUB_PATH"
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v6
-      with:
-        node-version: "20"
-
-    - name: Install markdownlint-cli
-      shell: bash
-      run: npm install --global markdownlint-cli@0.41.0
+      run: |
+        if ! command -v st-repo-profile >/dev/null 2>&1; then
+          echo "::error::st-repo-profile not found. This action requires the dev-docs container image."
+          exit 1
+        fi
 
     - name: Validate repository profile
       shell: bash
-      run: repo-profile
+      run: st-repo-profile
 
     - name: Validate markdown standards
       shell: bash
-      run: markdown-standards
+      run: st-markdown-standards
 
     - name: Validate pull request issue linkage
       if: github.event_name == 'pull_request'
       shell: bash
-      run: pr-issue-linkage
+      run: st-pr-issue-linkage
