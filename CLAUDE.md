@@ -5,6 +5,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working in this
 <!-- include: docs/standards-and-conventions.md -->
 <!-- include: docs/repository-standards.md -->
 
+## Auto-memory policy
+
+**Do NOT use MEMORY.md.** Never write to MEMORY.md or any file under the
+memory directory. All behavioral rules, conventions, and workflow instructions
+belong in managed, version-controlled documentation (CLAUDE.md, AGENTS.md,
+skills, or docs/). If you want to persist something, tell the human what you
+would save and let them decide where it belongs.
+
 ## Project Overview
 
 This is a shared GitHub Actions library providing reusable composite actions for CI/CD across all managed repositories. Actions are consumed by pinning to a tag or branch reference.
