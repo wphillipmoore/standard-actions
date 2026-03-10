@@ -2,7 +2,7 @@ name: Standards compliance
 description: >-
   Validates repository standards: markdown formatting,
   PR issue linkage, and repository profile.
-  Requires the dev-docs container image (standard-tooling pre-installed).
+  Requires the dev-base container image (standard-tooling pre-installed).
 
 runs:
   using: composite
@@ -11,7 +11,7 @@ runs:
       shell: bash
       run: |
         if ! command -v st-repo-profile >/dev/null 2>&1; then
-          echo "::error::st-repo-profile not found. This action requires the dev-docs container image."
+          echo "::error::st-repo-profile not found. This action requires the dev-base container image."
           exit 1
         fi
 
