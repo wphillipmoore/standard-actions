@@ -22,6 +22,12 @@ on:
         description: Run security scanner jobs (set to 'false' to skip)
         type: string
         default: 'true'
+      run-codeql:
+        description: >-
+          Run CodeQL analysis (set to 'false' to skip).
+          Disable for languages CodeQL does not support (e.g. shell).
+        type: string
+        default: 'true'
 
 permissions:
   contents: read
@@ -32,6 +38,7 @@ jobs:
     name: "ci: standards-compliance"
     if: ${{ inputs.run-standards != 'false' }}
     runs-on: ubuntu-latest
+    container: ghcr.io/wphillipmoore/dev-base:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -41,7 +48,7 @@ jobs:
 
   codeql:
     name: "security: codeql"
-    if: ${{ inputs.run-security != 'false' }}
+    if: ${{ inputs.run-security != 'false' && inputs.run-codeql != 'false' }}
     runs-on: ubuntu-latest
     permissions:
       security-events: write

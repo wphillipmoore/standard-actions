@@ -8,7 +8,7 @@ Sets up Python, installs uv, and configures dependency caching.
 - uses: wphillipmoore/standard-actions/actions/python/setup@develop
   with:
     python-version: "3.14"
-    uv-version: "0.9.26"
+    uv-version: "0.10.7"
     cache-prefix: "uv"
 ```
 
@@ -17,7 +17,7 @@ Sets up Python, installs uv, and configures dependency caching.
 | Name | Required | Default | Description |
 | ------ | ---------- | --------- | ------------- |
 | `python-version` | **Yes** | — | Python version to install (e.g. `3.14`). |
-| `uv-version` | No | `0.9.26` | uv version to install. |
+| `uv-version` | No | `0.10.7` | uv version to install. |
 | `cache-prefix` | No | `uv` | Cache key prefix for uv dependency cache. |
 
 ## Permissions
@@ -26,11 +26,11 @@ Sets up Python, installs uv, and configures dependency caching.
 
 ## Behavior
 
-1. **Set up Python** — Uses `actions/setup-python@v5` to install the specified
+1. **Set up Python** — Uses `actions/setup-python@v6` to install the specified
    Python version.
 2. **Install uv** — Runs `pip install uv==<version>` to install the pinned
    version of uv.
-3. **Cache dependencies** — Uses `actions/cache@v4` to cache `~/.cache/uv`.
+3. **Cache dependencies** — Uses `actions/cache@v5` to cache `~/.cache/uv`.
    The cache key includes the OS, Python version, and a hash of `uv.lock` for
    precise invalidation.
 
