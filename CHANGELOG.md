@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.3] - 2026-04-23
+
+### Bug fixes
+
+- pin markdownlint-cli@0.41.0, add run-codeql flag (#172) (#173)
+- rename dev-docs container references to dev-base (#182)
+- stabilize version-bump-pr back-merge and docs-deploy container cwd (#188)
+
+### CI
+
+- remove standard-tooling setup hacks from standards-compliance (#179)
+
+### Features
+
+- add shared publish-release reusable workflow (#163)
+- make docs-deploy container-aware (#174)
+- adopt git worktree convention for parallel AI agent development (#184)
+
 ## [1.1.2] - 2026-03-01
 
 ### Bug fixes
