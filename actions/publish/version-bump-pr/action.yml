@@ -108,9 +108,13 @@ runs:
     - name: Create bump branch and merge main
       if: steps.check.outputs.needed == 'true'
       shell: bash
+      # -X theirs resolves add/add CHANGELOG conflicts on first-release repos
+      # where develop's scaffolding CHANGELOG diverges from main's generated
+      # one. Intent of this back-merge is "develop reflects post-release main",
+      # so taking main's side on conflict is always correct here.
       run: |
         git checkout -b "${{ steps.next.outputs.branch }}" origin/develop
-        git merge origin/main --no-edit
+        git merge origin/main --no-edit -X theirs
 
     - name: Update version file
       if: steps.check.outputs.needed == 'true'

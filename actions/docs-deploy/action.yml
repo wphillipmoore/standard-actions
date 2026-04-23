@@ -68,13 +68,18 @@ runs:
 
     - name: Configure git identity
       shell: bash
+      # --global avoids depending on cwd being inside the repo. Composite
+      # shell steps in container jobs do not reliably land in
+      # $GITHUB_WORKSPACE when setup-python is skipped (pre-installed mike),
+      # so repo-scoped git config would fail with "not in a git directory".
       run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
     - name: Determine version
       id: version
       shell: bash
+      working-directory: ${{ github.workspace }}
       run: |
         if [ "${{ github.ref }}" = "refs/heads/main" ]; then
           VERSION=$(${{ inputs.version-command }})
@@ -87,6 +92,7 @@ runs:
 
     - name: Stage changelog and release notes
       shell: bash
+      working-directory: ${{ github.workspace }}
       run: |
         DOCS_DIR=$(dirname "${{ inputs.mkdocs-config }}")/docs
 
@@ -110,6 +116,7 @@ runs:
 
     - name: Patch mkdocs nav with release versions
       shell: bash
+      working-directory: ${{ github.workspace }}
       run: |
         DOCS_DIR=$(dirname "${{ inputs.mkdocs-config }}")/docs
 
@@ -123,6 +130,7 @@ runs:
 
     - name: Deploy docs
       shell: bash
+      working-directory: ${{ github.workspace }}
       run: |
         if [ -n "${{ steps.version.outputs.alias }}" ]; then
           ${{ inputs.mike-command }} deploy -F ${{ inputs.mkdocs-config }} --push --update-aliases ${{ steps.version.outputs.version }} ${{ steps.version.outputs.alias }}
