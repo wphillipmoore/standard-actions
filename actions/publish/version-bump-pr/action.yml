@@ -1,8 +1,11 @@
 name: Version bump PR
 description: >-
   Computes the next patch version, creates a branch from develop that merges
-  main, updates the version file(s) via regex replacement, and opens an
-  auto-merge PR.  Skips if develop already has the expected next version.
+  main, updates the version file(s) via regex replacement, and opens a PR.
+  Skips if develop already has the expected next version.  The PR is not
+  auto-merged — callers consume the `pr-url` output and drive the merge
+  themselves (e.g. via `st-merge-when-green` from a release skill) because
+  org-wide auto-merge is disabled.
 
 inputs:
   current-version:
@@ -218,6 +221,7 @@ runs:
         echo "pr-url=$pr_url" >> "$GITHUB_OUTPUT"
         rm -f "$body_file"
 
-        gh pr merge \
-          --auto --merge --delete-branch \
-          "${{ steps.next.outputs.branch }}"
+        # The PR is intentionally not auto-merged — org policy disables
+        # pull_request auto-merge fleet-wide.  Callers consume pr-url
+        # and drive the merge themselves (e.g. via st-merge-when-green
+        # from a release skill).
