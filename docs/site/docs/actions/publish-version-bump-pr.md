@@ -1,8 +1,12 @@
 # publish/version-bump-pr
 
 Computes the next patch version, creates a branch from develop that merges main,
-updates the version file(s) via regex replacement, and opens an auto-merge PR.
-Skips if develop already has the expected next version.
+updates the version file(s) via regex replacement, and opens a PR. Skips if
+develop already has the expected next version.
+
+The PR is **not auto-merged** — org-wide auto-merge is disabled. Callers
+consume the `pr-url` output and drive the merge themselves (for example,
+via `st-merge-when-green` from a release skill).
 
 ## Usage
 
@@ -68,9 +72,9 @@ Skips if develop already has the expected next version.
    number. Otherwise, searches for an open issue titled
    `release: <current-version>`. If found, a `Ref #<number>` linkage line is
    added to the PR body. Diagnostic output is logged in either case.
-8. **Create PR** — Opens a PR targeting `develop`, edits the body with context,
-   then closes/reopens to trigger CI. Enables auto-merge with merge commit
-   strategy.
+8. **Create PR** — Opens a PR targeting `develop` and emits its URL as the
+   `pr-url` output. Does not attempt to merge — callers drive the merge
+   once CI is green.
 
 ## Examples
 
