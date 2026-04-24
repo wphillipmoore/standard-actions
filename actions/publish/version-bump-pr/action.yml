@@ -122,22 +122,35 @@ runs:
     - name: Update version file
       if: steps.check.outputs.needed == 'true'
       shell: bash
+      # Pass values via env vars and a single-quoted heredoc delimiter
+      # (<<'PYEOF') so bash does no interpolation on the body.  This
+      # avoids the class of bugs where double-quotes in the regex or
+      # replacement (common with `"version"` JSON keys, etc.) prematurely
+      # closed an outer bash string and broke the python invocation.
+      env:
+        VERSION_FILE: ${{ inputs.version-file }}
+        VERSION_REGEX: ${{ inputs.version-regex }}
+        VERSION_REPLACEMENT: ${{ inputs.version-replacement }}
+        NEXT_VERSION: ${{ steps.next.outputs.version }}
+        REGEX_MULTILINE: ${{ inputs.version-regex-multiline }}
       run: |
-        python3 -c "
+        python3 <<'PYEOF'
         from pathlib import Path
+        import os
         import re
-        p = Path('${{ inputs.version-file }}')
+
+        p = Path(os.environ['VERSION_FILE'])
         content = p.read_text()
-        flags = re.MULTILINE if '${{ inputs.version-regex-multiline }}' == 'true' else 0
+        flags = re.MULTILINE if os.environ['REGEX_MULTILINE'] == 'true' else 0
         content = re.sub(
-            r'${{ inputs.version-regex }}',
-            r'${{ inputs.version-replacement }}'.replace('{version}', '${{ steps.next.outputs.version }}'),
+            os.environ['VERSION_REGEX'],
+            os.environ['VERSION_REPLACEMENT'].replace('{version}', os.environ['NEXT_VERSION']),
             content,
             count=1,
             flags=flags,
         )
         p.write_text(content)
-        "
+        PYEOF
 
     - name: Run post-bump command
       if: steps.check.outputs.needed == 'true' && inputs.post-bump-command != ''
