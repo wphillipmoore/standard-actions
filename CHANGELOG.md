@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-04-24
+
+### Features
+
+- drop auto-merge from version-bump-pr composite (bump 1.2.0) (#193)
+
+### Release
+
+- 1.1.3 (#190)
+
 ## [1.1.3] - 2026-04-23
 
 ### Bug fixes
