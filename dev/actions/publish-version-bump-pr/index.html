@@ -2137,8 +2137,11 @@
 
 <h1 id="publishversion-bump-pr">publish/version-bump-pr<a class="headerlink" href="#publishversion-bump-pr" title="Permanent link">&para;</a></h1>
 <p>Computes the next patch version, creates a branch from develop that merges main,
-updates the version file(s) via regex replacement, and opens an auto-merge PR.
-Skips if develop already has the expected next version.</p>
+updates the version file(s) via regex replacement, and opens a PR. Skips if
+develop already has the expected next version.</p>
+<p>The PR is <strong>not auto-merged</strong> — org-wide auto-merge is disabled. Callers
+consume the <code>pr-url</code> output and drive the merge themselves (for example,
+via <code>st-merge-when-green</code> from a release skill).</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/publish/version-bump-pr@develop</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
@@ -2279,9 +2282,9 @@ default <code>GITHUB_TOKEN</code>). This is necessary because PRs created by
    number. Otherwise, searches for an open issue titled
    <code>release: &lt;current-version&gt;</code>. If found, a <code>Ref #&lt;number&gt;</code> linkage line is
    added to the PR body. Diagnostic output is logged in either case.</li>
-<li><strong>Create PR</strong> — Opens a PR targeting <code>develop</code>, edits the body with context,
-   then closes/reopens to trigger CI. Enables auto-merge with merge commit
-   strategy.</li>
+<li><strong>Create PR</strong> — Opens a PR targeting <code>develop</code> and emits its URL as the
+   <code>pr-url</code> output. Does not attempt to merge — callers drive the merge
+   once CI is green.</li>
 </ol>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <h3 id="simple-version-file-bump">Simple VERSION file bump<a class="headerlink" href="#simple-version-file-bump" title="Permanent link">&para;</a></h3>
