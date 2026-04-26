@@ -72,9 +72,18 @@ runs:
       # shell steps in container jobs do not reliably land in
       # $GITHUB_WORKSPACE when setup-python is skipped (pre-installed mike),
       # so repo-scoped git config would fail with "not in a git directory".
+      #
+      # `safe.directory '*'` exempts the workspace from git's
+      # dubious-ownership check. Inside a container, the workspace is
+      # mounted with a UID that differs from the user git runs as,
+      # which trips the safety check on every `mike deploy`. The
+      # mechanism is intended to protect interactive users; on a CI
+      # runner with a freshly checked-out workspace, suppressing it
+      # is the right call. Issue #206.
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global --add safe.directory '*'
 
     - name: Determine version
       id: version
