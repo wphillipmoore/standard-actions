@@ -1,8 +1,13 @@
 name: Standards compliance
 description: >-
-  Validates repository standards: markdown formatting,
-  PR issue linkage, and repository profile.
-  Requires the dev-base container image (standard-tooling pre-installed).
+  Validates repository standards: markdown formatting, PR issue
+  linkage, and repository profile. Assumes standard-tooling is on
+  PATH — either via the dev container image's pre-baked install
+  (non-Python consumers) or via the consumer's own
+  `uv sync --group dev` (Python consumers, per the host-level-tool
+  spec at wphillipmoore/standard-tooling docs/specs/host-level-tool.md).
+  The verification step below catches setups where neither path is in
+  effect.
 
 runs:
   using: composite
@@ -11,7 +16,15 @@ runs:
       shell: bash
       run: |
         if ! command -v st-repo-profile >/dev/null 2>&1; then
-          echo "::error::st-repo-profile not found. This action requires the dev-base container image."
+          {
+            echo "::error::st-repo-profile not found on PATH."
+            echo "Either run inside a dev container image with"
+            echo "standard-tooling pre-baked (non-Python consumers),"
+            echo "or run after 'uv sync --group dev' so the project's"
+            echo ".venv/bin is on PATH (Python consumers)."
+            echo "See wphillipmoore/standard-tooling"
+            echo "docs/specs/host-level-tool.md."
+          }
           exit 1
         fi
 
