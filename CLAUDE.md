@@ -94,7 +94,7 @@ This is a shared GitHub Actions library providing reusable composite actions for
 ### Environment Setup
 
 ```bash
-git config core.hooksPath ../standard-tooling/scripts/lib/git-hooks  # Enable git hooks
+git config core.hooksPath .githooks  # Enable the pre-commit gate
 ```
 
 Standard-tooling CLI tools (`st-commit`, `st-validate-local`, etc.) are
@@ -132,7 +132,15 @@ This repository's CI workflow uses **local paths** (`./actions/...`) rather than
 
 ### Standard-Tooling Integration
 
-Shared validators (`repo-profile`, `markdown-standards`, `commit-messages`, `pr-issue-linkage`) are provided by `standard-tooling` via PATH. The `standards-compliance` action checks out `standard-tooling` and prepends its `scripts/bin/` to `$GITHUB_PATH`. Locally, the same tools are available by adding `../standard-tooling/scripts/bin` to your PATH.
+Shared validators (`st-repo-profile`, `st-markdown-standards`, `st-pr-issue-linkage`) are provided by `standard-tooling`. CI uses the dev container image's pre-baked install (non-Python consumers like this one). Locally, install the host tool per the [host-level-tool spec](https://github.com/wphillipmoore/standard-tooling/blob/develop/docs/specs/host-level-tool.md):
+
+```bash
+uv tool install 'standard-tooling @ git+https://github.com/wphillipmoore/standard-tooling@v1.3'
+# or, for the alternative pip-based path:
+pip install 'standard-tooling @ git+https://github.com/wphillipmoore/standard-tooling@v1.3'
+```
+
+The `standards-compliance` action no longer clones `standard-tooling` onto the runner — it assumes `st-*` is on `PATH` either via the dev container pre-bake (non-Python) or `uv sync --group dev` (Python).
 
 ### Repo-Specific Scripts
 
