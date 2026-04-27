@@ -40,6 +40,36 @@ jobs:
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
+      # Rewrite internal @develop refs in the working tree, then commit
+      # locally on top of the checked-out HEAD. The tag step below tags
+      # this commit, so the tagged snapshot has internally-consistent
+      # refs (every wphillipmoore/standard-actions/...@develop becomes
+      # ...@<release-tag>). The commit is reachable only via the tag —
+      # it is never pushed to develop or main.
+      - name: Freeze internal @develop refs to release tag
+        if: steps.tag_check.outputs.exists == 'false'
+        env:
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mapfile -t files < <(find .github/workflows actions \
+            -type f \( -name '*.yml' -o -name '*.yaml' \) 2>/dev/null)
+          rewrote=0
+          for f in "${files[@]}"; do
+            if grep -qE 'wphillipmoore/standard-actions/[^@[:space:]]+@develop' "$f"; then
+              sed -i.bak -E "s|(wphillipmoore/standard-actions/[^@[:space:]]+)@develop|\1@${RELEASE_TAG}|g" "$f"
+              rm -f "$f.bak"
+              rewrote=$((rewrote + 1))
+            fi
+          done
+          echo "Rewrote internal @develop refs in ${rewrote} file(s)"
+          if [ "${rewrote}" -gt 0 ]; then
+            git add .github/workflows actions
+            git commit -m "chore(release): freeze internal refs to ${RELEASE_TAG}"
+          fi
+
       - name: Tag and release
         if: steps.tag_check.outputs.exists == 'false'
         uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@develop
