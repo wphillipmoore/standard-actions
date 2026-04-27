@@ -19,10 +19,22 @@ jobs:
     name: "publish: release"
     runs-on: ubuntu-latest
     steps:
+      # Generate the App token first so checkout can use it. The freeze-
+      # internal-refs step below modifies .github/workflows/*.yml, and
+      # GITHUB_TOKEN is forbidden from pushing workflow-file changes.
+      # The App (APP_ID/APP_PRIVATE_KEY) has workflows:write granted.
+      - name: Generate app token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Checkout code
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Extract version
         id: version
@@ -80,14 +92,6 @@ jobs:
             ## standard-actions v${{ steps.version.outputs.version }}
 
             Shared GitHub Actions for all managed repositories.
-
-      - name: Generate app token for bump PR
-        if: steps.tag_check.outputs.exists == 'false'
-        id: app-token
-        uses: actions/create-github-app-token@v2
-        with:
-          app-id: ${{ secrets.APP_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Version bump PR
         if: steps.tag_check.outputs.exists == 'false'
