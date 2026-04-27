@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.0] - 2026-04-27
+
+### Bug fixes
+
+- inline helper python scripts to fix container-job failure (#204)
+- add safe.directory '*' for container workspace ownership (#206)
+
+### Documentation
+
+- clarify install paths and verification error (#202)
+
+### Features
+
+- freeze internal @develop refs at tag-cut time
+
 ## [1.2.1] - 2026-04-24
 
 ### Bug fixes
