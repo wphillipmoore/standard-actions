@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - inline helper python scripts to fix container-job failure (#204)
 - add safe.directory '*' for container workspace ownership (#206)
+- use App token throughout publish.yml so freeze-refs commit can be pushed
 
 ### Documentation
 
