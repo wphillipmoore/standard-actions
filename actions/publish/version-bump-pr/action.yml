@@ -180,10 +180,16 @@ runs:
           echo "Using explicit tracking-issue input: #${issue}"
         else
           echo "Searching for issue titled \"release: ${{ inputs.current-version }}\"..."
+          # Use the Issues API (real-time) with a client-side title filter,
+          # not the Search API (--search), which has indexing latency. The
+          # tracking issue is typically created seconds before this step
+          # runs, so it may not be in the search index yet.
           issue=$(gh issue list \
             --state all \
-            --search "release: ${{ inputs.current-version }} in:title" \
-            --json number --jq '.[0].number // empty') || true
+            --limit 200 \
+            --json number,title \
+            --jq ".[] | select(.title == \"release: ${{ inputs.current-version }}\") | .number" \
+            | head -1) || true
           if [ -n "$issue" ]; then
             echo "Found tracking issue: #${issue}"
           else
