@@ -5,41 +5,33 @@
 Configure the repository to use the shared git hooks:
 
 ```bash
-git config core.hooksPath scripts/git-hooks
+git config core.hooksPath .githooks
 ```
 
 This enables the pre-commit hook that prevents direct commits to protected
 branches (`main`, `develop`).
 
-## External tooling
+## Host prerequisites
 
-The following tools are required for local development and validation:
-
-### Validation tools
-
-| Tool | Install command | Purpose |
-| ------ | ---------------- | --------- |
-| `actionlint` | `brew install actionlint` | GitHub Actions workflow linter |
-| `shellcheck` | `brew install shellcheck` | Shell script static analysis |
-| `markdownlint` | `npm install --global markdownlint-cli` | Markdown formatting linter |
-
-### Documentation tools
-
-| Tool | Install command | Purpose |
-| ------ | ---------------- | --------- |
-| `mkdocs-material` | `pip install mkdocs-material` | MkDocs with Material theme |
-| `mike` | `pip install mike` | Versioned documentation deployment |
-
-### Local documentation preview
-
-To preview the documentation site locally:
+Install the standard-tooling host tool, which provides `st-docker-run`,
+`st-commit`, `st-validate-local`, and other workflow commands:
 
 ```bash
-mkdocs serve -f docs/site/mkdocs.yml
+uv tool install 'standard-tooling @ git+https://github.com/wphillipmoore/standard-tooling@v1.4'
 ```
 
-To verify the build with strict mode (catches broken links and warnings):
+Docker must be running for `st-docker-run` to work.
+
+## Validation and development tools
+
+All validation tools (actionlint, shellcheck, markdownlint, yamllint) and
+documentation tools (mkdocs-material, mike) are pre-installed in the
+`ghcr.io/wphillipmoore/dev-base:latest` container image. No manual host
+installs are needed — `st-docker-run` pulls and runs this image
+automatically.
 
 ```bash
-mkdocs build -f docs/site/mkdocs.yml --strict
+st-docker-run -- st-validate-local       # Run all validation checks
+st-docker-run -- mkdocs serve -f docs/site/mkdocs.yml   # Preview docs locally
+st-docker-run -- mkdocs build -f docs/site/mkdocs.yml --strict  # Strict docs build
 ```
