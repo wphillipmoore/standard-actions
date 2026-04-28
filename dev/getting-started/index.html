@@ -2230,15 +2230,14 @@
 
 <h1 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h1>
 <h2 id="consuming-actions">Consuming actions<a class="headerlink" href="#consuming-actions" title="Permanent link">&para;</a></h2>
-<p>Reference actions from this repository using the full path with a branch or tag
-pin:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/&lt;action-path&gt;@develop</span>
+<p>Reference actions from this repository using the full path with a rolling minor
+tag pin:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/&lt;action-path&gt;@v1.4</span>
 </code></pre></div>
 <div class="admonition note">
-<p class="admonition-title">Branch pinning</p>
-<p>During the pre-release period (0.x), all consumers pin to <code>@develop</code>.
-Versioned tag-based pinning will be available once publishing automation is
-complete.</p>
+<p class="admonition-title">Tag pinning</p>
+<p>Pin to a rolling minor tag (e.g., <code>@v1.4</code>) to automatically receive patch
+releases. Pin to an exact tag (e.g., <code>@v1.4.1</code>) for full reproducibility.</p>
 </div>
 <h2 id="minimal-workflow-example">Minimal workflow example<a class="headerlink" href="#minimal-workflow-example" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CI - Test and Validate</span>
@@ -2256,7 +2255,7 @@ complete.</p>
 <a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v6</span>
 <a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">          </span><span class="nt">fetch-depth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/standards-compliance@develop</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/standards-compliance@v1.4</span>
 </code></pre></div>
 <h2 id="permissions">Permissions<a class="headerlink" href="#permissions" title="Permanent link">&para;</a></h2>
 <p>Each action documents its required workflow permissions. Common patterns:</p>
@@ -2288,7 +2287,7 @@ references in its own CI workflow. This means changes to an action are validated
 by the same PR that modifies them — no separate integration testing step is
 needed.</p>
 <p>Consuming repositories use the full remote reference
-(<code>wphillipmoore/standard-actions/actions/...@develop</code>).</p>
+(<code>wphillipmoore/standard-actions/actions/...@v1.4</code>).</p>
 
 
 

@@ -1272,28 +1272,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#with-commit-cutoff-for-legacy-repos" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        With commit cutoff for legacy repos
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#skip-sync-check-for-canonical-tooling-repo" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Skip sync check for canonical tooling repo
-      
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -2320,28 +2298,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#with-commit-cutoff-for-legacy-repos" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        With commit cutoff for legacy repos
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#skip-sync-check-for-canonical-tooling-repo" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Skip sync check for canonical tooling repo
-      
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -2376,82 +2332,46 @@
 
 
 <h1 id="standards-compliance">standards-compliance<a class="headerlink" href="#standards-compliance" title="Permanent link">&para;</a></h1>
-<p>Validates repository standards: markdown formatting, commit messages, PR issue
-linkage, and repository profile.</p>
+<p>Validates repository standards: markdown formatting, PR issue linkage,
+auto-close keyword rejection, and repository profile.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/standards-compliance@develop</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">commit-cutoff-sha</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">skip-sync-check</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;false&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/standards-compliance@v1.4</span>
 </code></pre></div>
 <h2 id="inputs">Inputs<a class="headerlink" href="#inputs" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Required</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>commit-cutoff-sha</code></td>
-<td>No</td>
-<td><code>""</code></td>
-<td>Skip commits at or before this SHA. Repos that adopted conventional commits after their initial history pass their cutoff here.</td>
-</tr>
-<tr>
-<td><code>skip-sync-check</code></td>
-<td>No</td>
-<td><code>false</code></td>
-<td>Skip the shared tooling staleness check. Set to <code>true</code> for repositories that ARE the canonical source for synced scripts (e.g. standard-tooling).</td>
-</tr>
-</tbody>
-</table>
+<p>None. The action has no configurable inputs.</p>
 <h2 id="permissions">Permissions<a class="headerlink" href="#permissions" title="Permanent link">&para;</a></h2>
 <ul>
 <li><code>contents: read</code> (default for <code>github.token</code>)</li>
 </ul>
 <h2 id="behavior">Behavior<a class="headerlink" href="#behavior" title="Permanent link">&para;</a></h2>
+<p>The action delegates to standard-tooling CLI validators that must be on PATH.
+This is satisfied either by the dev container image (non-Python consumers) or
+by the consumer's own <code>uv sync --group dev</code> (Python consumers).</p>
 <ol>
-<li><strong>Set up Node.js</strong> — Installs Node.js 20 for markdownlint.</li>
-<li><strong>Install markdownlint-cli</strong> — Global npm install.</li>
-<li><strong>Fetch base branch</strong> — On pull requests, fetches the base branch for commit
-   range linting.</li>
-<li><strong>Validate repository profile</strong> — Runs <code>repo-profile.sh</code> to check required
-   repository metadata files.</li>
-<li><strong>Validate markdown standards</strong> — Runs <code>markdown-standards.sh</code> with
-   markdownlint against the repository.</li>
-<li><strong>Validate commit messages</strong> — On pull requests, runs <code>commit-messages.sh</code> to
-   verify conventional commit format for all commits in the PR range.</li>
-<li><strong>Validate PR issue linkage</strong> — On pull requests, runs <code>pr-issue-linkage.sh</code>
+<li><strong>Verify standard-tooling is installed</strong> — Checks that <code>st-repo-profile</code> is
+   available on PATH. Fails with a diagnostic message if not found.</li>
+<li><strong>Validate repository profile</strong> — Runs <code>st-repo-profile</code> to check required
+   repository metadata.</li>
+<li><strong>Validate markdown standards</strong> — Runs <code>st-markdown-standards</code> to lint
+   markdown files.</li>
+<li><strong>Validate PR issue linkage</strong> — On pull requests, runs <code>st-pr-issue-linkage</code>
    to verify the PR body references a GitHub issue.</li>
-<li><strong>Validate shared tooling</strong> — On PRs targeting <code>develop</code>, checks whether
-   shared scripts are up to date with the canonical versions in the
-   <code>standard-tooling</code> package.</li>
+<li><strong>Reject auto-close linkage keywords</strong> — On pull requests, inspects the PR
+   body for <code>Fixes</code>, <code>Closes</code>, or <code>Resolves</code> keywords targeting an issue
+   reference. These keywords are rejected because auto-closing bypasses the
+   <code>st-finalize-repo</code> workflow. Use <code>Ref #N</code> instead.</li>
 </ol>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <h3 id="basic-usage">Basic usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v6</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">fetch-depth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/standards-compliance@develop</span>
-</code></pre></div>
-<h3 id="with-commit-cutoff-for-legacy-repos">With commit cutoff for legacy repos<a class="headerlink" href="#with-commit-cutoff-for-legacy-repos" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/standards-compliance@develop</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">commit-cutoff-sha</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;abc123def456&quot;</span>
-</code></pre></div>
-<h3 id="skip-sync-check-for-canonical-tooling-repo">Skip sync check for canonical tooling repo<a class="headerlink" href="#skip-sync-check-for-canonical-tooling-repo" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/standards-compliance@develop</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">skip-sync-check</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/standards-compliance@v1.4</span>
 </code></pre></div>
 <h2 id="github-configuration">GitHub configuration<a class="headerlink" href="#github-configuration" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Repository profile</strong> — The repo must contain the files checked by
-  <code>repo-profile.sh</code> (typically <code>README.md</code>, <code>LICENSE</code>, <code>VERSION</code>, and standard
+  <code>st-repo-profile</code> (typically <code>README.md</code>, <code>LICENSE</code>, <code>VERSION</code>, and standard
   documentation files).</li>
 <li><strong>Branch protection</strong> — Recommended: require this check to pass on <code>develop</code>
   and <code>main</code> branches.</li>

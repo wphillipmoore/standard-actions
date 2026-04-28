@@ -2345,7 +2345,8 @@ provides integration testing without a separate test repository.</p>
 </ul>
 <p>Optional flags:</p>
 <ul>
-<li><code>--linkage</code>: <code>Fixes|Closes|Resolves|Ref</code> (default: <code>Fixes</code>)</li>
+<li><code>--linkage</code>: <code>Ref</code> (default). <code>Fixes</code>, <code>Closes</code>, and <code>Resolves</code> are rejected
+  by the <code>standards-compliance</code> CI gate.</li>
 <li><code>--title</code>: PR title (default: most recent commit subject)</li>
 <li><code>--notes</code>: Additional notes</li>
 <li><code>--dry-run</code>: Print without executing</li>
