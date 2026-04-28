@@ -4,15 +4,9 @@
 > [MkDocs documentation site](https://wphillipmoore.github.io/standard-actions/development/environment-and-tooling/).
 > It is retained for backward compatibility.
 
-## Table of Contents
+## Host prerequisites
 
-- [Purpose](#purpose)
-- [External tooling dependencies](#external-tooling-dependencies)
-
-## Purpose
-
-Define the minimal external tooling required for development and validation.
-
-## External tooling dependencies
+Install the standard-tooling host tool and ensure Docker is running. All
+other tools run inside the dev-base container via `st-docker-run`.
 
 See [tooling-dependencies.md](tooling-dependencies.md).

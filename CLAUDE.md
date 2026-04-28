@@ -98,20 +98,21 @@ git config core.hooksPath .githooks  # Enable the pre-commit gate
 ```
 
 Standard-tooling CLI tools (`st-commit`, `st-validate-local`, etc.) are
-pre-installed in the dev container images. No local setup required.
+pre-installed in the dev container images. No local setup required beyond
+the host-level tool (`st-docker-run`, `st-commit`, etc.):
 
-Additional tools required:
+```bash
+uv tool install 'standard-tooling @ git+https://github.com/wphillipmoore/standard-tooling@v1.4'
+```
 
-- **markdownlint**: `npm install --global markdownlint-cli`
-- **mkdocs-material**: `pip install mkdocs-material`
-- **mike**: `pip install mike`
-- **actionlint**: `brew install actionlint`
-- **shellcheck**: `brew install shellcheck`
+All validation tools (yamllint, shellcheck, actionlint, markdownlint, etc.)
+run inside the `ghcr.io/wphillipmoore/dev-base:latest` container — no manual
+host installs needed.
 
 ### Validation
 
 ```bash
-st-validate-local    # Canonical validation (dispatches to common + custom checks)
+st-docker-run -- st-validate-local   # Canonical validation (runs in dev-base container)
 ```
 
 ## Architecture
@@ -132,15 +133,11 @@ This repository's CI workflow uses **local paths** (`./actions/...`) rather than
 
 ### Standard-Tooling Integration
 
-Shared validators (`st-repo-profile`, `st-markdown-standards`, `st-pr-issue-linkage`) are provided by `standard-tooling`. CI uses the dev container image's pre-baked install (non-Python consumers like this one). Locally, install the host tool per the [host-level-tool spec](https://github.com/wphillipmoore/standard-tooling/blob/develop/docs/specs/host-level-tool.md):
-
-```bash
-uv tool install 'standard-tooling @ git+https://github.com/wphillipmoore/standard-tooling@v1.3'
-# or, for the alternative pip-based path:
-pip install 'standard-tooling @ git+https://github.com/wphillipmoore/standard-tooling@v1.3'
-```
-
-The `standards-compliance` action no longer clones `standard-tooling` onto the runner — it assumes `st-*` is on `PATH` either via the dev container pre-bake (non-Python) or `uv sync --group dev` (Python).
+Shared validators (`st-repo-profile`, `st-markdown-standards`,
+`st-pr-issue-linkage`) are provided by `standard-tooling`. CI uses the
+`ghcr.io/wphillipmoore/dev-base:latest` container image which has all
+validators pre-installed. Locally, `st-docker-run` uses the same image so
+validation results match CI exactly.
 
 ### Repo-Specific Scripts
 

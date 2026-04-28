@@ -3,44 +3,32 @@
 ## Canonical command
 
 ```bash
-scripts/dev/validate_local.sh
+st-docker-run -- st-validate-local
 ```
 
-This is the single entry point for all local validation. Run it before
-committing to catch issues early.
+This runs all validation inside the `ghcr.io/wphillipmoore/dev-base:latest`
+container, which has every required tool pre-installed. No manual host
+installs needed beyond the standard-tooling host tool.
 
 ## Dispatch architecture
 
-`validate_local.sh` uses a dispatch architecture that separates common
-validation (shared across repositories) from repository-specific checks:
+`st-validate-local` uses a dispatch architecture that separates common
+validation from repository-specific checks:
 
-1. **Common checks** — Sourced from `standard-tooling` via the sync mechanism.
-   These include markdownlint, shellcheck, and other universal validations.
-2. **Custom checks** — Repository-specific validations defined locally, such as
-   actionlint for this repository's workflow files.
+1. **Common checks** (`st-validate-local-common`) — repo-profile validation,
+   markdown standards, shellcheck, and yamllint.
+2. **Custom checks** (`scripts/bin/validate-local-custom`) — repository-specific
+   validations defined locally (actionlint for this repository's workflow files).
 
-The `standard-tooling` package provides the common validation scripts via
-`st-*` CLI commands. The `standards-compliance` action checks script freshness
-in CI to ensure local copies stay in sync with the canonical versions.
+## Tooling
 
-## Docs-only validation
+All validation tools are pre-installed in the dev-base container image:
 
-For changes that only affect documentation:
+| Tool | Purpose |
+| --- | --- |
+| `actionlint` | GitHub Actions workflow linter |
+| `shellcheck` | Shell script static analysis |
+| `markdownlint` | Markdown formatting linter |
+| `yamllint` | YAML formatting linter |
 
-```bash
-scripts/dev/validate_docs.sh
-```
-
-This runs a subset of checks relevant to documentation changes (primarily
-markdownlint).
-
-## Tooling dependencies
-
-Validation requires the following tools to be installed:
-
-- `actionlint` — GitHub Actions workflow linting
-- `shellcheck` — Shell script static analysis
-- `markdownlint` — Markdown formatting
-
-See [Environment and Tooling](environment-and-tooling.md) for installation
-instructions.
+No host-level installs of these tools are required.
