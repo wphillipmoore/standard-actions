@@ -4,17 +4,8 @@
 > [MkDocs documentation site](https://wphillipmoore.github.io/standard-actions/development/environment-and-tooling/).
 > It is retained for backward compatibility.
 
-## Table of Contents
-
-- [Purpose](#purpose)
-- [Required tools](#required-tools)
-
-## Purpose
-
-List external tools required for validation and daily workflow.
-
 ## Required tools
 
-- `actionlint`
-- `shellcheck`
-- `markdownlint`
+All validation tools (actionlint, shellcheck, markdownlint, yamllint) are
+pre-installed in the `ghcr.io/wphillipmoore/dev-base:latest` container image
+and run via `st-docker-run`. No manual host installs needed.

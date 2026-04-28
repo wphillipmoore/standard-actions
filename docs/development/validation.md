@@ -4,23 +4,11 @@
 > [MkDocs documentation site](https://wphillipmoore.github.io/standard-actions/development/validation/).
 > It is retained for backward compatibility.
 
-## Table of Contents
+## Canonical command
 
-- [Purpose](#purpose)
-- [Canonical commands](#canonical-commands)
-- [Tooling dependencies](#tooling-dependencies)
+```bash
+st-docker-run -- st-validate-local
+```
 
-## Purpose
-
-Define the required local validation commands for this repository.
-
-## Canonical commands
-
-- Full validation: `scripts/dev/validate_local.sh`
-- Docs-only validation: `scripts/dev/validate_docs.sh`
-
-## Tooling dependencies
-
-- `actionlint`
-- `shellcheck`
-- `markdownlint`
+All validation tools run inside the dev-base container image. No manual
+host installs needed beyond the standard-tooling host tool.
