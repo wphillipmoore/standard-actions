@@ -561,6 +561,8 @@
       
         
       
+        
+      
     
     
     
@@ -613,6 +615,34 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../releases/v1.4.1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v1.4.1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -2051,21 +2081,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docs-only-validation" class="md-nav__link">
+  <a href="#tooling" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Docs-only validation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tooling-dependencies" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tooling dependencies
+        Tooling
       
     </span>
   </a>
@@ -2165,21 +2184,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docs-only-validation" class="md-nav__link">
+  <a href="#tooling" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Docs-only validation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tooling-dependencies" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tooling dependencies
+        Tooling
       
     </span>
   </a>
@@ -2205,37 +2213,49 @@
 
 <h1 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">&para;</a></h1>
 <h2 id="canonical-command">Canonical command<a class="headerlink" href="#canonical-command" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>scripts/dev/validate_local.sh
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>st-docker-run<span class="w"> </span>--<span class="w"> </span>st-validate-local
 </code></pre></div>
-<p>This is the single entry point for all local validation. Run it before
-committing to catch issues early.</p>
+<p>This runs all validation inside the <code>ghcr.io/wphillipmoore/dev-base:latest</code>
+container, which has every required tool pre-installed. No manual host
+installs needed beyond the standard-tooling host tool.</p>
 <h2 id="dispatch-architecture">Dispatch architecture<a class="headerlink" href="#dispatch-architecture" title="Permanent link">&para;</a></h2>
-<p><code>validate_local.sh</code> uses a dispatch architecture that separates common
-validation (shared across repositories) from repository-specific checks:</p>
+<p><code>st-validate-local</code> uses a dispatch architecture that separates common
+validation from repository-specific checks:</p>
 <ol>
-<li><strong>Common checks</strong> — Sourced from <code>standard-tooling</code> via the sync mechanism.
-   These include markdownlint, shellcheck, and other universal validations.</li>
-<li><strong>Custom checks</strong> — Repository-specific validations defined locally, such as
-   actionlint for this repository's workflow files.</li>
+<li><strong>Common checks</strong> (<code>st-validate-local-common</code>) — repo-profile validation,
+   markdown standards, shellcheck, and yamllint.</li>
+<li><strong>Custom checks</strong> (<code>scripts/bin/validate-local-custom</code>) — repository-specific
+   validations defined locally (actionlint for this repository's workflow files).</li>
 </ol>
-<p>The <code>standard-tooling</code> package provides the common validation scripts via
-<code>st-*</code> CLI commands. The <code>standards-compliance</code> action checks script freshness
-in CI to ensure local copies stay in sync with the canonical versions.</p>
-<h2 id="docs-only-validation">Docs-only validation<a class="headerlink" href="#docs-only-validation" title="Permanent link">&para;</a></h2>
-<p>For changes that only affect documentation:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>scripts/dev/validate_docs.sh
-</code></pre></div>
-<p>This runs a subset of checks relevant to documentation changes (primarily
-markdownlint).</p>
-<h2 id="tooling-dependencies">Tooling dependencies<a class="headerlink" href="#tooling-dependencies" title="Permanent link">&para;</a></h2>
-<p>Validation requires the following tools to be installed:</p>
-<ul>
-<li><code>actionlint</code> — GitHub Actions workflow linting</li>
-<li><code>shellcheck</code> — Shell script static analysis</li>
-<li><code>markdownlint</code> — Markdown formatting</li>
-</ul>
-<p>See <a href="../environment-and-tooling/">Environment and Tooling</a> for installation
-instructions.</p>
+<h2 id="tooling">Tooling<a class="headerlink" href="#tooling" title="Permanent link">&para;</a></h2>
+<p>All validation tools are pre-installed in the dev-base container image:</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>actionlint</code></td>
+<td>GitHub Actions workflow linter</td>
+</tr>
+<tr>
+<td><code>shellcheck</code></td>
+<td>Shell script static analysis</td>
+</tr>
+<tr>
+<td><code>markdownlint</code></td>
+<td>Markdown formatting linter</td>
+</tr>
+<tr>
+<td><code>yamllint</code></td>
+<td>YAML formatting linter</td>
+</tr>
+</tbody>
+</table>
+<p>No host-level installs of these tools are required.</p>
 
 
 
