@@ -29,8 +29,8 @@ actions/
 ## Branching and releases
 
 - `develop` is the integration branch.
-- Release branches are named `release/<major>.<minor>.x`.
-- Releases are tagged on the release branch.
+- Release branches are named `release/<version>` (e.g., `release/1.4.1`).
+- Releases are tagged on `main` after the release PR merges.
 
 ## Versioning
 
@@ -44,5 +44,6 @@ Full documentation is available at
 
 ## Validation
 
-- Full validation: `scripts/dev/validate_local.sh`
-- Docs-only validation: `scripts/dev/validate_docs.sh`
+```bash
+st-docker-run -- st-validate-local
+```

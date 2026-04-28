@@ -98,8 +98,9 @@ publish mechanism.
 ## Version bump PR
 
 The `version-bump-pr` action computes the next patch version, creates a branch
-from develop that merges main, updates the version file, and opens an auto-merge
-PR. Key configuration points:
+from develop that merges main, updates the version file, and opens a PR. The
+release workflow agent drives the merge via `st-merge-when-green`. Key
+configuration points:
 
 ### Regex quoting
 
