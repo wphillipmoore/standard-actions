@@ -55,7 +55,7 @@ jobs:
       # Rewrite internal @develop refs in the working tree, then commit
       # locally on top of the checked-out HEAD. The tag step below tags
       # this commit, so the tagged snapshot has internally-consistent
-      # refs (every wphillipmoore/standard-actions/...@develop becomes
+      # refs (every wphillipmoore/standard-actions/...@v1.4.0 becomes
       # ...@<release-tag>). The commit is reachable only via the tag —
       # it is never pushed to develop or main.
       - name: Freeze internal @develop refs to release tag
@@ -84,7 +84,7 @@ jobs:
 
       - name: Tag and release
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@develop
+        uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@v1.4.0
         with:
           version: ${{ steps.version.outputs.version }}
           release-title: standard-actions
@@ -95,7 +95,7 @@ jobs:
 
       - name: Version bump PR
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@develop
+        uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@v1.4.0
         with:
           current-version: ${{ steps.version.outputs.version }}
           version-file: VERSION

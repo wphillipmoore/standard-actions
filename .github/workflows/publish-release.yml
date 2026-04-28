@@ -288,7 +288,7 @@ jobs:
         if: >-
           steps.tag_check.outputs.exists == 'false' &&
           inputs.sbom-output-file != ''
-        uses: wphillipmoore/standard-actions/actions/security/trivy@develop
+        uses: wphillipmoore/standard-actions/actions/security/trivy@v1.4.0
         with:
           scan-type: sbom
           output-file: ${{ steps.resolved.outputs.sbom-output-file }}
@@ -338,7 +338,7 @@ jobs:
 
       - name: Tag and release
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@develop
+        uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@v1.4.0
         with:
           version: ${{ steps.version.outputs.version }}
           release-title: ${{ inputs.release-title }}
@@ -355,7 +355,7 @@ jobs:
 
       - name: Version bump PR
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@develop
+        uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@v1.4.0
         with:
           current-version: ${{ steps.version.outputs.version }}
           version-file: ${{ inputs.version-file }}
