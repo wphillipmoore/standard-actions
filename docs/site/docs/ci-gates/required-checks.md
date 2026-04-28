@@ -66,7 +66,7 @@ skip standards and security while PR CI (tier 3) runs the full suite:
 
 ```yaml
 security-and-standards:
-  uses: wphillipmoore/standard-actions/.github/workflows/ci-security.yml@develop
+  uses: wphillipmoore/standard-actions/.github/workflows/ci-security.yml@v1.4
   with:
     language: <lang>
     run-standards: ${{ inputs.run-release-gates || 'true' }}

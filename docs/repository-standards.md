@@ -13,7 +13,7 @@
 - versioning_scheme: library
 - branching_model: library-release
 - release_model: artifact-publishing
-- supported_release_lines: 0.x (pre-release)
+- supported_release_lines: 1.x
 - primary_language: shell
 
 ## AI co-authors

@@ -85,7 +85,7 @@ This is a shared GitHub Actions library providing reusable composite actions for
 
 **Project name**: standard-actions
 
-**Status**: Pre-release (0.x)
+**Status**: v1.x (stable)
 
 **Canonical Standards**: This repository follows standards at <https://github.com/wphillipmoore/standards-and-conventions> (local path: `../standards-and-conventions` if available)
 
@@ -121,7 +121,7 @@ st-docker-run -- st-validate-local   # Canonical validation (runs in dev-base co
 
 All actions live under `actions/` as composite GitHub Actions:
 
-- `actions/standards-compliance` — Validates repo profile, markdown, commit messages, and PR linkage (delegates to standard-tooling validators via PATH)
+- `actions/standards-compliance` — Validates repo profile, markdown, PR linkage, and rejects auto-close keywords (delegates to standard-tooling validators via PATH)
 - `actions/python/setup` — Python environment setup with uv and caching
 - `actions/security/codeql` — CodeQL static analysis
 - `actions/security/semgrep` — Semgrep SAST scanning

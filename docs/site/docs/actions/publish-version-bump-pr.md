@@ -11,7 +11,7 @@ via `st-merge-when-green` from a release skill).
 ## Usage
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@develop
+- uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@v1.4
   with:
     current-version: "1.2.3"
     version-file: VERSION
@@ -81,7 +81,7 @@ via `st-merge-when-green` from a release skill).
 ### Simple VERSION file bump
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@develop
+- uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@v1.4
   with:
     current-version: ${{ steps.release.outputs.version }}
     version-file: VERSION
@@ -94,7 +94,7 @@ via `st-merge-when-green` from a release skill).
 ### Python project with lock file refresh
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@develop
+- uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@v1.4
   with:
     current-version: "1.0.0"
     version-file: pyproject.toml
@@ -111,7 +111,7 @@ via `st-merge-when-green` from a release skill).
 - **GitHub App** — A GitHub App installation token is required for the
   `app-token` input. The app must have permissions to create branches, push
   commits, and create/merge pull requests.
-- **Auto-merge** — Must be enabled in repository settings for the `--auto`
-  flag to work.
+- **Merge policy** — The PR is not auto-merged. The release workflow agent
+  drives the merge via `st-merge-when-green` after CI passes.
 - **Branch protection** — The `develop` branch must allow PR merges from the
   GitHub App.
