@@ -40,3 +40,16 @@ runs:
       if: github.event_name == 'pull_request'
       shell: bash
       run: st-pr-issue-linkage
+
+    - name: Reject auto-close linkage keywords
+      if: github.event_name == 'pull_request'
+      shell: bash
+      run: |
+        PR_BODY=$(jq -r '.pull_request.body // ""' "$GITHUB_EVENT_PATH")
+        if echo "$PR_BODY" | grep -qEi '^\s*[-*]?\s*(Fixes|Closes|Resolves):?\s+([a-zA-Z0-9._-]+/[a-zA-Z0-9._-]+)?#[0-9]+'; then
+          echo "::error::PR body contains auto-close linkage (Fixes/Closes/Resolves)."
+          echo "Use 'Ref #N' instead. Auto-close keywords cause issues to close"
+          echo "before finalization is complete. The st-finalize-repo workflow"
+          echo "handles issue closure at the right time."
+          exit 1
+        fi
