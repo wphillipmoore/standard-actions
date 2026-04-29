@@ -1,39 +1,13 @@
 name: Standards compliance
 description: >-
-  Validates repository standards: markdown formatting, PR issue
-  linkage, and repository profile. Assumes standard-tooling is on
-  PATH — the ci-security workflow installs it before calling this
-  action (uv sync for Python repos, pip install from st-config.toml
-  for non-Python repos). The verification step below catches setups
-  where the install did not run.
+  PR-specific compliance checks: issue linkage and auto-close keyword
+  rejection. Repository profile, markdown, and other structural
+  validations are handled by st-validate-local-common (run separately
+  in the CI workflow).
 
 runs:
   using: composite
   steps:
-    - name: Verify standard-tooling is installed
-      shell: bash
-      run: |
-        if ! command -v st-repo-profile >/dev/null 2>&1; then
-          {
-            echo "::error::st-repo-profile not found on PATH."
-            echo "The ci-security workflow should install standard-tooling"
-            echo "before this action runs. For Python repos it runs"
-            echo "'uv sync --group dev'; for non-Python repos it reads"
-            echo "st-config.toml and pip-installs the pinned version."
-            echo "See wphillipmoore/standard-tooling"
-            echo "docs/specs/host-level-tool.md."
-          }
-          exit 1
-        fi
-
-    - name: Validate repository profile
-      shell: bash
-      run: st-repo-profile
-
-    - name: Validate markdown standards
-      shell: bash
-      run: st-markdown-standards
-
     - name: Validate pull request issue linkage
       if: github.event_name == 'pull_request'
       shell: bash
