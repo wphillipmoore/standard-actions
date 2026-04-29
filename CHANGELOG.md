@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.4.4] - 2026-04-29
+
+### Bug fixes
+
+- self-install standard-tooling when not on PATH
+
 ## [1.4.3] - 2026-04-29
 
 ### Refactoring
