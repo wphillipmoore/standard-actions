@@ -121,7 +121,7 @@ st-docker-run -- st-validate-local   # Canonical validation (runs in dev-base co
 
 All actions live under `actions/` as composite GitHub Actions:
 
-- `actions/standards-compliance` — Validates repo profile, markdown, PR linkage, and rejects auto-close keywords (delegates to standard-tooling validators via PATH)
+- `actions/standards-compliance` — PR-specific compliance checks: issue linkage and auto-close keyword rejection
 - `actions/python/setup` — Python environment setup with uv and caching
 - `actions/security/codeql` — CodeQL static analysis
 - `actions/security/semgrep` — Semgrep SAST scanning
@@ -133,9 +133,9 @@ This repository's CI workflow uses **local paths** (`./actions/...`) rather than
 
 ### Standard-Tooling Integration
 
-Shared validators (`st-repo-profile`, `st-markdown-standards`,
-`st-pr-issue-linkage`) are provided by `standard-tooling`. CI uses the
-`ghcr.io/wphillipmoore/dev-base:latest` container image which has all
+Shared validators (`st-repo-profile`, `st-pr-issue-linkage`) and local
+validation (`st-validate-local`) are provided by `standard-tooling`. CI uses
+the `ghcr.io/wphillipmoore/dev-base:latest` container image which has all
 validators pre-installed. Locally, `st-docker-run` uses the same image so
 validation results match CI exactly.
 

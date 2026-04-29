@@ -1,7 +1,8 @@
 # standards-compliance
 
-Validates repository standards: markdown formatting, PR issue linkage,
-auto-close keyword rejection, and repository profile.
+PR-specific compliance checks: issue linkage and auto-close keyword rejection.
+Repository profile, markdown, and other structural validations are handled by
+`st-validate-local-common` (run separately in the CI workflow).
 
 ## Usage
 
@@ -19,22 +20,14 @@ None. The action has no configurable inputs.
 
 ## Behavior
 
-The action delegates to standard-tooling CLI validators that must be on PATH.
-This is satisfied either by the dev container image (non-Python consumers) or
-by the consumer's own `uv sync --group dev` (Python consumers).
-
-1. **Verify standard-tooling is installed** — Checks that `st-repo-profile` is
-   available on PATH. Fails with a diagnostic message if not found.
-2. **Validate repository profile** — Runs `st-repo-profile` to check required
-   repository metadata.
-3. **Validate markdown standards** — Runs `st-markdown-standards` to lint
-   markdown files.
-4. **Validate PR issue linkage** — On pull requests, runs `st-pr-issue-linkage`
+1. **Validate PR issue linkage** — On pull requests, runs `st-pr-issue-linkage`
    to verify the PR body references a GitHub issue.
-5. **Reject auto-close linkage keywords** — On pull requests, inspects the PR
+2. **Reject auto-close linkage keywords** — On pull requests, inspects the PR
    body for `Fixes`, `Closes`, or `Resolves` keywords targeting an issue
    reference. These keywords are rejected because auto-closing bypasses the
    `st-finalize-repo` workflow. Use `Ref #N` instead.
+
+Both steps only run on `pull_request` events.
 
 ## Examples
 
@@ -49,8 +42,5 @@ by the consumer's own `uv sync --group dev` (Python consumers).
 
 ## GitHub configuration
 
-- **Repository profile** — The repo must contain the files checked by
-  `st-repo-profile` (typically `README.md`, `LICENSE`, `VERSION`, and standard
-  documentation files).
 - **Branch protection** — Recommended: require this check to pass on `develop`
   and `main` branches.
