@@ -53,7 +53,8 @@ jobs:
           if [ "${{ inputs.language }}" = "python" ]; then
             uv sync --group dev --frozen
             echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
-          else
+          fi
+          if ! command -v st-repo-profile >/dev/null 2>&1; then
             TAG=$(sed -n 's/^[[:space:]]*tag[[:space:]]*=[[:space:]]*"\(.*\)"/\1/p' st-config.toml)
             if [ -z "$TAG" ]; then
               echo "::error::st-config.toml not found or missing [standard-tooling] tag"
