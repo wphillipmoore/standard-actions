@@ -2,12 +2,10 @@ name: Standards compliance
 description: >-
   Validates repository standards: markdown formatting, PR issue
   linkage, and repository profile. Assumes standard-tooling is on
-  PATH — either via the dev container image's pre-baked install
-  (non-Python consumers) or via the consumer's own
-  `uv sync --group dev` (Python consumers, per the host-level-tool
-  spec at wphillipmoore/standard-tooling docs/specs/host-level-tool.md).
-  The verification step below catches setups where neither path is in
-  effect.
+  PATH — the ci-security workflow installs it before calling this
+  action (uv sync for Python repos, pip install from st-config.toml
+  for non-Python repos). The verification step below catches setups
+  where the install did not run.
 
 runs:
   using: composite
@@ -18,10 +16,10 @@ runs:
         if ! command -v st-repo-profile >/dev/null 2>&1; then
           {
             echo "::error::st-repo-profile not found on PATH."
-            echo "Either run inside a dev container image with"
-            echo "standard-tooling pre-baked (non-Python consumers),"
-            echo "or run after 'uv sync --group dev' so the project's"
-            echo ".venv/bin is on PATH (Python consumers)."
+            echo "The ci-security workflow should install standard-tooling"
+            echo "before this action runs. For Python repos it runs"
+            echo "'uv sync --group dev'; for non-Python repos it reads"
+            echo "st-config.toml and pip-installs the pinned version."
             echo "See wphillipmoore/standard-tooling"
             echo "docs/specs/host-level-tool.md."
           }
