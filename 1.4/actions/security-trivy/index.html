@@ -563,6 +563,8 @@
       
         
       
+        
+      
     
     
     
@@ -615,6 +617,34 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../releases/v1.4.2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v1.4.2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1678,6 +1708,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#custom-sarif-category-for-matrix-builds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom SARIF category for matrix builds
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2420,6 +2461,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#custom-sarif-category-for-matrix-builds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom SARIF category for matrix builds
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2456,7 +2508,7 @@
 <h1 id="securitytrivy">security/trivy<a class="headerlink" href="#securitytrivy" title="Permanent link">&para;</a></h1>
 <p>Runs Trivy vulnerability scanning, SBOM generation, or container image scanning.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/security/trivy@develop</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/security/trivy@v1.4</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">scan-type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fs</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">scan-ref</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;.&quot;</span>
@@ -2512,6 +2564,24 @@
 <td><code>trivy-results.sarif</code></td>
 <td>Output file path for SARIF or SBOM results.</td>
 </tr>
+<tr>
+<td><code>sarif-category</code></td>
+<td>No</td>
+<td><code>""</code></td>
+<td>Category for SARIF upload. Use unique values when multiple matrix entries upload SARIF to avoid overwrites. Defaults to <code>trivy-fs</code> or <code>trivy-image</code> based on scan-type.</td>
+</tr>
+<tr>
+<td><code>trivyignores</code></td>
+<td>No</td>
+<td><code>""</code></td>
+<td>Comma-separated list of <code>.trivyignore</code> file paths.</td>
+</tr>
+<tr>
+<td><code>trivy-image</code></td>
+<td>No</td>
+<td><code>aquasec/trivy:0.70.0</code></td>
+<td>Docker image to use for Trivy. Override to pin a specific version.</td>
+</tr>
 </tbody>
 </table>
 <h2 id="permissions">Permissions<a class="headerlink" href="#permissions" title="Permanent link">&para;</a></h2>
@@ -2521,25 +2591,30 @@
 <li><code>contents: read</code></li>
 </ul>
 <h2 id="behavior">Behavior<a class="headerlink" href="#behavior" title="Permanent link">&para;</a></h2>
-<p>The action branches based on <code>scan-type</code>:</p>
+<p>The action runs Trivy via Docker (<code>docker run</code>) rather than the
+<code>aquasecurity/trivy-action</code> GitHub Action. Each scan mode uses a single Docker
+session that scans once to JSON, then converts to both table output (stdout) and
+SARIF (file). The <code>trivy convert</code> step operates on cached JSON with no re-scan
+or extra DB download.</p>
 <h3 id="filesystem-scan-fs">Filesystem scan (<code>fs</code>)<a class="headerlink" href="#filesystem-scan-fs" title="Permanent link">&para;</a></h3>
 <ol>
-<li>Runs <code>aquasecurity/trivy-action@0.34.0</code> with <code>scan-type: fs</code> against the
-   specified <code>scan-ref</code>.</li>
-<li>Outputs results in SARIF format.</li>
-<li>Uploads the SARIF file to GitHub code scanning (category: <code>trivy-fs</code>).</li>
+<li>Runs <code>trivy fs</code> inside the Trivy Docker container against the specified
+   <code>scan-ref</code>.</li>
+<li>Outputs results as a table to stdout and in SARIF format to the output file.</li>
+<li>Uploads the SARIF file to GitHub code scanning (category: <code>trivy-fs</code> or
+   custom <code>sarif-category</code>).</li>
 </ol>
 <h3 id="image-scan-image">Image scan (<code>image</code>)<a class="headerlink" href="#image-scan-image" title="Permanent link">&para;</a></h3>
 <ol>
-<li>Runs <code>aquasecurity/trivy-action@0.34.0</code> with <code>scan-type: image</code> against the
-   specified image reference.</li>
-<li>Outputs results in SARIF format.</li>
-<li>Uploads the SARIF file to GitHub code scanning (category: <code>trivy-image</code>).</li>
+<li>Runs <code>trivy image</code> inside the Trivy Docker container against the specified
+   image reference (with Docker socket mounted).</li>
+<li>Outputs results as a table to stdout and in SARIF format to the output file.</li>
+<li>Uploads the SARIF file to GitHub code scanning (category: <code>trivy-image</code> or
+   custom <code>sarif-category</code>).</li>
 </ol>
 <h3 id="sbom-generation-sbom">SBOM generation (<code>sbom</code>)<a class="headerlink" href="#sbom-generation-sbom" title="Permanent link">&para;</a></h3>
 <ol>
-<li>Runs <code>aquasecurity/trivy-action@0.34.0</code> with <code>scan-type: fs</code> and
-   <code>format: cyclonedx</code>.</li>
+<li>Runs <code>trivy fs</code> with <code>--format cyclonedx</code> inside the Trivy Docker container.</li>
 <li>Outputs the SBOM to the specified output file. No SARIF upload.</li>
 </ol>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
@@ -2553,21 +2628,27 @@
 <a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
 <a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
 <a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v6</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/security/trivy@develop</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/security/trivy@v1.4</span>
 <a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">          </span><span class="nt">scan-type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fs</span>
 </code></pre></div>
 <h3 id="container-image-scan">Container image scan<a class="headerlink" href="#container-image-scan" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/security/trivy@develop</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/security/trivy@v1.4</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">scan-type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">image</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">scan-ref</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;myapp:latest&quot;</span>
 </code></pre></div>
 <h3 id="sbom-generation-advisory-only">SBOM generation (advisory only)<a class="headerlink" href="#sbom-generation-advisory-only" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/security/trivy@develop</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/security/trivy@v1.4</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">scan-type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sbom</span>
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">output-file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sbom.cdx.json</span>
+</code></pre></div>
+<h3 id="custom-sarif-category-for-matrix-builds">Custom SARIF category for matrix builds<a class="headerlink" href="#custom-sarif-category-for-matrix-builds" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/security/trivy@v1.4</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="nt">scan-type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fs</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="nt">sarif-category</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;trivy-fs-${{</span><span class="nv"> </span><span class="s">matrix.target</span><span class="nv"> </span><span class="s">}}&quot;</span>
 </code></pre></div>
 <h2 id="github-configuration">GitHub configuration<a class="headerlink" href="#github-configuration" title="Permanent link">&para;</a></h2>
 <ul>

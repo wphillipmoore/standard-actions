@@ -561,6 +561,8 @@
       
         
       
+        
+      
     
     
     
@@ -613,6 +615,34 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../releases/v1.4.2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v1.4.2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -2345,7 +2375,8 @@ provides integration testing without a separate test repository.</p>
 </ul>
 <p>Optional flags:</p>
 <ul>
-<li><code>--linkage</code>: <code>Fixes|Closes|Resolves|Ref</code> (default: <code>Fixes</code>)</li>
+<li><code>--linkage</code>: <code>Ref</code> (default). <code>Fixes</code>, <code>Closes</code>, and <code>Resolves</code> are rejected
+  by the <code>standards-compliance</code> CI gate.</li>
 <li><code>--title</code>: PR title (default: most recent commit subject)</li>
 <li><code>--notes</code>: Additional notes</li>
 <li><code>--dry-run</code>: Print without executing</li>
