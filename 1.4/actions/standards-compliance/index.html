@@ -565,6 +565,8 @@
       
         
       
+        
+      
     
     
     
@@ -617,6 +619,34 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../releases/v1.4.3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v1.4.3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -2362,8 +2392,9 @@
 
 
 <h1 id="standards-compliance">standards-compliance<a class="headerlink" href="#standards-compliance" title="Permanent link">&para;</a></h1>
-<p>Validates repository standards: markdown formatting, PR issue linkage,
-auto-close keyword rejection, and repository profile.</p>
+<p>PR-specific compliance checks: issue linkage and auto-close keyword rejection.
+Repository profile, markdown, and other structural validations are handled by
+<code>st-validate-local-common</code> (run separately in the CI workflow).</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/standards-compliance@v1.4</span>
 </code></pre></div>
@@ -2374,16 +2405,7 @@ auto-close keyword rejection, and repository profile.</p>
 <li><code>contents: read</code> (default for <code>github.token</code>)</li>
 </ul>
 <h2 id="behavior">Behavior<a class="headerlink" href="#behavior" title="Permanent link">&para;</a></h2>
-<p>The action delegates to standard-tooling CLI validators that must be on PATH.
-This is satisfied either by the dev container image (non-Python consumers) or
-by the consumer's own <code>uv sync --group dev</code> (Python consumers).</p>
 <ol>
-<li><strong>Verify standard-tooling is installed</strong> — Checks that <code>st-repo-profile</code> is
-   available on PATH. Fails with a diagnostic message if not found.</li>
-<li><strong>Validate repository profile</strong> — Runs <code>st-repo-profile</code> to check required
-   repository metadata.</li>
-<li><strong>Validate markdown standards</strong> — Runs <code>st-markdown-standards</code> to lint
-   markdown files.</li>
 <li><strong>Validate PR issue linkage</strong> — On pull requests, runs <code>st-pr-issue-linkage</code>
    to verify the PR body references a GitHub issue.</li>
 <li><strong>Reject auto-close linkage keywords</strong> — On pull requests, inspects the PR
@@ -2391,6 +2413,7 @@ by the consumer's own <code>uv sync --group dev</code> (Python consumers).</p>
    reference. These keywords are rejected because auto-closing bypasses the
    <code>st-finalize-repo</code> workflow. Use <code>Ref #N</code> instead.</li>
 </ol>
+<p>Both steps only run on <code>pull_request</code> events.</p>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <h3 id="basic-usage">Basic usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v6</span>
@@ -2400,9 +2423,6 @@ by the consumer's own <code>uv sync --group dev</code> (Python consumers).</p>
 </code></pre></div>
 <h2 id="github-configuration">GitHub configuration<a class="headerlink" href="#github-configuration" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Repository profile</strong> — The repo must contain the files checked by
-  <code>st-repo-profile</code> (typically <code>README.md</code>, <code>LICENSE</code>, <code>VERSION</code>, and standard
-  documentation files).</li>
 <li><strong>Branch protection</strong> — Recommended: require this check to pass on <code>develop</code>
   and <code>main</code> branches.</li>
 </ul>
