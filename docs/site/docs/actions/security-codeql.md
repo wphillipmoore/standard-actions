@@ -6,7 +6,7 @@ language.
 ## Usage
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/security/codeql@develop
+- uses: wphillipmoore/standard-actions/actions/security/codeql@v1.4
   with:
     language: python
     queries: "+security-extended"
@@ -48,7 +48,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v6
-      - uses: wphillipmoore/standard-actions/actions/security/codeql@develop
+      - uses: wphillipmoore/standard-actions/actions/security/codeql@v1.4
         with:
           language: python
 ```
@@ -56,7 +56,7 @@ jobs:
 ### Go CodeQL analysis
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/security/codeql@develop
+- uses: wphillipmoore/standard-actions/actions/security/codeql@v1.4
   with:
     language: go
 ```

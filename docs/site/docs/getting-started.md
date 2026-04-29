@@ -2,17 +2,16 @@
 
 ## Consuming actions
 
-Reference actions from this repository using the full path with a branch or tag
-pin:
+Reference actions from this repository using the full path with a rolling minor
+tag pin:
 
 ```yaml
-uses: wphillipmoore/standard-actions/actions/<action-path>@develop
+uses: wphillipmoore/standard-actions/actions/<action-path>@v1.4
 ```
 
-!!! note "Branch pinning"
-    During the pre-release period (0.x), all consumers pin to `@develop`.
-    Versioned tag-based pinning will be available once publishing automation is
-    complete.
+!!! note "Tag pinning"
+    Pin to a rolling minor tag (e.g., `@v1.4`) to automatically receive patch
+    releases. Pin to an exact tag (e.g., `@v1.4.1`) for full reproducibility.
 
 ## Minimal workflow example
 
@@ -32,7 +31,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: wphillipmoore/standard-actions/actions/standards-compliance@develop
+      - uses: wphillipmoore/standard-actions/actions/standards-compliance@v1.4
 ```
 
 ## Permissions
@@ -53,4 +52,4 @@ by the same PR that modifies them — no separate integration testing step is
 needed.
 
 Consuming repositories use the full remote reference
-(`wphillipmoore/standard-actions/actions/...@develop`).
+(`wphillipmoore/standard-actions/actions/...@v1.4`).

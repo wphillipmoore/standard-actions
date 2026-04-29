@@ -6,7 +6,7 @@ rulesets.
 ## Usage
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/security/semgrep@develop
+- uses: wphillipmoore/standard-actions/actions/security/semgrep@v1.4
   with:
     language: python
     extra-config: "p/owasp-top-ten"
@@ -50,7 +50,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v6
-      - uses: wphillipmoore/standard-actions/actions/security/semgrep@develop
+      - uses: wphillipmoore/standard-actions/actions/security/semgrep@v1.4
         with:
           language: python
 ```
@@ -58,7 +58,7 @@ jobs:
 ### Go with additional OWASP rules
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/security/semgrep@develop
+- uses: wphillipmoore/standard-actions/actions/security/semgrep@v1.4
   with:
     language: golang
     extra-config: "p/owasp-top-ten"

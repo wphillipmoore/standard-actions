@@ -5,7 +5,7 @@ Runs Trivy vulnerability scanning, SBOM generation, or container image scanning.
 ## Usage
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/security/trivy@develop
+- uses: wphillipmoore/standard-actions/actions/security/trivy@v1.4
   with:
     scan-type: fs
     scan-ref: "."
@@ -25,6 +25,9 @@ Runs Trivy vulnerability scanning, SBOM generation, or container image scanning.
 | `exit-code` | No | `1` | Exit code when vulnerabilities are found (`0` = advisory only). |
 | `scanners` | No | `vuln` | Comma-separated Trivy scanners to enable. |
 | `output-file` | No | `trivy-results.sarif` | Output file path for SARIF or SBOM results. |
+| `sarif-category` | No | `""` | Category for SARIF upload. Use unique values when multiple matrix entries upload SARIF to avoid overwrites. Defaults to `trivy-fs` or `trivy-image` based on scan-type. |
+| `trivyignores` | No | `""` | Comma-separated list of `.trivyignore` file paths. |
+| `trivy-image` | No | `aquasec/trivy:0.70.0` | Docker image to use for Trivy. Override to pin a specific version. |
 
 ## Permissions
 
@@ -34,26 +37,31 @@ Runs Trivy vulnerability scanning, SBOM generation, or container image scanning.
 
 ## Behavior
 
-The action branches based on `scan-type`:
+The action runs Trivy via Docker (`docker run`) rather than the
+`aquasecurity/trivy-action` GitHub Action. Each scan mode uses a single Docker
+session that scans once to JSON, then converts to both table output (stdout) and
+SARIF (file). The `trivy convert` step operates on cached JSON with no re-scan
+or extra DB download.
 
 ### Filesystem scan (`fs`)
 
-1. Runs `aquasecurity/trivy-action@0.34.0` with `scan-type: fs` against the
-   specified `scan-ref`.
-2. Outputs results in SARIF format.
-3. Uploads the SARIF file to GitHub code scanning (category: `trivy-fs`).
+1. Runs `trivy fs` inside the Trivy Docker container against the specified
+   `scan-ref`.
+2. Outputs results as a table to stdout and in SARIF format to the output file.
+3. Uploads the SARIF file to GitHub code scanning (category: `trivy-fs` or
+   custom `sarif-category`).
 
 ### Image scan (`image`)
 
-1. Runs `aquasecurity/trivy-action@0.34.0` with `scan-type: image` against the
-   specified image reference.
-2. Outputs results in SARIF format.
-3. Uploads the SARIF file to GitHub code scanning (category: `trivy-image`).
+1. Runs `trivy image` inside the Trivy Docker container against the specified
+   image reference (with Docker socket mounted).
+2. Outputs results as a table to stdout and in SARIF format to the output file.
+3. Uploads the SARIF file to GitHub code scanning (category: `trivy-image` or
+   custom `sarif-category`).
 
 ### SBOM generation (`sbom`)
 
-1. Runs `aquasecurity/trivy-action@0.34.0` with `scan-type: fs` and
-   `format: cyclonedx`.
+1. Runs `trivy fs` with `--format cyclonedx` inside the Trivy Docker container.
 2. Outputs the SBOM to the specified output file. No SARIF upload.
 
 ## Examples
@@ -70,7 +78,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v6
-      - uses: wphillipmoore/standard-actions/actions/security/trivy@develop
+      - uses: wphillipmoore/standard-actions/actions/security/trivy@v1.4
         with:
           scan-type: fs
 ```
@@ -78,7 +86,7 @@ jobs:
 ### Container image scan
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/security/trivy@develop
+- uses: wphillipmoore/standard-actions/actions/security/trivy@v1.4
   with:
     scan-type: image
     scan-ref: "myapp:latest"
@@ -87,10 +95,19 @@ jobs:
 ### SBOM generation (advisory only)
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/security/trivy@develop
+- uses: wphillipmoore/standard-actions/actions/security/trivy@v1.4
   with:
     scan-type: sbom
     output-file: sbom.cdx.json
+```
+
+### Custom SARIF category for matrix builds
+
+```yaml
+- uses: wphillipmoore/standard-actions/actions/security/trivy@v1.4
+  with:
+    scan-type: fs
+    sarif-category: "trivy-fs-${{ matrix.target }}"
 ```
 
 ## GitHub configuration

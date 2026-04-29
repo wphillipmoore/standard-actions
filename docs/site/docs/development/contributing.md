@@ -82,7 +82,8 @@ Required flags:
 
 Optional flags:
 
-- `--linkage`: `Fixes|Closes|Resolves|Ref` (default: `Fixes`)
+- `--linkage`: `Ref` (default). `Fixes`, `Closes`, and `Resolves` are rejected
+  by the `standards-compliance` CI gate.
 - `--title`: PR title (default: most recent commit subject)
 - `--notes`: Additional notes
 - `--dry-run`: Print without executing

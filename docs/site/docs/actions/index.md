@@ -9,7 +9,8 @@ supporting scripts.
 ### CI & Validation
 
 - **[standards-compliance](standards-compliance.md)** — Validates repository
-  standards: markdown, commit messages, PR linkage, and repository profile.
+  standards: markdown, PR linkage, auto-close keyword rejection, and repository
+  profile.
 
 ### Documentation
 

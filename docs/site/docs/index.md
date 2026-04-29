@@ -5,8 +5,8 @@ across all managed repositories.
 
 ## Status
 
-**Pre-release (0.x)** — Actions are consumed by pinning to the `develop` branch.
-Versioned tag-based publishing is planned for a future release.
+**Stable (v1.x)** — Actions are consumed by pinning to a rolling minor tag
+(e.g., `@v1.4`), which automatically receives patch releases.
 
 ## Action categories
 

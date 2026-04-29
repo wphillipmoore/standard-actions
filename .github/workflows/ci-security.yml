@@ -43,6 +43,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Install standard-tooling
+        shell: bash
+        run: |
+          if command -v st-repo-profile >/dev/null 2>&1; then
+            echo "standard-tooling already on PATH"
+            exit 0
+          fi
+          if [ "${{ inputs.language }}" = "python" ]; then
+            uv sync --group dev --frozen
+            echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+          else
+            TAG=$(sed -n 's/^[[:space:]]*tag[[:space:]]*=[[:space:]]*"\(.*\)"/\1/p' st-config.toml)
+            if [ -z "$TAG" ]; then
+              echo "::error::st-config.toml not found or missing [standard-tooling] tag"
+              exit 1
+            fi
+            pip install "standard-tooling @ git+https://github.com/wphillipmoore/standard-tooling@${TAG}"
+          fi
+
       - name: Validate standards
         uses: wphillipmoore/standard-actions/actions/standards-compliance@develop
 
