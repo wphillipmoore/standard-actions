@@ -12,7 +12,7 @@ across all managed repositories.
 
 | Category | Actions | Purpose |
 | ---------- | --------- | --------- |
-| CI & Validation | [standards-compliance](actions/standards-compliance.md) | PR validation and standards enforcement |
+| CI & Validation | [standards-compliance](actions/standards-compliance.md) | PR issue linkage and auto-close keyword rejection |
 | Documentation | [docs-deploy](actions/docs-deploy.md) | MkDocs Material + mike versioned deployment |
 | Python | [python/setup](actions/python-setup.md) | Python environment with uv and caching |
 | Security | [security/codeql](actions/security-codeql.md), [security/semgrep](actions/security-semgrep.md), [security/trivy](actions/security-trivy.md) | SAST and vulnerability scanning |
