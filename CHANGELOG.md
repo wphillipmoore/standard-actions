@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.4.2] - 2026-04-29
+
+### Bug fixes
+
+- install standard-tooling in standards-compliance job (#255)
+- add standard-tooling install to local ci.yml standards job (#255)
+
+### Documentation
+
+- comprehensive documentation review for consistency after v1.4.x changes
+
 ## [1.4.1] - 2026-04-28
 
 ### Features
