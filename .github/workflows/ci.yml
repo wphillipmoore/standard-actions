@@ -26,9 +26,11 @@ jobs:
             echo "standard-tooling already on PATH"
             exit 0
           fi
-          TAG=$(sed -n 's/^[[:space:]]*tag[[:space:]]*=[[:space:]]*"\(.*\)"/\1/p' st-config.toml)
-          if [ -z "$TAG" ]; then
-            echo "::error::st-config.toml not found or missing [standard-tooling] tag"
+          if [ -f standard-tooling.toml ]; then
+            TAG=$(sed -n 's/^[[:space:]]*standard-tooling[[:space:]]*=[[:space:]]*"\(.*\)"/\1/p' standard-tooling.toml)
+          fi
+          if [ -z "${TAG:-}" ]; then
+            echo "::error::standard-tooling.toml not found or missing [dependencies] standard-tooling tag"
             exit 1
           fi
           pip install "standard-tooling @ git+https://github.com/wphillipmoore/standard-tooling@${TAG}"
