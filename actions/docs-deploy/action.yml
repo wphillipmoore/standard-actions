@@ -16,8 +16,8 @@ inputs:
   mike-command:
     description: >-
       Command to run mike. Set to "uv run mike" for Python repos that
-      manage their own dependencies. When set to "uv run mike", the
-      action skips MkDocs/mike installation (the repo provides them).
+      manage their own dependencies via their project's virtual
+      environment.
     required: false
     default: mike
   checkout-common:
@@ -39,11 +39,6 @@ runs:
         repository: wphillipmoore/mq-rest-admin-common
         ref: ${{ inputs.checkout-common-ref }}
         path: .mq-rest-admin-common
-
-    - name: Install MkDocs and mike
-      if: inputs.mike-command == 'mike'
-      shell: bash
-      run: uv tool install mike --with mkdocs-material
 
     - name: Configure git identity
       shell: bash
@@ -144,7 +139,7 @@ runs:
 
         # Inlined for the same reason as the index-generation script
         # above (see issue #204).
-        uv run --with pyyaml python3 - "${{ inputs.mkdocs-config }}" "$DOCS_DIR" <<'PY'
+        python3 - "${{ inputs.mkdocs-config }}" "$DOCS_DIR" <<'PY'
         """Patch mkdocs.yml nav to inject release version entries under Release Notes."""
         import pathlib
         import re

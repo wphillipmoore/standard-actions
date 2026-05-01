@@ -105,6 +105,7 @@ jobs:
     name: "security: semgrep"
     if: ${{ inputs.run-security != 'false' }}
     runs-on: ubuntu-latest
+    container: ghcr.io/wphillipmoore/dev-base:latest
     permissions:
       security-events: write
     steps:
