@@ -16,8 +16,8 @@ inputs:
   mike-command:
     description: >-
       Command to run mike. Set to "uv run mike" for Python repos that
-      manage their own dependencies. When not "mike", the action skips
-      Python setup and MkDocs installation.
+      manage their own dependencies via their project's virtual
+      environment.
     required: false
     default: mike
   checkout-common:
@@ -39,32 +39,6 @@ runs:
         repository: wphillipmoore/mq-rest-admin-common
         ref: ${{ inputs.checkout-common-ref }}
         path: .mq-rest-admin-common
-
-    - name: Detect pre-installed tools
-      id: detect
-      shell: bash
-      run: |
-        if command -v mike >/dev/null 2>&1; then
-          echo "mike-installed=true" >> "$GITHUB_OUTPUT"
-        else
-          echo "mike-installed=false" >> "$GITHUB_OUTPUT"
-        fi
-
-    - name: Set up Python 3.12
-      if: inputs.mike-command == 'mike' && steps.detect.outputs.mike-installed == 'false'
-      uses: actions/setup-python@v6
-      with:
-        python-version: "3.12"
-
-    - name: Install MkDocs and mike
-      if: inputs.mike-command == 'mike' && steps.detect.outputs.mike-installed == 'false'
-      shell: bash
-      run: pip install mkdocs-material mike
-
-    - name: Install pyyaml for nav patching
-      if: inputs.mike-command != 'mike' && steps.detect.outputs.mike-installed == 'false'
-      shell: bash
-      run: pip install pyyaml
 
     - name: Configure git identity
       shell: bash
