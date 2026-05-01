@@ -22,7 +22,7 @@ runs:
   steps:
     - name: Install Semgrep
       shell: bash
-      run: pip install semgrep
+      run: uv tool install semgrep
 
     - name: Run Semgrep scan
       shell: bash
