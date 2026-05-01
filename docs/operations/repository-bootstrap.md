@@ -7,7 +7,7 @@
 - [Required files](#required-files)
 - [AGENTS.md template](#agentsmd-template)
 - [Standards entrypoint](#standards-entrypoint)
-- [Repository standards overlay](#repository-standards-overlay)
+- [Repository profile](#repository-profile)
 - [Validation](#validation)
 - [Follow-up tasks](#follow-up-tasks)
 
@@ -25,7 +25,7 @@ standards-and-conventions framework.
 
 - `AGENTS.md`
 - `docs/standards-and-conventions.md`
-- `docs/repository-standards.md`
+- `standard-tooling.toml`
 
 ## AGENTS.md template
 
@@ -34,8 +34,9 @@ Use includes and keep local overrides explicit.
 ```text
 # <Repository> Agent Instructions
 
-<!-- include: docs/standards-and-conventions.md -->
-<!-- include: ./docs/repository-standards.md -->
+**Standards reference**: <https://github.com/wphillipmoore/standards-and-conventions>
+— active standards documentation lives in the standard-tooling repository under `docs/`.
+Repository profile: `standard-tooling.toml`.
 
 ## User Overrides (Optional)
 
@@ -74,16 +75,14 @@ None.
 avoid duplicating project-specific content. Use a simple link list or the
 include chain pattern described in the canonical standards.
 
-## Repository standards overlay
+## Repository profile
 
-`docs/repository-standards.md` must include:
+The repository profile lives in `standard-tooling.toml` under `[project]`.
+Required fields: `repository-type`, `versioning-scheme`, `branching-model`,
+`release-model`, `primary-language`. Co-author identities live under
+`[project.co-authors]`.
 
-- Repository profile with concrete values.
-- Approved AI co-author identities.
-- Local validation commands.
-- Local deviations, if any.
-
-Keep the overlay concise and avoid restating canonical rules.
+Local deviations, if any, belong directly in `CLAUDE.md`.
 
 ## Validation
 
