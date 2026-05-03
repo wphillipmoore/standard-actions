@@ -26,7 +26,14 @@ runs:
         LANGUAGE: ${{ inputs.language }}
         EXTRA_CONFIG: ${{ inputs.extra-config }}
       run: |
-        config="p/$LANGUAGE p/security-audit p/secrets"
+        config="p/security-audit p/secrets"
+
+        if curl -sf "https://semgrep.dev/c/p/$LANGUAGE" -o /dev/null 2>/dev/null; then
+          config="p/$LANGUAGE $config"
+        else
+          echo "::notice::Semgrep ruleset p/$LANGUAGE not found in registry — skipping language-specific rules"
+        fi
+
         if [ -n "$EXTRA_CONFIG" ]; then
           config="$config $EXTRA_CONFIG"
         fi
