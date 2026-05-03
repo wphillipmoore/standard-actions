@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.4.8] - 2026-05-03
+
+### Bug fixes
+
+- skip language ruleset when not found in registry (#303) (#304)
+
+### Documentation
+
+- remove stale include directives and update docs/repository-standards.md references
+
 ## [1.4.7] - 2026-05-01
 
 ### Refactoring
