@@ -7,7 +7,7 @@ Repository profile, markdown, and other structural validations are handled by
 ## Usage
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/standards-compliance@v1.4
+- uses: wphillipmoore/standard-actions/actions/standards-compliance@v1.5
 ```
 
 ## Inputs
@@ -37,7 +37,7 @@ Both steps only run on `pull_request` events.
 - uses: actions/checkout@v6
   with:
     fetch-depth: 0
-- uses: wphillipmoore/standard-actions/actions/standards-compliance@v1.4
+- uses: wphillipmoore/standard-actions/actions/standards-compliance@v1.5
 ```
 
 ## GitHub configuration

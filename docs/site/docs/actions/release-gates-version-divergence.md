@@ -6,7 +6,7 @@ the step if the two versions are identical.
 ## Usage
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/release-gates/version-divergence@v1.4
+- uses: wphillipmoore/standard-actions/actions/release-gates/version-divergence@v1.5
   with:
     head-version-command: cat VERSION
     main-version-command: git show origin/main:VERSION
@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: wphillipmoore/standard-actions/actions/release-gates/version-divergence@v1.4
+      - uses: wphillipmoore/standard-actions/actions/release-gates/version-divergence@v1.5
         with:
           head-version-command: cat VERSION
           main-version-command: git show origin/main:VERSION
@@ -58,7 +58,7 @@ jobs:
 ### Python project version check
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/release-gates/version-divergence@v1.4
+- uses: wphillipmoore/standard-actions/actions/release-gates/version-divergence@v1.5
   with:
     head-version-command: >-
       grep -oP 'version\s*=\s*"\K[^"]+' pyproject.toml

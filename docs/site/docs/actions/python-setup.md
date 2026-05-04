@@ -5,7 +5,7 @@ Sets up Python, installs uv, and configures dependency caching.
 ## Usage
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/python/setup@v1.4
+- uses: wphillipmoore/standard-actions/actions/python/setup@v1.5
   with:
     python-version: "3.14"
     uv-version: "0.10.7"
@@ -40,7 +40,7 @@ Sets up Python, installs uv, and configures dependency caching.
 
 ```yaml
 - uses: actions/checkout@v6
-- uses: wphillipmoore/standard-actions/actions/python/setup@v1.4
+- uses: wphillipmoore/standard-actions/actions/python/setup@v1.5
   with:
     python-version: "3.14"
 - run: uv sync
@@ -50,7 +50,7 @@ Sets up Python, installs uv, and configures dependency caching.
 ### Custom cache prefix for multiple Python versions
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/python/setup@v1.4
+- uses: wphillipmoore/standard-actions/actions/python/setup@v1.5
   with:
     python-version: "3.13"
     cache-prefix: "uv-py313"
