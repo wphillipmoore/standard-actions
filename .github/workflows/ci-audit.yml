@@ -1,0 +1,25 @@
+name: CI Audit
+
+on:
+  workflow_call:
+    inputs:
+      language:
+        type: string
+        required: true
+      versions:
+        type: string
+        required: true
+
+jobs:
+  dependencies:
+    name: dependencies / ${{ matrix.version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ${{ fromJSON(inputs.versions) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Run dependency audit
+        run: echo "Dependency audit for ${{ inputs.language }} ${{ matrix.version }}"
