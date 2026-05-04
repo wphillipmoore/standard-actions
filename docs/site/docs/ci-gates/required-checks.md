@@ -51,22 +51,36 @@ jobs:
     name: "release: gates"
 ```
 
+## Reusable workflow check-name mapping
+
+Each reusable workflow produces canonical check names. See
+[Reusable Workflows](../workflows/index.md) for full details.
+
+| Workflow | Check names produced |
+| ---------- | ---------------------- |
+| `ci-security.yml` | `CI Security / standards`, `CI Security / codeql`, `CI Security / trivy`, `CI Security / semgrep` |
+| `ci-quality.yml` | `CI Quality / common`, `CI Quality / lint / <version>`, `CI Quality / typecheck / <version>` |
+| `ci-audit.yml` | `CI Audit / dependencies / <version>` |
+| `ci-test.yml` | `CI Test / unit / <version>`, `CI Test / integration / <version>` |
+| `ci-release.yml` | `CI Release / version-bump` |
+
 ## Reusable workflow flags
 
-The `ci-security.yml` reusable workflow accepts two independent flags that
+The `ci-security.yml` reusable workflow accepts independent flags that
 control which inner jobs run:
 
 | Flag | Controls | Default |
 | ---- | -------- | ------- |
-| `run-standards` | `ci: standards-compliance` job | `'true'` |
-| `run-security` | `security: codeql`, `security: semgrep`, `security: trivy` jobs | `'true'` |
+| `run-standards` | `CI Security / standards` job | `true` |
+| `run-security` | `CI Security / codeql`, `CI Security / trivy`, `CI Security / semgrep` jobs | `true` |
+| `run-codeql` | `CI Security / codeql` job (requires `run-security` to also be true) | `true` |
 
 Consuming repos must pass both flags explicitly so that push CI (tier 2) can
 skip standards and security while PR CI (tier 3) runs the full suite:
 
 ```yaml
 security-and-standards:
-  uses: wphillipmoore/standard-actions/.github/workflows/ci-security.yml@v1.4
+  uses: wphillipmoore/standard-actions/.github/workflows/ci-security.yml@v1.5
   with:
     language: <lang>
     run-standards: ${{ inputs.run-release-gates || 'true' }}

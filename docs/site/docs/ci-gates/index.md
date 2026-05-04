@@ -20,6 +20,10 @@ organized by category using job name prefixes:
 
 ## Key concepts
 
+- **Reusable workflows** — v1.5.0 introduced
+  [reusable CI workflows](../workflows/index.md) that produce the canonical
+  check names automatically. Consuming repositories call these workflows
+  rather than assembling jobs by hand.
 - **Required status checks** — Configured in GitHub repository rulesets.
   PRs cannot merge until all required checks pass.
 - **Self-referencing CI** — The standard-actions repository tests its own
