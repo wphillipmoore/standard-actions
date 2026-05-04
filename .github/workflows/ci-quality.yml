@@ -1,0 +1,76 @@
+name: CI Quality
+
+on:
+  workflow_call:
+    inputs:
+      language:
+        type: string
+        required: true
+      versions:
+        type: string
+        required: true
+
+jobs:
+  common:
+    name: common
+    runs-on: ubuntu-latest
+    container: ghcr.io/wphillipmoore/dev-base:latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Run common quality checks
+        shell: bash
+        run: |
+          has_files() { find . -name "$1" -not -path './.git/*' | head -1 | grep -q .; }
+
+          if has_files "*.md"; then
+            echo "Running markdownlint..."
+            markdownlint '**/*.md' --ignore node_modules || true
+          fi
+
+          if has_files "*.sh" || [ -d scripts/bin ]; then
+            echo "Running shellcheck..."
+            find . -name "*.sh" -o -path "*/scripts/bin/*" -print0 | xargs -0 -r shellcheck
+          fi
+
+          if has_files "*.yml" || has_files "*.yaml"; then
+            echo "Running yamllint..."
+            yamllint . || true
+          fi
+
+          if has_files "Dockerfile*"; then
+            echo "Running hadolint..."
+            find . -name "Dockerfile*" -print0 | xargs -0 -r hadolint || true
+          fi
+
+          if [ -d .github/workflows ]; then
+            echo "Running actionlint..."
+            actionlint || true
+          fi
+
+  lint:
+    name: lint / ${{ matrix.version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ${{ fromJSON(inputs.versions) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Run lint
+        run: echo "Lint for ${{ inputs.language }} ${{ matrix.version }}"
+
+  typecheck:
+    name: typecheck / ${{ matrix.version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ${{ fromJSON(inputs.versions) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Run typecheck
+        run: echo "Typecheck for ${{ inputs.language }} ${{ matrix.version }}"

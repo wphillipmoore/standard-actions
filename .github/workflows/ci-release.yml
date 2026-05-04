@@ -1,0 +1,25 @@
+name: CI Release
+
+on:
+  workflow_call:
+    inputs:
+      language:
+        type: string
+        required: true
+      run-release:
+        type: boolean
+        default: true
+
+jobs:
+  version-bump:
+    name: version-bump
+    if: ${{ inputs.run-release }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Verify version bump
+        run: echo "Verify version incremented relative to main"

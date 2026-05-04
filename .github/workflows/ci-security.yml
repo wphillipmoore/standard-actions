@@ -1,42 +1,35 @@
-name: CI Security and Standards
+name: CI Security
 
 on:
   workflow_call:
     inputs:
       language:
-        description: Language for CodeQL (e.g., ruby, python, go, java)
+        description: Language for security scanners (e.g., ruby, python, go, java)
         type: string
         required: true
-      semgrep-language:
-        description: >-
-          Language for Semgrep rulesets (maps to "p/<value>").
-          Defaults to the language input. Override for cases where
-          Semgrep uses a different name (e.g., "golang" instead of "go").
-        type: string
-        default: ""
       run-standards:
-        description: Run standards-compliance job (set to 'false' to skip)
-        type: string
-        default: 'true'
+        description: Run standards-compliance job
+        type: boolean
+        default: true
       run-security:
-        description: Run security scanner jobs (set to 'false' to skip)
-        type: string
-        default: 'true'
+        description: Run security scanner jobs
+        type: boolean
+        default: true
       run-codeql:
         description: >-
-          Run CodeQL analysis (set to 'false' to skip).
+          Run CodeQL analysis.
           Disable for languages CodeQL does not support (e.g. shell).
-        type: string
-        default: 'true'
+        type: boolean
+        default: true
 
 permissions:
   contents: read
   security-events: write
 
 jobs:
-  standards-compliance:
-    name: "ci: standards-compliance"
-    if: ${{ inputs.run-standards != 'false' }}
+  standards:
+    name: standards
+    if: ${{ inputs.run-standards }}
     runs-on: ubuntu-latest
     container: ghcr.io/wphillipmoore/dev-base:latest
     steps:
@@ -72,8 +65,8 @@ jobs:
         uses: wphillipmoore/standard-actions/actions/standards-compliance@develop
 
   codeql:
-    name: "security: codeql"
-    if: ${{ inputs.run-security != 'false' && inputs.run-codeql != 'false' }}
+    name: codeql
+    if: ${{ inputs.run-security && inputs.run-codeql }}
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -87,8 +80,8 @@ jobs:
           language: ${{ inputs.language }}
 
   trivy:
-    name: "security: trivy"
-    if: ${{ inputs.run-security != 'false' }}
+    name: trivy
+    if: ${{ inputs.run-security }}
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -102,8 +95,8 @@ jobs:
           scan-type: fs
 
   semgrep:
-    name: "security: semgrep"
-    if: ${{ inputs.run-security != 'false' }}
+    name: semgrep
+    if: ${{ inputs.run-security }}
     runs-on: ubuntu-latest
     container: ghcr.io/wphillipmoore/dev-base:latest
     permissions:
@@ -115,4 +108,4 @@ jobs:
       - name: Run Semgrep SAST scan
         uses: wphillipmoore/standard-actions/actions/security/semgrep@develop
         with:
-          language: ${{ inputs.semgrep-language || inputs.language }}
+          language: ${{ inputs.language }}
