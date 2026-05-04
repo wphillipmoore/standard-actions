@@ -1521,15 +1521,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#custom-cache-prefix-for-multiple-python-versions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Custom cache prefix for multiple Python versions
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -2437,15 +2428,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#custom-cache-prefix-for-multiple-python-versions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Custom cache prefix for multiple Python versions
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -2477,13 +2459,12 @@
 
 
 <h1 id="pythonsetup">python/setup<a class="headerlink" href="#pythonsetup" title="Permanent link">&para;</a></h1>
-<p>Sets up Python, installs uv, and configures dependency caching.</p>
+<p>Sets up Python and uv with dependency caching.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/python/setup@v1.5</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.14&quot;</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">uv-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0.10.7&quot;</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">cache-prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;uv&quot;</span>
 </code></pre></div>
 <h2 id="inputs">Inputs<a class="headerlink" href="#inputs" title="Permanent link">&para;</a></h2>
 <table>
@@ -2508,12 +2489,6 @@
 <td><code>0.10.7</code></td>
 <td>uv version to install.</td>
 </tr>
-<tr>
-<td><code>cache-prefix</code></td>
-<td>No</td>
-<td><code>uv</code></td>
-<td>Cache key prefix for uv dependency cache.</td>
-</tr>
 </tbody>
 </table>
 <h2 id="permissions">Permissions<a class="headerlink" href="#permissions" title="Permanent link">&para;</a></h2>
@@ -2524,11 +2499,8 @@
 <ol>
 <li><strong>Set up Python</strong> — Uses <code>actions/setup-python@v6</code> to install the specified
    Python version.</li>
-<li><strong>Install uv</strong> — Runs <code>pip install uv==&lt;version&gt;</code> to install the pinned
-   version of uv.</li>
-<li><strong>Cache dependencies</strong> — Uses <code>actions/cache@v5</code> to cache <code>~/.cache/uv</code>.
-   The cache key includes the OS, Python version, and a hash of <code>uv.lock</code> for
-   precise invalidation.</li>
+<li><strong>Install uv</strong> — Uses <code>astral-sh/setup-uv@v8</code> to install the pinned version
+   of uv and configure dependency caching automatically.</li>
 </ol>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <h3 id="basic-python-setup">Basic Python setup<a class="headerlink" href="#basic-python-setup" title="Permanent link">&para;</a></h3>
@@ -2538,12 +2510,6 @@
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.14&quot;</span>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uv sync</span>
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uv run pytest</span>
-</code></pre></div>
-<h3 id="custom-cache-prefix-for-multiple-python-versions">Custom cache prefix for multiple Python versions<a class="headerlink" href="#custom-cache-prefix-for-multiple-python-versions" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/python/setup@v1.5</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.13&quot;</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">cache-prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;uv-py313&quot;</span>
 </code></pre></div>
 <h2 id="github-configuration">GitHub configuration<a class="headerlink" href="#github-configuration" title="Permanent link">&para;</a></h2>
 <p>No special repository configuration is required.</p>
