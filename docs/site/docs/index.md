@@ -5,8 +5,9 @@ across all managed repositories.
 
 ## Status
 
-**Stable (v1.x)** — Actions are consumed by pinning to a rolling minor tag
-(e.g., `@v1.4`), which automatically receives patch releases.
+**Stable (v1.x)** — Actions and reusable workflows are consumed by pinning to
+a rolling minor tag (e.g., `@v1.5`), which automatically receives patch
+releases.
 
 ## Action categories
 
@@ -19,12 +20,30 @@ across all managed repositories.
 | Publishing | [publish/tag-and-release](actions/publish-tag-and-release.md), [publish/version-bump-pr](actions/publish-version-bump-pr.md) | Release tagging and post-release version bumps |
 | Release Gates | [release-gates/version-divergence](actions/release-gates-version-divergence.md) | Pre-merge version validation |
 
+## Reusable workflows
+
+v1.5.0 introduced reusable CI workflows that provide canonical job and check
+names across all managed repositories. See
+[Reusable Workflows](workflows/index.md) for details.
+
+| Workflow | Purpose |
+| ---------- | --------- |
+| [ci-security](workflows/ci-security.md) | Standards compliance and security scanning |
+| [ci-quality](workflows/ci-quality.md) | Common linting, language-specific lint and typecheck |
+| [ci-audit](workflows/ci-audit.md) | Dependency audit |
+| [ci-test](workflows/ci-test.md) | Unit and integration tests |
+| [ci-release](workflows/ci-release.md) | Release gate verification |
+
 ## Design principles
 
 - **Composite actions only** — No custom JavaScript or Docker actions. Every
   action is a composite `action.yml` with shell steps.
-- **Self-referencing CI** — This repository's own CI uses `./actions/...` local
-  paths, so changes to an action are tested by the same PR that modifies them.
+- **Reusable workflows** — CI workflows are provided as reusable
+  `workflow_call` templates that produce canonical check names across all
+  consuming repositories.
+- **Self-referencing CI** — This repository's own CI uses `./actions/...` and
+  `./.github/workflows/...` local paths, so changes are tested by the same PR
+  that modifies them.
 - **Centralized standards** — Workflow patterns and validation rules are defined
   once here and consumed by all repositories.
 
