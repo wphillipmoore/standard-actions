@@ -1,0 +1,42 @@
+name: CI Test
+
+on:
+  workflow_call:
+    inputs:
+      language:
+        type: string
+        required: true
+      versions:
+        type: string
+        required: true
+      integration-tests:
+        type: boolean
+        default: false
+
+jobs:
+  unit:
+    name: unit / ${{ matrix.version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ${{ fromJSON(inputs.versions) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Run unit tests
+        run: echo "Unit tests for ${{ inputs.language }} ${{ matrix.version }}"
+
+  integration:
+    if: ${{ inputs.integration-tests }}
+    name: integration / ${{ matrix.version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ${{ fromJSON(inputs.versions) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Run integration tests
+        run: echo "Integration tests for ${{ inputs.language }} ${{ matrix.version }}"
