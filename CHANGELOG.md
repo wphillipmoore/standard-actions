@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.5.1] - 2026-05-05
+
+### Bug fixes
+
+- replace pip install uv with astral-sh/setup-uv
+- remove dead st-config.toml fallback from ci-security.yml
+
+### Documentation
+
+- add reusable workflows nav section to mkdocs config
+- add reusable workflows overview page
+- add ci-security workflow reference page
+- add ci-quality workflow reference page
+- add ci-audit workflow reference page
+- add ci-test workflow reference page
+- add ci-release workflow reference page
+- update home page for v1.5 reusable workflow redesign
+- update getting-started for v1.5 reusable workflow consumption
+- update CI gates section for v1.5 reusable workflows
+- sweep action reference pages for v1.5 accuracy
+
+### Features
+
+- add p/ci base ruleset and auto-detect p/dockerfile, p/github-actions
+
 ## [1.5.0] - 2026-05-04
 
 ### Features
