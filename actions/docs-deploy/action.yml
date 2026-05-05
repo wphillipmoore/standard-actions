@@ -184,12 +184,18 @@ runs:
       working-directory: ${{ github.workspace }}
       run: |
         if [ -n "${{ steps.version.outputs.alias }}" ]; then
-          ${{ inputs.mike-command }} deploy -F ${{ inputs.mkdocs-config }} --push --update-aliases ${{ steps.version.outputs.version }} ${{ steps.version.outputs.alias }}
-          ${{ inputs.mike-command }} set-default -F ${{ inputs.mkdocs-config }} --push latest
+          ${{ inputs.mike-command }} deploy \
+            -F ${{ inputs.mkdocs-config }} --push --update-aliases \
+            ${{ steps.version.outputs.version }} \
+            ${{ steps.version.outputs.alias }}
+          ${{ inputs.mike-command }} set-default \
+            -F ${{ inputs.mkdocs-config }} --push latest
         else
           ${{ inputs.mike-command }} deploy -F ${{ inputs.mkdocs-config }} --push ${{ steps.version.outputs.version }}
           # Set dev as default if no default exists yet (pre-release repos)
-          CURRENT_DEFAULT=$(${{ inputs.mike-command }} list -F ${{ inputs.mkdocs-config }} 2>/dev/null | grep '\[default\]' || true)
+          CURRENT_DEFAULT=$(${{ inputs.mike-command }} list \
+            -F ${{ inputs.mkdocs-config }} 2>/dev/null \
+            | grep '\[default\]' || true)
           if [ -z "$CURRENT_DEFAULT" ]; then
             ${{ inputs.mike-command }} set-default -F ${{ inputs.mkdocs-config }} --push dev
           fi
