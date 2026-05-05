@@ -2520,10 +2520,22 @@ rulesets.</p>
 <li><strong>Check language ruleset</strong> — Queries the Semgrep registry to verify that
    <code>p/&lt;language&gt;</code> exists. If the registry does not have a ruleset for the
    specified language, the language-specific config is silently skipped.</li>
+<li><strong>Auto-detect rulesets</strong> — Scans the repository for content that benefits
+   from specialized rulesets:<ul>
+<li><code>p/dockerfile</code> — enabled when <code>Dockerfile*</code> files are present</li>
+<li><code>p/github-actions</code> — enabled when <code>.github/workflows/</code> contains workflow
+  files</li>
+</ul>
+</li>
 <li><strong>Run scan</strong> — Executes <code>semgrep scan</code> with the following config rulesets:<ul>
+<li><code>p/ci</code> — CI pipeline security rules (injection, secrets in workflows,
+  unsafe patterns)</li>
 <li><code>p/security-audit</code> — Cross-cutting security audit rules</li>
 <li><code>p/secrets</code> — Secret detection rules</li>
 <li><code>p/&lt;language&gt;</code> — Language-specific rules (if available in the registry)</li>
+<li><code>p/dockerfile</code> — Dockerfile best practices (if Dockerfiles detected)</li>
+<li><code>p/github-actions</code> — GitHub Actions injection patterns (if workflow files
+  detected)</li>
 <li>Any additional rulesets from <code>extra-config</code></li>
 </ul>
 </li>
