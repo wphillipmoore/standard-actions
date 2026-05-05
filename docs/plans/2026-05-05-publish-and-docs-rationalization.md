@@ -505,6 +505,55 @@ def test_bump_java(tmp_path: Path) -> None:
     assert result == "3.2.2"
     text = (tmp_path / "pom.xml").read_text()
     assert "<version>3.2.2</version>" in text
+
+
+# -- lockfile maintenance tests -----------------------------------------------
+
+from unittest.mock import patch
+
+
+def test_bump_python_runs_uv_lock(tmp_path: Path) -> None:
+    _write_toml(tmp_path, "python")
+    (tmp_path / "pyproject.toml").write_text(
+        '[project]\nname = "example"\nversion = "1.0.0"\n'
+    )
+    with patch("standard_tooling.lib.version.subprocess.run") as mock_run:
+        bump(tmp_path)
+        mock_run.assert_called_once_with(
+            ["uv", "lock"], cwd=tmp_path, check=True,
+        )
+
+
+def test_bump_rust_runs_cargo_update(tmp_path: Path) -> None:
+    _write_toml(tmp_path, "rust")
+    (tmp_path / "Cargo.toml").write_text(
+        '[package]\nname = "example"\nversion = "0.1.0"\n'
+    )
+    with patch("standard_tooling.lib.version.subprocess.run") as mock_run:
+        bump(tmp_path)
+        mock_run.assert_called_once_with(
+            ["cargo", "update", "--workspace"], cwd=tmp_path, check=True,
+        )
+
+
+def test_bump_ruby_runs_bundle_install(tmp_path: Path) -> None:
+    _write_toml(tmp_path, "ruby")
+    version_dir = tmp_path / "lib" / "mq"
+    version_dir.mkdir(parents=True)
+    (version_dir / "version.rb").write_text("  VERSION = '1.0.0'\n")
+    with patch("standard_tooling.lib.version.subprocess.run") as mock_run:
+        bump(tmp_path)
+        mock_run.assert_called_once_with(
+            ["bundle", "install"], cwd=tmp_path, check=True,
+        )
+
+
+def test_bump_generic_skips_lockfile(tmp_path: Path) -> None:
+    _write_toml(tmp_path, "shell")
+    (tmp_path / "VERSION").write_text("1.0.0\n")
+    with patch("standard_tooling.lib.version.subprocess.run") as mock_run:
+        bump(tmp_path)
+        mock_run.assert_not_called()
 ```
 
 - [ ] **Step 2: Run tests to verify they fail**
@@ -517,6 +566,15 @@ Expected: FAIL — `bump` not importable
 Add to `src/standard_tooling/lib/version.py`:
 
 ```python
+import subprocess
+
+_LOCKFILE_COMMANDS: dict[str, list[str]] = {
+    "python": ["uv", "lock"],
+    "rust": ["cargo", "update", "--workspace"],
+    "ruby": ["bundle", "install"],
+}
+
+
 def _increment_patch(version: str) -> str:
     """Increment the patch component of a semver string."""
     parts = version.split(".")
@@ -542,16 +600,21 @@ def _write_version(version_file: Path, language: str, old: str, new: str) -> Non
     version_file.write_text(text)
 
 
-def bump(repo_root: Path) -> str:
-    """Increment the patch version and return the new version string.
+def _run_lockfile_maintenance(repo_root: Path, language: str) -> None:
+    """Run the appropriate lockfile command after a version bump."""
+    cmd = _LOCKFILE_COMMANDS.get(language)
+    if cmd is None:
+        return
+    subprocess.run(cmd, cwd=repo_root, check=True)
 
-    Does not run lockfile maintenance — call ``lockfile_maintenance``
-    separately if needed.
-    """
+
+def bump(repo_root: Path) -> str:
+    """Increment the patch version, update version file, and maintain lockfile."""
     version_file, language = _get_version_file(repo_root)
     old_version = _read_version(version_file, language)
     new_version = _increment_patch(old_version)
     _write_version(version_file, language, old_version, new_version)
+    _run_lockfile_maintenance(repo_root, language)
     return new_version
 ```
 
@@ -842,13 +905,24 @@ All file paths in Phase 2 are relative to the worktree root:
 
 **Files:**
 - Create: `.github/workflows/publish-docs.yml`
+- Delete: `.github/workflows/docs.yml`
 
-- [ ] **Step 1: Create the reusable workflow**
+The workflow uses dual triggers (`push` + `workflow_call`) so a
+single file serves as both the reusable workflow for consuming repos
+and the directly-triggered workflow for standard-actions itself.
+This keeps the filename `publish-docs.yml` consistent everywhere.
+Delete the old `docs.yml` in the same commit to avoid duplicate
+triggers.
+
+- [ ] **Step 1: Create the dual-trigger workflow and delete docs.yml**
 
 ```yaml
 name: Publish docs
 
 on:
+  push:
+    branches: [develop, main]
+  workflow_dispatch:
   workflow_call:
     inputs:
       pre-deploy-command:
@@ -918,47 +992,12 @@ jobs:
           mike-command: ${{ steps.mike.outputs.cmd }}
 ```
 
-- [ ] **Step 2: Commit**
-
-```
-st-commit --type feat --message "add publish-docs.yml reusable workflow" --agent claude
-```
-
-### Task 8: Update standard-actions' own docs workflow
-
-**Files:**
-- Delete: `.github/workflows/docs.yml`
-- Create: `.github/workflows/publish-docs.yml` (thin caller)
-
-- [ ] **Step 1: Delete old docs.yml and create thin caller**
-
-This must be a single commit — old and new cannot coexist (duplicate
-triggers on the same branches cause race conditions).
-
-Create `.github/workflows/publish-docs.yml`:
-
-```yaml
-name: Publish docs
-
-on:
-  push:
-    branches: [develop, main]
-  workflow_dispatch:
-
-permissions:
-  contents: write
-
-jobs:
-  publish:
-    uses: ./.github/workflows/publish-docs.yml
-```
-
 Delete `.github/workflows/docs.yml`.
 
 - [ ] **Step 2: Commit**
 
 ```
-st-commit --type refactor --message "replace docs.yml with thin publish-docs.yml caller" --agent claude
+st-commit --type feat --message "add publish-docs.yml dual-trigger reusable workflow, delete docs.yml" --agent claude
 ```
 
 ### Task 9: Refactor `tag-and-release` composite action
@@ -1091,7 +1130,9 @@ new step uses a temporary worktree and `st-version show`:
 - [ ] **Step 3: Replace regex version update with `st-version bump`**
 
 Replace the "Update version file" step (the 20-line Python regex
-script) with a single command:
+script) with a single command. `st-version bump` handles both the
+version file edit and lockfile maintenance (Task 3), so no separate
+lockfile step is needed:
 
 ```yaml
     - name: Bump version
@@ -1100,32 +1141,7 @@ script) with a single command:
       run: st-version bump
 ```
 
-- [ ] **Step 4: Add lockfile maintenance step**
-
-Add after the bump step, before the existing `post-bump-command`
-step. This detects the language from `standard-tooling.toml` and
-runs the appropriate lockfile command — no `--upgrade`, just fixes
-the self-version entry:
-
-```yaml
-    - name: Lockfile maintenance
-      if: steps.check.outputs.needed == 'true'
-      shell: bash
-      run: |
-        lang=$(python3 -c "
-        import tomllib, pathlib
-        cfg = tomllib.loads(pathlib.Path('standard-tooling.toml').read_text())
-        print(cfg['project']['primary-language'])
-        ")
-        case "$lang" in
-          python) uv lock ;;
-          rust) cargo update --workspace ;;
-          ruby) bundle install ;;
-          *) echo "No lockfile maintenance needed for $lang" ;;
-        esac
-```
-
-- [ ] **Step 5: Simplify commit step**
+- [ ] **Step 4: Simplify commit step**
 
 Replace the commit step. The old step staged `version-file` and
 `extra-files` by name; the new step uses `git add -A` since the
@@ -1141,7 +1157,7 @@ branch is clean except for our bump and lockfile changes:
         git push origin "${{ steps.next.outputs.branch }}"
 ```
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 5: Commit**
 
 ```
 st-commit --type refactor --scope version-bump-pr --message "use st-version bump instead of regex substitution" --agent claude
@@ -1295,7 +1311,11 @@ language. Remove per-language version inputs — use defaults inline:
 
 - [ ] **Step 5: Add ecosystem command derivation**
 
-Add after the tag check step, gated on new tag:
+Add after the tag check step, gated on new tag. Derives all three
+ecosystem-specific commands (build, registry-check, publish) and the
+credential guard condition. Python is excluded from `publish` because
+PyPI uses OIDC trusted publishing via `pypa/gh-action-pypi-publish`
+(a dedicated action step, not a shell command):
 
 ```yaml
       - name: Derive ecosystem commands
@@ -1316,6 +1336,14 @@ Add after the tag check step, gated on new tag:
           fi
           echo "build=$build" >> "$GITHUB_OUTPUT"
 
+          case "$LANG" in
+            python) registry_check="pip index versions \$(python3 -c \"import tomllib; print(tomllib.loads(open('pyproject.toml','rb').read().decode())['project']['name'])\" 2>/dev/null) 2>/dev/null | grep -qF \"\$VERSION\" && echo exists || echo not_found" ;;
+            rust) registry_check="cargo search \$(grep '^name' Cargo.toml | head -1 | sed 's/.*\"\\(.*\\)\"/\\1/') 2>/dev/null | grep -qF \"\$VERSION\" && echo exists || echo not_found" ;;
+            ruby) registry_check="gem list -r -e \$(grep 'spec.name' *.gemspec | sed \"s/.*'\\(.*\\)'/\\1/\") 2>/dev/null | grep -qF \"\$VERSION\" && echo exists || echo not_found" ;;
+            *) registry_check="" ;;
+          esac
+          echo "registry-check=$registry_check" >> "$GITHUB_OUTPUT"
+
           publish="${{ inputs.registry-publish-command }}"
           if [ -z "$publish" ]; then
             case "$LANG" in
@@ -1326,16 +1354,55 @@ Add after the tag check step, gated on new tag:
             esac
           fi
           echo "publish=$publish" >> "$GITHUB_OUTPUT"
+
+          # Credential guard — secret name to check before publish
+          case "$LANG" in
+            rust) echo "credential-secret=CARGO_REGISTRY_TOKEN" >> "$GITHUB_OUTPUT" ;;
+            ruby) echo "credential-secret=RUBYGEMS_API_KEY" >> "$GITHUB_OUTPUT" ;;
+            java) echo "credential-secret=CENTRAL_TOKEN" >> "$GITHUB_OUTPUT" ;;
+            *) echo "credential-secret=" >> "$GITHUB_OUTPUT" ;;
+          esac
 ```
 
-- [ ] **Step 6: Update build and publish steps**
+- [ ] **Step 6: Update build, registry-check, and publish steps**
 
 Replace `${{ inputs.build-command }}` with
-`${{ steps.commands.outputs.build }}` and
+`${{ steps.commands.outputs.build }}`,
+`${{ inputs.registry-check-command }}` with
+`${{ steps.commands.outputs.registry-check }}`, and
 `${{ inputs.registry-publish-command }}` with
-`${{ steps.commands.outputs.publish }}` in the Build and Publish
-steps. Replace `${{ inputs.ecosystem }}` with
+`${{ steps.commands.outputs.publish }}` in the Build, Check registry,
+and Publish steps. Replace `${{ inputs.ecosystem }}` with
 `${{ steps.ecosystem.outputs.language }}` in conditional checks.
+
+Add the credential guard to the "Publish to registry" step:
+
+```yaml
+      - name: Publish to registry
+        if: >-
+          steps.ecosystem.outputs.language != 'python' &&
+          steps.commands.outputs.publish != '' &&
+          steps.tag_check.outputs.exists == 'false' &&
+          steps.registry_check.outputs.status != 'exists'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
+          MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          # Credential guard — skip gracefully when secrets are not configured
+          guard="${{ steps.commands.outputs.credential-secret }}"
+          if [ -n "$guard" ]; then
+            val=$(printenv "$guard" 2>/dev/null || true)
+            if [ -z "$val" ]; then
+              echo "::notice::${guard} not configured — skipping publish"
+              exit 0
+            fi
+          fi
+          ${{ steps.commands.outputs.publish }}
+```
 
 - [ ] **Step 7: Update tag-and-release call**
 
@@ -1386,21 +1453,23 @@ with job key `publish`.
 st-commit --type refactor --scope publish-release --message "derive all inputs from standard-tooling.toml, zero required caller inputs" --agent claude
 ```
 
-### Task 13: Rename standard-actions' own `publish.yml`
+### Task 13: Update standard-actions' own `publish.yml`
 
 **Files:**
-- Delete: `.github/workflows/publish.yml`
-- Create: `.github/workflows/publish-release.yml`
+- Modify: `.github/workflows/publish.yml`
 
 Standard-actions' own publish workflow stays bespoke (due to the
-`freeze-internal-refs` step) but must be renamed for file naming
-consistency and updated to use the refactored composite actions.
+`freeze-internal-refs` step) and keeps the filename `publish.yml`.
+Unlike `publish-docs.yml` (Task 7), dual triggers cannot work here
+because the bespoke workflow is structurally different from the
+reusable one — it needs an app token at checkout (for pushing
+workflow file changes), has the freeze step, and does not
+build/publish to a registry. These are fundamentally different job
+structures that cannot share a file.
 
-- [ ] **Step 1: Rename file and update contents**
+- [ ] **Step 1: Update publish.yml contents**
 
-Delete `.github/workflows/publish.yml` and create
-`.github/workflows/publish-release.yml` in the same commit. Apply
-these changes to the content:
+Apply these changes to `.github/workflows/publish.yml`:
 
 1. Change job name from `"publish: release"` to
    `"publish / release"` (direct name since this is not a reusable
@@ -1430,7 +1499,7 @@ these changes to the content:
 - [ ] **Step 2: Commit**
 
 ```
-st-commit --type refactor --message "rename publish.yml to publish-release.yml and align with refactored actions" --agent claude
+st-commit --type refactor --message "update publish.yml to use refactored composite actions" --agent claude
 ```
 
 ### Task 14: Update `standard-tooling.toml` with `[publish]` section
