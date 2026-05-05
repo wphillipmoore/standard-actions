@@ -14,10 +14,6 @@ runs:
     - name: Install standard-tooling
       shell: bash
       run: |
-        if command -v st-validate >/dev/null 2>&1; then
-          echo "standard-tooling already on PATH"
-          exit 0
-        fi
         TAG=$(sed -n 's/^[[:space:]]*standard-tooling[[:space:]]*=[[:space:]]*"\(.*\)"/\1/p' standard-tooling.toml)
         if [ -z "${TAG:-}" ]; then
           echo "::error::standard-tooling.toml not found or missing version tag"
