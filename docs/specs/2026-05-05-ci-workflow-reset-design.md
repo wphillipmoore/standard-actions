@@ -48,6 +48,7 @@ and CI workflows.
 ## Scope
 
 **In scope:**
+
 - `st-validate` command in standard-tooling (replaces `st-validate-local`
   chain)
 - Command registry fixes (`validate_commands.py`)
@@ -58,6 +59,7 @@ and CI workflows.
   standard-tooling release (`st-version` dependency)
 
 **Out of scope (tracked separately):**
+
 - Rename `st-validate-local` → `st-validate` at the CLI level (entry
   point alias — cosmetic, do after the functional work)
 - Consumer repo re-sweep (blocked by this work)
@@ -75,7 +77,7 @@ and CI workflows.
 
 ### Interface
 
-```
+```text
 st-validate                      # run all checks: common → language-specific → custom
 st-validate --check common       # common checks only
 st-validate --check lint         # language-specific lint only
@@ -170,24 +172,28 @@ the registry, eliminating the duplication.
 ### Check command fixes
 
 **Python lint:**
-```
+
+```text
 ruff check src/ tests/
 ruff format --check src/ tests/
 ```
 
 **Python typecheck:**
-```
+
+```text
 mypy src/ tests/
 ty check src tests
 ```
 
 **Python test:**
-```
+
+```text
 pytest --cov=src --cov-branch --cov-fail-under=100
 ```
 
 **Python audit:**
-```
+
+```text
 uv sync --check --frozen --group dev
 uv lock --check
 pip-audit
@@ -195,6 +201,7 @@ pip-licenses --allow-only=<standard-allowlist>
 ```
 
 Changes from current registry:
+
 - lint and typecheck now target `src/` and `tests/` (not just `src/`)
 - test coverage scoped to `src` directory (not package-name-specific)
 - `pip-audit` is a plain invocation (no `-r requirements.txt` args,
@@ -444,30 +451,31 @@ release.
 
 **From #318:**
 
-5. Build `st-version` library and CLI (`show`, `show --major-minor`,
-   `bump` with per-language version discovery and lockfile maintenance).
-6. Extend config schema with `[publish]` section.
-7. Extend `st-github-config` for publish validation.
+1. Build `st-version` library and CLI (`show`, `show --major-minor`,
+   `show --ref`, `bump` with per-language version discovery and
+   lockfile maintenance).
+2. Extend config schema with `[publish]` section.
+3. Extend `st-github-config` for publish validation.
 
 **Combined:**
 
-8. Tests, validation, release as a single standard-tooling version.
+1. Tests, validation, release as a single standard-tooling version.
 
 ### Phase 2: standard-actions
 
-6. Implement ci-quality.yml (common + lint + typecheck jobs).
-7. Implement ci-test.yml (unit job; integration deferred).
-8. Implement ci-audit.yml (dependencies job).
-9. Implement ci-release.yml (version-bump job using existing action).
-10. Validate self-referencing CI passes.
-11. Release as standard-actions v1.6.
+1. Implement ci-quality.yml (common + lint + typecheck jobs).
+2. Implement ci-test.yml (unit job; integration deferred).
+3. Implement ci-audit.yml (dependencies job).
+4. Implement ci-release.yml (version-bump job using existing action).
+5. Validate self-referencing CI passes.
+6. Release as standard-actions v1.6.
 
 ### Phase 3: consumer re-sweep
 
-12. Update each consumer repo: replace bespoke CI with thin wrappers,
-    remove `scripts/dev/` scripts, pin to standard-actions v1.6.
-13. Start with mq-rest-admin-python (where the problems were found),
-    then ai-research-methodology, then remaining repos.
+1. Update each consumer repo: replace bespoke CI with thin wrappers,
+   remove `scripts/dev/` scripts, pin to standard-actions v1.6.
+2. Start with mq-rest-admin-python (where the problems were found),
+   then ai-research-methodology, then remaining repos.
 
 ---
 
