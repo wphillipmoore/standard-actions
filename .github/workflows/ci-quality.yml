@@ -36,7 +36,7 @@ jobs:
 
           if has_files "*.yml" || has_files "*.yaml"; then
             echo "Running yamllint..."
-            yamllint . || true
+            yamllint .
           fi
 
           if has_files "Dockerfile*"; then
