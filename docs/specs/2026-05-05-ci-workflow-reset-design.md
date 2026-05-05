@@ -8,9 +8,10 @@
 
 Three of five CI reusable workflows in standard-actions v1.5 are stubs
 that echo a placeholder and exit 0. A fourth (ci-quality.yml) has real
-tool invocations but suppresses 4 of 5 failures with `|| true`, and its
-language-specific lint and typecheck jobs are also stubs. Only
-ci-security.yml is fully implemented.
+tool invocations for its common job (enforcement of all five common
+checks was completed in PR #336), but its language-specific lint and
+typecheck jobs are still stubs. Only ci-security.yml is fully
+implemented.
 
 Consumer repos that upgraded to v1.5 worked around the stubs by writing
 fully bespoke CI jobs — duplicating the logic that should live in the
@@ -40,6 +41,9 @@ and CI workflows.
 5. Approach A sequencing: standard-tooling first (new `st-validate`
    command + registry fixes), then standard-actions (workflow
    implementations), then consumer repo re-sweep.
+6. Coordinated with the publish-and-docs rationalization spec (#318):
+   both specs share a single standard-tooling release that includes
+   `st-validate` (this spec) and `st-version` (#318).
 
 ## Scope
 
@@ -50,6 +54,8 @@ and CI workflows.
 - Install command registry (dependency setup per language)
 - All five CI reusable workflow implementations in standard-actions
 - Self-referencing CI validation in standard-actions
+- Coordination with publish-and-docs rationalization (#318) for shared
+  standard-tooling release (`st-version` dependency)
 
 **Out of scope (tracked separately):**
 - Rename `st-validate-local` → `st-validate` at the CLI level (entry
@@ -58,7 +64,9 @@ and CI workflows.
 - Custom validation script centralization (#526, #527, #528, #531, #532,
   #543)
 - Migration of registry from Python code to TOML data file (future v2.0)
-- Integration test framework (repo-specific by nature)
+- Integration test implementation (repo-specific; the reusable workflow
+  defines the naming convention and `st-github-config` enforces the
+  check gate, but implementation is repo-owned)
 - `standards-and-conventions` repo retirement
 
 ---
@@ -133,6 +141,8 @@ contains file-discovery logic:
    exist under `scripts/`.
 4. **yamllint** — runs if `*.yml` / `*.yaml` files exist under
    `.github/` or repo root.
+5. **hadolint** — runs if `Dockerfile*` files exist.
+6. **actionlint** — runs if `.github/workflows/` directory exists.
 
 This logic is currently in `validate_local_common_container.py` and
 moves into `st-validate` as the `common` check handler.
@@ -241,31 +251,39 @@ required)
 | `lint / <ver>` | versions | `dev-<lang>:<ver>` | `st-validate --check lint` | `quality / lint / <ver>` |
 | `typecheck / <ver>` | versions | `dev-<lang>:<ver>` | `st-validate --check typecheck` | `quality / typecheck / <ver>` |
 
-`lint` and `typecheck` jobs use a conditional `if:` to skip entirely
-when the language has no registry entry for that check type (e.g.,
-`shell` has no lint or typecheck commands). Skipped jobs must not
-produce a GitHub check at all — `st-github-config` does not generate
-required status checks for unsupported check types, so a phantom
-check would create a ruleset mismatch.
+`lint` and `typecheck` jobs always run, regardless of whether the
+language has registry entries for that check type. When there are no
+commands, `st-validate` exits 0 with a message like "no lint commands
+for language 'shell'". This avoids conditional complexity in the
+workflow YAML and produces harmless phantom checks that
+`st-github-config` simply does not require. The no-op jobs also serve
+as natural placeholders that get filled in as tooling matures for each
+language.
 
 ### ci-test.yml
 
 **Inputs:** `language` (string, required), `versions` (JSON array,
-required), `integration-tests` (boolean, default: false)
+required)
 
 **Jobs:**
 
 | Job | Matrix | Container | Command | Check name |
 |---|---|---|---|---|
 | `unit / <ver>` | versions | `dev-<lang>:<ver>` | `st-validate --check test` | `test / unit / <ver>` |
-| `integration / <ver>` | versions | `dev-<lang>:<ver>` | repo-specific | `test / integration / <ver>` |
 
-The `integration` job is conditional on `inputs.integration-tests`.
-Integration tests are repo-specific by nature — the job runs a
-repo-defined script or command, not the registry. The exact
-interface for specifying integration test commands is deferred;
-the simplest option is `scripts/dev/test-integration.sh` as a
-convention.
+Integration tests are not included in the reusable workflow.
+Investigation of all five mq-rest-admin language repos showed that
+integration test patterns are uniform within a product family (same
+setup action, same env vars, same matrix structure) but the service
+provisioning and port allocation are product-specific and cannot be
+generalized into a reusable workflow.
+
+Integration test support works through the naming convention:
+`st-github-config` generates required status checks
+(`test / integration / <ver>`) when a repo declares integration
+tests. The implementation is repo-local — repos define their own
+integration job in their ci.yml with whatever setup they need, as
+long as the check name matches the convention.
 
 ### ci-audit.yml
 
@@ -290,7 +308,15 @@ default: true)
 | `version-bump` | none | `dev-base:latest` | `version-divergence` action | `release / version-bump` |
 
 Uses the existing `actions/release-gates/version-divergence` composite
-action. No version matrix. Skipped when `run-release` is false.
+action with `st-version show` as the version commands. The action's
+generic interface (accepting shell commands for version extraction) is
+preserved. The workflow passes `st-version show` as the
+`head-version-command` and uses a temporary worktree to run
+`st-version show` against the main branch for `main-version-command`.
+`st-version` is defined in the publish-and-docs rationalization spec
+(#318) and is included in the shared standard-tooling release.
+
+No version matrix. Skipped when `run-release` is false.
 
 ### ci-security.yml
 
@@ -329,6 +355,14 @@ registry, only `quality / common`, security jobs, and
 
 Does not call `ci-test.yml` or `ci-audit.yml` (no tests or auditable
 dependencies for a shell/YAML repo).
+
+### Dependency: `st-version` (from #318)
+
+The ci-release.yml workflow depends on `st-version show` from the
+publish-and-docs rationalization spec (#318). Both specs share a
+single standard-tooling release: `st-validate` + registry updates
+(this spec) and `st-version` + `[publish]` config (#318) ship
+together before either spec's standard-actions phase can proceed.
 
 ---
 
@@ -387,17 +421,33 @@ removed. The repo's CI is fully driven by the reusable workflows.
 
 ## Part 5: Implementation sequence (Approach A)
 
-### Phase 1: standard-tooling
+### Phase 1: standard-tooling (combined with #318)
+
+This phase is coordinated with the publish-and-docs rationalization
+spec (#318). Both specs' standard-tooling work ships in a single
+release.
+
+**From this spec:**
 
 1. Fix `validate_commands.py` registry (lint/typecheck/test/audit
    corrections, add install commands).
 2. Build `st-validate` command (new module, reads config, dispatches
-   to registry and common checks).
+   to registry and common checks including hadolint and actionlint).
 3. Wire `docker_cache.py` to read install commands from registry
    instead of `_WARMUP_COMMANDS`.
 4. Update `st-finalize-repo` to call `st-validate` instead of
    `st-validate-local`.
-5. Tests, validation, release as standard-tooling v1.5.
+
+**From #318:**
+
+5. Build `st-version` library and CLI (`show`, `show --major-minor`,
+   `bump` with per-language version discovery and lockfile maintenance).
+6. Extend config schema with `[publish]` section.
+7. Extend `st-github-config` for publish validation.
+
+**Combined:**
+
+8. Tests, validation, release as a single standard-tooling version.
 
 ### Phase 2: standard-actions
 
