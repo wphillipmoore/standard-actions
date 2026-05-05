@@ -2497,7 +2497,7 @@
 <li>The <code>standards</code> and <code>semgrep</code> jobs run inside the
   <code>ghcr.io/wphillipmoore/dev-base:latest</code> container.</li>
 <li>The <code>standards</code> job installs <code>standard-tooling</code> from the version pinned in
-  <code>standard-tooling.toml</code> (with a legacy <code>st-config.toml</code> fallback).</li>
+  <code>standard-tooling.toml</code>.</li>
 <li>For Python repositories, the <code>standards</code> job runs <code>uv sync --group dev --frozen</code>
   to make project-installed tools available on <code>PATH</code>.</li>
 <li>The Semgrep action auto-detects repository content and enables additional
