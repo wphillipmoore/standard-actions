@@ -27,6 +27,10 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: Mark workspace safe for git
+      shell: bash
+      run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
     - name: Fetch main branch
       shell: bash
       run: git fetch origin main --depth=1

@@ -1,0 +1,22 @@
+name: Install standard-tooling
+description: >-
+  Reads the pinned standard-tooling version from standard-tooling.toml
+  and installs it via uv tool install. Skips installation if the tools
+  are already on PATH.
+
+runs:
+  using: composite
+  steps:
+    - name: Mark workspace safe for git
+      shell: bash
+      run: git config --global --add safe.directory "${GITHUB_WORKSPACE:-$(pwd)}"
+
+    - name: Install standard-tooling
+      shell: bash
+      run: |
+        TAG=$(sed -n 's/^[[:space:]]*standard-tooling[[:space:]]*=[[:space:]]*"\(.*\)"/\1/p' standard-tooling.toml)
+        if [ -z "${TAG:-}" ]; then
+          echo "::error::standard-tooling.toml not found or missing version tag"
+          exit 1
+        fi
+        uv tool install "standard-tooling @ git+https://github.com/wphillipmoore/standard-tooling@${TAG}"

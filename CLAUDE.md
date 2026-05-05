@@ -15,6 +15,7 @@ plugin/skill issue) before writing. See that file for the full
 workflow.
 
 Available skills:
+
 - `/standard-tooling:memory-init` — set up or update the policy header
   in a project's `MEMORY.md`.
 - `/standard-tooling:memory-audit` — structured collaborative review
@@ -88,13 +89,17 @@ All fields are required.
 
 ## Project Overview
 
-This is a shared GitHub Actions library providing reusable composite actions for CI/CD across all managed repositories. Actions are consumed by pinning to a tag or branch reference.
+This is a shared GitHub Actions library providing reusable composite actions
+for CI/CD across all managed repositories. Actions are consumed by pinning
+to a tag or branch reference.
 
 **Project name**: standard-actions
 
 **Status**: v1.x (stable)
 
-**Canonical Standards**: This repository follows standards at <https://github.com/wphillipmoore/standards-and-conventions> (local path: `../standards-and-conventions` if available)
+**Canonical Standards**: This repository follows standards at
+<https://github.com/wphillipmoore/standards-and-conventions>
+(local path: `../standards-and-conventions` if available)
 
 ## Development Commands
 
@@ -128,15 +133,19 @@ st-docker-run -- st-validate-local   # Canonical validation (runs in dev-base co
 
 All actions live under `actions/` as composite GitHub Actions:
 
-- `actions/standards-compliance` — PR-specific compliance checks: issue linkage and auto-close keyword rejection
+- `actions/standards-compliance` — PR-specific compliance checks: issue
+  linkage and auto-close keyword rejection
 - `actions/python/setup` — Python environment setup with uv and caching
 - `actions/security/codeql` — CodeQL static analysis
 - `actions/security/semgrep` — Semgrep SAST scanning
-- `actions/security/trivy` — Trivy vulnerability scanning (filesystem, SBOM, container image)
+- `actions/security/trivy` — Trivy vulnerability scanning (filesystem,
+  SBOM, container image)
 
 ### Self-Referencing CI
 
-This repository's CI workflow uses **local paths** (`./actions/...`) rather than remote references. This enables self-testing: changes to an action are validated by the same PR that modifies them.
+This repository's CI workflow uses **local paths** (`./actions/...`)
+rather than remote references. This enables self-testing: changes to an
+action are validated by the same PR that modifies them.
 
 ### Standard-Tooling Integration
 
@@ -148,7 +157,7 @@ validation results match CI exactly.
 
 ### Repo-Specific Scripts
 
-```
+```text
 scripts/
 └── bin/
     └── validate-local-custom    # actionlint (repo-specific)

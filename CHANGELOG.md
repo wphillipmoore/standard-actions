@@ -5,11 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.5.3] - 2026-05-05
+
+### Bug fixes
+
+- remove || true from yamllint in ci-quality.yml
+- remove || true from markdownlint, hadolint, and actionlint
+- fix linter violations exposed by removing || true
+- fix markdownlint violations in CI workflow reset design spec
+- add safe.directory for container-based CI in version-divergence action
+- add safe.directory to setup action for container-based CI
+- always install standard-tooling from pinned tag, never skip
+
+### CI
+
+- pass container-suffix to ci-quality for shell language
+
+### Documentation
+
+- add design spec for CI workflow reset and unified validation
+- apply pushback review to CI workflow reset design
+- add implementation plan for CI workflow reset
+- add st-version as explicit Phase 1 task in CI workflow reset plan
+- apply alignment review fixes to CI workflow reset plan and spec
+
+### Features
+
+- implement ci-quality.yml with st-validate dispatch
+- implement ci-test.yml with st-validate dispatch
+- implement ci-audit.yml with st-validate dispatch
+- implement ci-release.yml with st-version version-divergence gate
+- add reusable setup/standard-tooling action and use it in all workflows
+
 ## [1.5.2] - 2026-05-05
 
 ### Bug fixes
 
 - pin astral-sh/setup-uv to v8.1.0
+
+### Documentation
+
+- add design spec for publish and docs workflow rationalization
+- apply pushback review to publish/docs rationalization spec
+- add implementation plan for publish and docs rationalization
+- apply alignment review fixes to publish/docs rationalization plan
 
 ## [1.5.1] - 2026-05-05
 

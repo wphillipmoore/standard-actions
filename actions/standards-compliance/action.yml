@@ -10,14 +10,7 @@ runs:
   steps:
     - name: Install standard-tooling
       if: github.event_name == 'pull_request'
-      shell: bash
-      run: |
-        TAG=$(sed -n 's/^[[:space:]]*standard-tooling[[:space:]]*=[[:space:]]*"\(.*\)"/\1/p' standard-tooling.toml)
-        if [ -z "${TAG:-}" ]; then
-          echo "::error::standard-tooling.toml not found or missing version tag"
-          exit 1
-        fi
-        uv tool install "standard-tooling @ git+https://github.com/wphillipmoore/standard-tooling@${TAG}"
+      uses: ./actions/setup/standard-tooling
 
     - name: Validate pull request issue linkage
       if: github.event_name == 'pull_request'
@@ -29,7 +22,9 @@ runs:
       shell: bash
       run: |
         PR_BODY=$(jq -r '.pull_request.body // ""' "$GITHUB_EVENT_PATH")
-        if echo "$PR_BODY" | grep -qEi '^\s*[-*]?\s*(Fixes|Closes|Resolves):?\s+([a-zA-Z0-9._-]+/[a-zA-Z0-9._-]+)?#[0-9]+'; then
+        AUTOCLOSE_RE='^\s*[-*]?\s*(Fixes|Closes|Resolves):?\s+'
+        AUTOCLOSE_RE+='([a-zA-Z0-9._-]+/[a-zA-Z0-9._-]+)?#[0-9]+'
+        if echo "$PR_BODY" | grep -qEi "$AUTOCLOSE_RE"; then
           echo "::error::PR body contains auto-close linkage (Fixes/Closes/Resolves)."
           echo "Use 'Ref #N' instead. Auto-close keywords cause issues to close"
           echo "before finalization is complete. The st-finalize-repo workflow"
