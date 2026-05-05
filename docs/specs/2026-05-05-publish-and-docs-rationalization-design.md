@@ -82,15 +82,18 @@ No secrets required — uses `GITHUB_TOKEN` via `contents: write`.
 2. Read `standard-tooling.toml` to detect ecosystem
 3. If `pre-deploy-command` is set, run it
 4. Infer mike command: `uv run mike` for Python, `mike` for everything
-   else (derived from `primary_language` in `standard-tooling.toml`)
+   else (derived from `primary-language` in `standard-tooling.toml`)
 5. Call `actions/docs-deploy` composite action with derived inputs
 6. Version is obtained via `st-version show --major-minor`
 
 ### Trigger
 
-Production docs build on push to `main` only. Development docs preview
-(build from develop merges to a separate path) is out of scope — tracked
-as a separate follow-up issue.
+Docs build on push to `main` and `develop`. On `main`, mike deploys the
+versioned release with a `latest` alias. On `develop`, mike deploys a
+`dev` version. This preserves the existing behavior from `docs.yml`.
+
+Making the dev version discoverable via a well-known URL is tracked
+separately (#328).
 
 ### Container
 
@@ -159,7 +162,9 @@ Auto-generated, no caller input:
 
 - Remove `release-title` and `release-notes` required inputs
 - Derive title from `github.repository` + version
-- Derive body by querying the GitHub Pages URL via API
+- Derive body as a static link to the GitHub Pages docs site using the
+  standard `https://{owner}.github.io/{repo}/` convention (no API call
+  needed — the naming convention is rigidly enforced)
 
 ### `actions/publish/version-bump-pr`
 
@@ -172,7 +177,11 @@ Auto-generated, no caller input:
 
 ### `actions/docs-deploy`
 
-- No interface changes needed — the reusable workflow handles
+- Remove `checkout-common` and `checkout-common-ref` inputs and the
+  corresponding mq-rest-admin-common checkout step. These are
+  domain-specific (violates Design Goal #4). The mq-rest-admin family
+  uses `pre-deploy-command` in the reusable workflow instead.
+- No other interface changes needed — the reusable workflow handles
   `standard-tooling.toml` reading and mike command inference before
   calling this action
 
@@ -230,6 +239,22 @@ repo deviates from the convention):
 | rust | `Cargo.toml` | `version = "x.y.z"` |
 | generic | `VERSION` | plain `x.y.z` |
 
+### Lockfile maintenance after bump
+
+`st-version bump` runs the appropriate lockfile maintenance command
+after editing the version file. The version bump does not upgrade
+dependencies — it only fixes the lockfile to reflect the new
+self-version entry.
+
+| Language | Lockfile command | Notes |
+|---|---|---|
+| python | `uv lock` | Fixes `uv.lock` self-version; no `--upgrade` |
+| rust | `cargo update --workspace` | Updates `Cargo.lock` self-version |
+| ruby | `bundle install` | Regenerates `Gemfile.lock` |
+| go | no lockfile maintenance | `go.sum` does not encode module version |
+| java | no lockfile maintenance | Maven has no lockfile |
+| generic | no lockfile maintenance | — |
+
 ## Consuming repo end state
 
 ### Publish release (repos that release artifacts)
@@ -249,6 +274,25 @@ jobs:
     uses: wphillipmoore/standard-actions/.github/workflows/publish-release.yml@v1.5
     secrets: inherit
 ```
+
+#### Secrets strategy
+
+The examples above use `secrets: inherit` for simplicity — this passes
+all repository secrets to the reusable workflow. This is appropriate
+when the same party owns both the consuming repo and standard-actions.
+
+For consumers who do not fully trust the reusable workflow owner, or
+who prefer least-privilege, explicit secret forwarding is supported:
+
+```yaml
+    secrets:
+      APP_ID: ${{ secrets.APP_ID }}
+      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+```
+
+The reusable workflow declares all accepted secrets with
+`required: true/false`, so explicit forwarding works without changes
+to the workflow itself.
 
 ### Publish docs (all repos)
 
@@ -293,6 +337,15 @@ jobs:
 Breaking changes to existing interfaces are acceptable during this
 rollout — there are no external consumers. A minor release of
 standard-actions may be cut between phases if it eases deployment.
+
+### Rollout mechanics per consuming repo
+
+Each consuming repo's migration must be atomic within a single PR:
+delete the old workflow file (`docs.yml`, `publish.yml`) and add the
+new thin caller (`publish-docs.yml`, `publish-release.yml`) in the
+same commit. If both old and new files exist simultaneously, both
+trigger on push to main, causing duplicate deployments or race
+conditions in the concurrency group.
 
 ## Follow-up issues
 
