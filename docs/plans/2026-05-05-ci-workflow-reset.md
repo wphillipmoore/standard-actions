@@ -728,17 +728,23 @@ st-commit --type refactor --scope finalize --message "call st-validate instead o
 
 ### Task 6: Build `st-version` library and CLI (from #318)
 
-ci-release.yml (Task 10) depends on `st-version show` to extract
+ci-release.yml (Task 11) depends on `st-version show` to extract
 version strings for the version-divergence comparison. This task
 implements `st-version` as defined in the publish-and-docs
 rationalization plan.
+
+ci-release.yml also requires `st-version show --ref <ref>` to read the
+version from a git ref (e.g., `origin/main`) without checking out that
+branch. The `--ref` argument reads the version file via
+`git show <ref>:<path>` instead of the filesystem. This must be included
+in the `st-version` implementation (see #318 plan Tasks 2-3).
 
 **Full task details:** See
 `docs/plans/2026-05-05-publish-and-docs-rationalization.md`, Tasks 2-3.
 Those tasks define the complete `st-version` library (per-language
 version discovery, show, show --major-minor, bump) and the CLI entry
 point. Do not duplicate the steps here — execute Tasks 2-3 from that
-plan.
+plan, ensuring `--ref` support is included.
 
 **Files (from #318 plan):**
 - Create: `src/standard_tooling/lib/version.py`
@@ -753,6 +759,11 @@ plan.
 
 Run: `cd /Users/pmoore/dev/github/standard-tooling && uv run st-version show`
 Expected: outputs the current version from `VERSION` or `pyproject.toml`
+
+- [ ] **Step 4: Verify st-version show --ref works**
+
+Run: `cd /Users/pmoore/dev/github/standard-tooling && uv run st-version show --ref HEAD`
+Expected: outputs the same version (reading via `git show` instead of filesystem)
 
 ### Task 7: Full validation and release
 
@@ -827,7 +838,7 @@ jobs:
   lint:
     name: lint / ${{ matrix.version }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-${{ inputs.language }}:${{ matrix.version }}
+    container: ghcr.io/wphillipmoore/dev-${{ (inputs.language == 'shell' || inputs.language == 'none') && 'base' || inputs.language }}:${{ matrix.version }}
     strategy:
       matrix:
         version: ${{ fromJSON(inputs.versions) }}
@@ -841,7 +852,7 @@ jobs:
   typecheck:
     name: typecheck / ${{ matrix.version }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-${{ inputs.language }}:${{ matrix.version }}
+    container: ghcr.io/wphillipmoore/dev-${{ (inputs.language == 'shell' || inputs.language == 'none') && 'base' || inputs.language }}:${{ matrix.version }}
     strategy:
       matrix:
         version: ${{ fromJSON(inputs.versions) }}
@@ -890,7 +901,7 @@ jobs:
   unit:
     name: unit / ${{ matrix.version }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-${{ inputs.language }}:${{ matrix.version }}
+    container: ghcr.io/wphillipmoore/dev-${{ (inputs.language == 'shell' || inputs.language == 'none') && 'base' || inputs.language }}:${{ matrix.version }}
     strategy:
       matrix:
         version: ${{ fromJSON(inputs.versions) }}
@@ -936,7 +947,7 @@ jobs:
   dependencies:
     name: dependencies / ${{ matrix.version }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-${{ inputs.language }}:${{ matrix.version }}
+    container: ghcr.io/wphillipmoore/dev-${{ (inputs.language == 'shell' || inputs.language == 'none') && 'base' || inputs.language }}:${{ matrix.version }}
     strategy:
       matrix:
         version: ${{ fromJSON(inputs.versions) }}
@@ -995,13 +1006,13 @@ jobs:
         uses: wphillipmoore/standard-actions/actions/release-gates/version-divergence@develop
         with:
           head-version-command: st-version show
-          main-version-command: st-version show
+          main-version-command: st-version show --ref origin/main
 ```
 
-Note: `st-version show` is built in Task 6 (Phase 1). The exact
-integration with the version-divergence action for the main branch
-comparison may need a worktree or ref-based version extraction. Adjust
-during implementation.
+`st-version show` reads the version file from the filesystem (PR
+branch). `st-version show --ref origin/main` reads the version file
+via `git show origin/main:<path>`, avoiding any worktree or checkout
+manipulation. The `--ref` argument is built in Task 6 (Phase 1).
 
 - [ ] **Step 2: Validate actionlint passes**
 
@@ -1036,7 +1047,7 @@ st-commit --type ci --message "update ci.yml orchestrator for updated workflow s
 
 - [ ] **Step 1: Run local validation**
 
-Run: `st-docker-run -- st-validate-local`
+Run: `st-docker-run -- st-validate`
 
 - [ ] **Step 2: Push branch and create PR**
 

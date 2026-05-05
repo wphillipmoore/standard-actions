@@ -228,11 +228,13 @@ check commands from the registry, and runs them.
 Each version-matrixed job uses the language-specific dev container:
 
 ```yaml
-container: ghcr.io/wphillipmoore/dev-<language>:${{ matrix.version }}
+container: ghcr.io/wphillipmoore/dev-${{ (inputs.language == 'shell' || inputs.language == 'none') && 'base' || inputs.language }}:${{ matrix.version }}
 ```
 
-For `shell` and `none` languages, or for language-independent jobs
-(common, version-bump): `ghcr.io/wphillipmoore/dev-base:latest`.
+For `shell` and `none` languages the expression resolves to
+`dev-base`; for all other languages it resolves to
+`dev-<language>`. Language-independent jobs (common, version-bump)
+hardcode `ghcr.io/wphillipmoore/dev-base:latest`.
 
 Container images have `st-validate` pre-installed (standard-tooling
 is installed in the dev container images built by
@@ -311,8 +313,10 @@ Uses the existing `actions/release-gates/version-divergence` composite
 action with `st-version show` as the version commands. The action's
 generic interface (accepting shell commands for version extraction) is
 preserved. The workflow passes `st-version show` as the
-`head-version-command` and uses a temporary worktree to run
-`st-version show` against the main branch for `main-version-command`.
+`head-version-command` and `st-version show --ref origin/main` as the
+`main-version-command`. The `--ref` argument reads the version file
+via `git show <ref>:<path>` instead of the filesystem, avoiding any
+worktree or checkout manipulation.
 `st-version` is defined in the publish-and-docs rationalization spec
 (#318) and is included in the shared standard-tooling release.
 
