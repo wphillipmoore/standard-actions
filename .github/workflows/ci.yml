@@ -26,3 +26,8 @@ jobs:
     with:
       language: shell
       run-codeql: false
+
+  release:
+    uses: ./.github/workflows/ci-release.yml
+    with:
+      language: shell

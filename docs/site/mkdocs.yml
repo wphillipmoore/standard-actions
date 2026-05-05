@@ -78,6 +78,13 @@ nav:
           - publish/version-bump-pr: actions/publish-version-bump-pr.md
       - Release Gates:
           - release-gates/version-divergence: actions/release-gates-version-divergence.md
+  - Reusable Workflows:
+      - Overview: workflows/index.md
+      - ci-security: workflows/ci-security.md
+      - ci-quality: workflows/ci-quality.md
+      - ci-audit: workflows/ci-audit.md
+      - ci-test: workflows/ci-test.md
+      - ci-release: workflows/ci-release.md
   - CI Gate Requirements:
       - Overview: ci-gates/index.md
       - Required Checks: ci-gates/required-checks.md

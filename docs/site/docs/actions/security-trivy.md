@@ -5,7 +5,7 @@ Runs Trivy vulnerability scanning, SBOM generation, or container image scanning.
 ## Usage
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/security/trivy@v1.4
+- uses: wphillipmoore/standard-actions/actions/security/trivy@v1.5
   with:
     scan-type: fs
     scan-ref: "."
@@ -78,7 +78,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v6
-      - uses: wphillipmoore/standard-actions/actions/security/trivy@v1.4
+      - uses: wphillipmoore/standard-actions/actions/security/trivy@v1.5
         with:
           scan-type: fs
 ```
@@ -86,7 +86,7 @@ jobs:
 ### Container image scan
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/security/trivy@v1.4
+- uses: wphillipmoore/standard-actions/actions/security/trivy@v1.5
   with:
     scan-type: image
     scan-ref: "myapp:latest"
@@ -95,7 +95,7 @@ jobs:
 ### SBOM generation (advisory only)
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/security/trivy@v1.4
+- uses: wphillipmoore/standard-actions/actions/security/trivy@v1.5
   with:
     scan-type: sbom
     output-file: sbom.cdx.json
@@ -104,7 +104,7 @@ jobs:
 ### Custom SARIF category for matrix builds
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/security/trivy@v1.4
+- uses: wphillipmoore/standard-actions/actions/security/trivy@v1.5
   with:
     scan-type: fs
     sarif-category: "trivy-fs-${{ matrix.target }}"

@@ -26,12 +26,20 @@ runs:
         LANGUAGE: ${{ inputs.language }}
         EXTRA_CONFIG: ${{ inputs.extra-config }}
       run: |
-        config="p/security-audit p/secrets"
+        config="p/ci p/security-audit p/secrets"
 
         if curl -sf "https://semgrep.dev/c/p/$LANGUAGE" -o /dev/null 2>/dev/null; then
           config="p/$LANGUAGE $config"
         else
           echo "::notice::Semgrep ruleset p/$LANGUAGE not found in registry — skipping language-specific rules"
+        fi
+
+        if find . -name "Dockerfile*" -not -path './.git/*' | head -1 | grep -q .; then
+          config="$config p/dockerfile"
+        fi
+
+        if find .github/workflows -name "*.yml" -o -name "*.yaml" 2>/dev/null | head -1 | grep -q .; then
+          config="$config p/github-actions"
         fi
 
         if [ -n "$EXTRA_CONFIG" ]; then

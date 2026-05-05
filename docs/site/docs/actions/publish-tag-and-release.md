@@ -7,7 +7,7 @@ action safe to re-run.
 ## Usage
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@v1.4
+- uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@v1.5
   with:
     version: "1.2.3"
     release-title: mqrestadmin
@@ -62,7 +62,7 @@ action safe to re-run.
 ### Standard library release
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@v1.4
+- uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@v1.5
   with:
     version: ${{ steps.version.outputs.version }}
     release-title: mqrestadmin
@@ -72,7 +72,7 @@ action safe to re-run.
 ### Release with build artifacts
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@v1.4
+- uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@v1.5
   with:
     version: "2.0.0"
     release-title: myapp
