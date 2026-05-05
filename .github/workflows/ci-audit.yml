@@ -29,5 +29,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Install standard-tooling
+        uses: ./actions/setup/standard-tooling
+
       - name: Run dependency audit
         run: st-validate --check audit

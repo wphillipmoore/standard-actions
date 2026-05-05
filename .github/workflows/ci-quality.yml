@@ -26,6 +26,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Install standard-tooling
+        uses: ./actions/setup/standard-tooling
+
       - name: Run common quality checks
         run: st-validate --check common
 
@@ -40,6 +43,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Install standard-tooling
+        uses: ./actions/setup/standard-tooling
+
       - name: Run lint
         run: st-validate --check lint
 
@@ -53,6 +59,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+
+      - name: Install standard-tooling
+        uses: ./actions/setup/standard-tooling
 
       - name: Run typecheck
         run: st-validate --check typecheck

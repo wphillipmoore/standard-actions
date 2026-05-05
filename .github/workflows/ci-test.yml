@@ -29,5 +29,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Install standard-tooling
+        uses: ./actions/setup/standard-tooling
+
       - name: Run unit tests
         run: st-validate --check test
