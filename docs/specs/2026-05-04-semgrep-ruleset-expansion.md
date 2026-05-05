@@ -15,7 +15,7 @@ base config and auto-detecting repo content to enable `p/dockerfile` and
 The Semgrep action (`actions/security/semgrep/action.yml`) runs with a fixed
 base config of `p/security-audit` and `p/secrets`, plus a conditional
 `p/$LANGUAGE` when the language-specific ruleset exists in the registry. Issue
-#303 identified several high-value rulesets that are not being used — most
+Issue #303 identified several high-value rulesets that are not being used — most
 notably `p/ci` (147 CI pipeline security rules), `p/dockerfile` (7 Dockerfile
 best-practice rules), and `p/github-actions` (3 Actions injection rules).
 
@@ -32,7 +32,7 @@ Add `p/ci` to the hardcoded base config string. This ruleset covers CI pipeline
 security (injection, secrets in workflows, unsafe patterns) and applies to all
 repos. The base config becomes:
 
-```
+```text
 p/ci p/security-audit p/secrets
 ```
 
