@@ -31,9 +31,11 @@ a single release.
 > **Branch:** create from `develop`
 > **Prereq:** none
 
-Phase 1 may be split across multiple PRs. Tasks 1-2 form a natural PR
-(registry fixes + install commands). Tasks 3-5 form a second PR
-(`st-validate` command). Task 6 is a third PR (wiring consumers).
+Phase 1 is combined with the publish-and-docs rationalization (#318).
+Both specs' standard-tooling work ships in a single release. Tasks 1-3
+are from this spec (registry + `st-validate`). Tasks 4-5 wire existing
+code to use the new registry. Task 6 covers the `st-version` dependency
+from #318. Task 7 is the combined release.
 
 ### Task 1: Fix command registry and add install commands
 
@@ -724,7 +726,35 @@ Run: `cd /Users/pmoore/dev/github/standard-tooling && uv run pytest tests/standa
 st-commit --type refactor --scope finalize --message "call st-validate instead of st-validate-local in post-finalization" --agent claude
 ```
 
-### Task 6: Full validation and release
+### Task 6: Build `st-version` library and CLI (from #318)
+
+ci-release.yml (Task 10) depends on `st-version show` to extract
+version strings for the version-divergence comparison. This task
+implements `st-version` as defined in the publish-and-docs
+rationalization plan.
+
+**Full task details:** See
+`docs/plans/2026-05-05-publish-and-docs-rationalization.md`, Tasks 2-3.
+Those tasks define the complete `st-version` library (per-language
+version discovery, show, show --major-minor, bump) and the CLI entry
+point. Do not duplicate the steps here — execute Tasks 2-3 from that
+plan.
+
+**Files (from #318 plan):**
+- Create: `src/standard_tooling/lib/version.py`
+- Create: `src/standard_tooling/bin/version.py`
+- Create: `tests/standard_tooling/test_version.py`
+- Create: `tests/standard_tooling/test_version_cli.py`
+- Modify: `pyproject.toml` (add `st-version` entry point)
+
+- [ ] **Step 1: Execute #318 Task 2 (st-version library)**
+- [ ] **Step 2: Execute #318 Task 3 (st-version bump + CLI)**
+- [ ] **Step 3: Verify st-version show works**
+
+Run: `cd /Users/pmoore/dev/github/standard-tooling && uv run st-version show`
+Expected: outputs the current version from `VERSION` or `pyproject.toml`
+
+### Task 7: Full validation and release
 
 - [ ] **Step 1: Run full test suite**
 
@@ -734,15 +764,19 @@ Run: `cd /Users/pmoore/dev/github/standard-tooling && uv run pytest -v --cov --c
 
 Run: `cd /Users/pmoore/dev/github/standard-tooling && st-docker-run -- uv run st-validate-local`
 
-- [ ] **Step 3: Coordinate with #318 standard-tooling work**
+- [ ] **Step 3: Verify all Phase 1 deliverables**
 
-Ensure the #318 tasks (st-version, [publish] config) are also complete
-on the same branch or merged before this release.
+Confirm these are all present and tested:
+- `st-validate` command (Tasks 1-3)
+- Registry with install commands and fixed Python entries (Task 1)
+- docker_cache.py using registry (Task 4)
+- finalize-repo using st-validate (Task 5)
+- `st-version` command (Task 6)
 
 - [ ] **Step 4: Release standard-tooling**
 
 Tag and release the combined standard-tooling version containing
-`st-validate`, registry fixes, and #318 work.
+`st-validate`, registry fixes, and `st-version`.
 
 ---
 
@@ -752,9 +786,9 @@ Tag and release the combined standard-tooling version containing
 > **Branch:** `feature/337-ci-workflow-reset` (worktree:
 > `.worktrees/issue-337-ci-workflow-reset/`)
 > **Prereq:** Phase 1 complete (standard-tooling released with
-> `st-validate`)
+> `st-validate` and `st-version`)
 
-### Task 7: Implement ci-quality.yml
+### Task 8: Implement ci-quality.yml
 
 **Files:**
 - Modify: `.github/workflows/ci-quality.yml`
@@ -829,7 +863,7 @@ Run: `actionlint .github/workflows/ci-quality.yml`
 st-commit --type feat --scope ci --message "implement ci-quality.yml with st-validate dispatch" --agent claude
 ```
 
-### Task 8: Implement ci-test.yml
+### Task 9: Implement ci-test.yml
 
 **Files:**
 - Modify: `.github/workflows/ci-test.yml`
@@ -876,7 +910,7 @@ jobs:
 st-commit --type feat --scope ci --message "implement ci-test.yml with st-validate dispatch" --agent claude
 ```
 
-### Task 9: Implement ci-audit.yml
+### Task 10: Implement ci-audit.yml
 
 **Files:**
 - Modify: `.github/workflows/ci-audit.yml`
@@ -922,7 +956,7 @@ jobs:
 st-commit --type feat --scope ci --message "implement ci-audit.yml with st-validate dispatch" --agent claude
 ```
 
-### Task 10: Implement ci-release.yml
+### Task 11: Implement ci-release.yml
 
 **Files:**
 - Modify: `.github/workflows/ci-release.yml`
@@ -964,9 +998,9 @@ jobs:
           main-version-command: st-version show
 ```
 
-Note: The exact integration with the version-divergence action for the
-main branch comparison depends on the #318 `st-version` implementation.
-The action may need a worktree or ref-based version extraction. Adjust
+Note: `st-version show` is built in Task 6 (Phase 1). The exact
+integration with the version-divergence action for the main branch
+comparison may need a worktree or ref-based version extraction. Adjust
 during implementation.
 
 - [ ] **Step 2: Validate actionlint passes**
@@ -977,7 +1011,7 @@ during implementation.
 st-commit --type feat --scope ci --message "implement ci-release.yml with st-version version-bump gate" --agent claude
 ```
 
-### Task 11: Update ci.yml self-referencing orchestrator
+### Task 12: Update ci.yml self-referencing orchestrator
 
 **Files:**
 - Modify: `.github/workflows/ci.yml`
@@ -998,7 +1032,7 @@ calls needed for a shell repo.
 st-commit --type ci --message "update ci.yml orchestrator for updated workflow signatures" --agent claude
 ```
 
-### Task 12: Validate and release
+### Task 13: Validate and release
 
 - [ ] **Step 1: Run local validation**
 
@@ -1032,7 +1066,7 @@ All checks should pass:
 > remaining managed repos
 > **Prereq:** Phase 2 complete (standard-actions v1.6 released)
 
-### Task 13: Update mq-rest-admin-python
+### Task 14: Update mq-rest-admin-python
 
 - [ ] **Step 1: Replace bespoke CI with thin wrappers**
 
@@ -1051,11 +1085,11 @@ centralization issues (#526-#532).
 
 - [ ] **Step 4: Commit and merge**
 
-### Task 14: Update ai-research-methodology
+### Task 15: Update ai-research-methodology
 
-Same pattern as Task 13.
+Same pattern as Task 14.
 
-### Task 15: Update remaining repos
+### Task 16: Update remaining repos
 
 Repeat for each remaining managed repo: standard-tooling,
 mq-rest-admin-go, mq-rest-admin-java, mq-rest-admin-ruby,
