@@ -63,3 +63,7 @@ jobs:
   `standard-tooling.toml` (with a legacy `st-config.toml` fallback).
 - For Python repositories, the `standards` job runs `uv sync --group dev --frozen`
   to make project-installed tools available on `PATH`.
+- The Semgrep action auto-detects repository content and enables additional
+  rulesets: `p/dockerfile` when Dockerfiles are present, `p/github-actions`
+  when workflow files exist under `.github/workflows/`. No configuration is
+  needed from consuming repos.
