@@ -9,34 +9,28 @@ on:
       versions:
         type: string
         required: true
-      integration-tests:
-        type: boolean
-        default: false
+      container-suffix:
+        type: string
+        required: false
+        description: >-
+          Container image name suffix (e.g. python, go, base). Defaults
+          to the language input. Callers whose language is "shell" or
+          "none" should pass "base".
 
 jobs:
   unit:
     name: unit / ${{ matrix.version }}
     runs-on: ubuntu-latest
+    container: ghcr.io/wphillipmoore/dev-${{ inputs.container-suffix || inputs.language }}:${{ matrix.version }}
     strategy:
       matrix:
         version: ${{ fromJSON(inputs.versions) }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+
+      - name: Install standard-tooling
+        uses: ./actions/setup/standard-tooling
 
       - name: Run unit tests
-        run: echo "Unit tests for ${{ inputs.language }} ${{ matrix.version }}"
-
-  integration:
-    if: ${{ inputs.integration-tests }}
-    name: integration / ${{ matrix.version }}
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        version: ${{ fromJSON(inputs.versions) }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Run integration tests
-        run: echo "Integration tests for ${{ inputs.language }} ${{ matrix.version }}"
+        run: st-validate --check test

@@ -17,6 +17,7 @@ jobs:
     with:
       language: shell
       versions: '["latest"]'
+      container-suffix: base
 
   security:
     uses: ./.github/workflows/ci-security.yml

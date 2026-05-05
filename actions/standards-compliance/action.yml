@@ -10,14 +10,7 @@ runs:
   steps:
     - name: Install standard-tooling
       if: github.event_name == 'pull_request'
-      shell: bash
-      run: |
-        TAG=$(sed -n 's/^[[:space:]]*standard-tooling[[:space:]]*=[[:space:]]*"\(.*\)"/\1/p' standard-tooling.toml)
-        if [ -z "${TAG:-}" ]; then
-          echo "::error::standard-tooling.toml not found or missing version tag"
-          exit 1
-        fi
-        uv tool install "standard-tooling @ git+https://github.com/wphillipmoore/standard-tooling@${TAG}"
+      uses: ./actions/setup/standard-tooling
 
     - name: Validate pull request issue linkage
       if: github.event_name == 'pull_request'

@@ -9,6 +9,13 @@ on:
       versions:
         type: string
         required: true
+      container-suffix:
+        type: string
+        required: false
+        description: >-
+          Container image name suffix (e.g. python, go, base). Defaults
+          to the language input. Callers whose language is "shell" or
+          "none" should pass "base".
 
 jobs:
   common:
@@ -19,39 +26,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Install standard-tooling
+        uses: ./actions/setup/standard-tooling
+
       - name: Run common quality checks
-        shell: bash
-        run: |
-          has_files() { find . -name "$1" -not -path './.git/*' | head -1 | grep -q .; }
-
-          if has_files "*.md"; then
-            echo "Running markdownlint..."
-            markdownlint '**/*.md' --ignore node_modules
-          fi
-
-          if has_files "*.sh" || [ -d scripts/bin ]; then
-            echo "Running shellcheck..."
-            find . -name "*.sh" -o -path "*/scripts/bin/*" -print0 | xargs -0 -r shellcheck
-          fi
-
-          if has_files "*.yml" || has_files "*.yaml"; then
-            echo "Running yamllint..."
-            yamllint .
-          fi
-
-          if has_files "Dockerfile*"; then
-            echo "Running hadolint..."
-            find . -name "Dockerfile*" -print0 | xargs -0 -r hadolint
-          fi
-
-          if [ -d .github/workflows ]; then
-            echo "Running actionlint..."
-            actionlint
-          fi
+        run: st-validate --check common
 
   lint:
     name: lint / ${{ matrix.version }}
     runs-on: ubuntu-latest
+    container: ghcr.io/wphillipmoore/dev-${{ inputs.container-suffix || inputs.language }}:${{ matrix.version }}
     strategy:
       matrix:
         version: ${{ fromJSON(inputs.versions) }}
@@ -59,12 +43,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Install standard-tooling
+        uses: ./actions/setup/standard-tooling
+
       - name: Run lint
-        run: echo "Lint for ${{ inputs.language }} ${{ matrix.version }}"
+        run: st-validate --check lint
 
   typecheck:
     name: typecheck / ${{ matrix.version }}
     runs-on: ubuntu-latest
+    container: ghcr.io/wphillipmoore/dev-${{ inputs.container-suffix || inputs.language }}:${{ matrix.version }}
     strategy:
       matrix:
         version: ${{ fromJSON(inputs.versions) }}
@@ -72,5 +60,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Install standard-tooling
+        uses: ./actions/setup/standard-tooling
+
       - name: Run typecheck
-        run: echo "Typecheck for ${{ inputs.language }} ${{ matrix.version }}"
+        run: st-validate --check typecheck

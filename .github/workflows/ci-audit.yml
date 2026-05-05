@@ -9,11 +9,19 @@ on:
       versions:
         type: string
         required: true
+      container-suffix:
+        type: string
+        required: false
+        description: >-
+          Container image name suffix (e.g. python, go, base). Defaults
+          to the language input. Callers whose language is "shell" or
+          "none" should pass "base".
 
 jobs:
   dependencies:
     name: dependencies / ${{ matrix.version }}
     runs-on: ubuntu-latest
+    container: ghcr.io/wphillipmoore/dev-${{ inputs.container-suffix || inputs.language }}:${{ matrix.version }}
     strategy:
       matrix:
         version: ${{ fromJSON(inputs.versions) }}
@@ -21,5 +29,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Install standard-tooling
+        uses: ./actions/setup/standard-tooling
+
       - name: Run dependency audit
-        run: echo "Dependency audit for ${{ inputs.language }} ${{ matrix.version }}"
+        run: st-validate --check audit
