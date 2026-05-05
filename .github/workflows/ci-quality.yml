@@ -26,7 +26,7 @@ jobs:
 
           if has_files "*.md"; then
             echo "Running markdownlint..."
-            markdownlint '**/*.md' --ignore node_modules || true
+            markdownlint '**/*.md' --ignore node_modules
           fi
 
           if has_files "*.sh" || [ -d scripts/bin ]; then
@@ -41,12 +41,12 @@ jobs:
 
           if has_files "Dockerfile*"; then
             echo "Running hadolint..."
-            find . -name "Dockerfile*" -print0 | xargs -0 -r hadolint || true
+            find . -name "Dockerfile*" -print0 | xargs -0 -r hadolint
           fi
 
           if [ -d .github/workflows ]; then
             echo "Running actionlint..."
-            actionlint || true
+            actionlint
           fi
 
   lint:
