@@ -21,6 +21,18 @@ on:
           Disable for languages CodeQL does not support (e.g. shell).
         type: boolean
         default: true
+      container-suffix:
+        type: string
+        required: false
+        description: >-
+          Container image name suffix for the standards job
+          (e.g. python, base). Defaults to "base".
+      container-tag:
+        type: string
+        required: false
+        description: >-
+          Container image tag for the standards job.
+          Defaults to "latest".
 
 permissions:
   contents: read
@@ -31,7 +43,7 @@ jobs:
     name: standards
     if: ${{ inputs.run-standards }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-base:latest
+    container: ghcr.io/wphillipmoore/dev-${{ inputs.container-suffix || 'base' }}:${{ inputs.container-tag || 'latest' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6

@@ -23,12 +23,18 @@ on:
           Container image name suffix (e.g. python, go, base). Defaults
           to the language input. Callers whose language is "shell" or
           "none" should pass "base".
+      container-tag:
+        type: string
+        required: false
+        description: >-
+          Container image tag for non-matrix jobs (e.g. common).
+          Defaults to "latest".
 
 jobs:
   common:
     name: common
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-base:latest
+    container: ghcr.io/wphillipmoore/dev-${{ inputs.container-suffix || 'base' }}:${{ inputs.container-tag || 'latest' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
