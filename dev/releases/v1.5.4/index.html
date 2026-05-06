@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://wphillipmoore.github.io/standard-actions/dev/releases/v1.2.1/">
+        <link rel="canonical" href="https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.4/">
       
       
-        <link rel="prev" href="../v1.3.0/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../v1.2.0/">
+        <link rel="next" href="../v1.5.3/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>v1.2.1 - Standard Actions</title>
+        <title>v1.5.4 - Standard Actions</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#release-120-2026-04-24" class="md-skip">
+        <a href="#release-154-2026-05-06" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              v1.2.1
+              v1.5.4
             
           </span>
         </div>
@@ -647,10 +647,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../v1.5.4/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    v1.5.4
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -661,6 +683,35 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bug-fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bug fixes
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1061,32 +1112,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    v1.2.1
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../v1.2.1/" class="md-nav__link">
         
   
   
@@ -1097,35 +1126,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Features
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2399,9 +2399,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#bug-fixes" class="md-nav__link">
     <span class="md-ellipsis">
-      Features
+      Bug fixes
     </span>
   </a>
   
@@ -2423,26 +2423,16 @@
 
 
 
-<h1 id="release-120-2026-04-24">Release 1.2.0 (2026-04-24)<a class="headerlink" href="#release-120-2026-04-24" title="Permanent link">&para;</a></h1>
-<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
+<h1 id="release-154-2026-05-06">Release 1.5.4 (2026-05-06)<a class="headerlink" href="#release-154-2026-05-06" title="Permanent link">&para;</a></h1>
+<h2 id="bug-fixes">Bug fixes<a class="headerlink" href="#bug-fixes" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>drop auto-merge from version-bump-pr composite (bump 1.2.0) (#193)</strong>
-Step 2 of 3 for the poll-and-merge rework (plugin#57).</li>
+<li><strong>use relative action refs in CI workflows, freeze to tagged refs at publish time</strong>
+Convert @develop remote refs in CI gate workflows to ./actions/ relative
+paths so standard-actions tests its own action code during development.
+Update the publish.yml freeze step to rewrite ./actions/ refs to
+fully-qualified tagged refs at release time, and add a validation step
+to assert no unfrozen refs survive in the tagged commit.</li>
 </ul>
-<p>The composite used to end with:</p>
-<div class="highlight"><pre><span></span><code>gh pr merge --auto --merge --delete-branch &lt;branch&gt;
-</code></pre></div>
-<p>That call has been silently failing on every publish run since
-auto-merge was disabled fleet-wide — the bump PR got created, the
-step threw, the workflow was marked failure, and the user merged
-manually anyway.</p>
-<p>Drop it. <code>pr-url</code> is already an output; the release skill drives
-the merge via st-merge-when-green once CI is green.</p>
-<p>Action name / description, in-file comment, and public docs all
-updated to match. No other auto-merge references in the repo.</p>
-<p>VERSION 1.1.4 -&gt; 1.2.0. Minor bump because behavior changes for
-consumers pinned to <code>@v1.1</code>; the rolling tag will not move. They
-opt in to <code>@v1.2</code> alongside a coordinated skill rewrite.</p>
 
 
 
