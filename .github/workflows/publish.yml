@@ -52,13 +52,13 @@ jobs:
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
-      # Rewrite internal @develop refs in the working tree, then commit
-      # locally on top of the checked-out HEAD. The tag step below tags
-      # this commit, so the tagged snapshot has internally-consistent
-      # refs (every wphillipmoore/standard-actions/...@develop becomes
-      # ...@<release-tag>). The commit is reachable only via the tag —
-      # it is never pushed to develop or main.
-      - name: Freeze internal @develop refs to release tag
+      # Rewrite internal action refs so the tagged snapshot is
+      # self-consistent. Two passes:
+      #   1. ./actions/X  → wphillipmoore/standard-actions/actions/X@<tag>
+      #   2. ...@develop  → ...@<tag>
+      # The commit is reachable only via the tag — never pushed to
+      # develop or main.
+      - name: Freeze internal refs to release tag
         if: steps.tag_check.outputs.exists == 'false'
         env:
           RELEASE_TAG: ${{ steps.version.outputs.tag }}
@@ -68,18 +68,36 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           mapfile -t files < <(find .github/workflows actions \
             -type f \( -name '*.yml' -o -name '*.yaml' \) 2>/dev/null)
-          rewrote=0
           for f in "${files[@]}"; do
-            if grep -qE 'wphillipmoore/standard-actions/[^@[:space:]]+@develop' "$f"; then
-              sed -i.bak -E "s|(wphillipmoore/standard-actions/[^@[:space:]]+)@develop|\1@${RELEASE_TAG}|g" "$f"
-              rm -f "$f.bak"
-              rewrote=$((rewrote + 1))
-            fi
+            sed -i.bak -E "s|\./actions/([^[:space:]]+)|wphillipmoore/standard-actions/actions/\1@${RELEASE_TAG}|g" "$f"
+            sed -i.bak -E "s|(wphillipmoore/standard-actions/[^@[:space:]]+)@develop|\1@${RELEASE_TAG}|g" "$f"
+            rm -f "$f.bak"
           done
-          echo "Rewrote internal @develop refs in ${rewrote} file(s)"
-          if [ "${rewrote}" -gt 0 ]; then
+          if ! git diff --quiet; then
             git add .github/workflows actions
             git commit -m "chore(release): freeze internal refs to ${RELEASE_TAG}"
+          fi
+
+      - name: Validate no unfrozen internal refs
+        if: steps.tag_check.outputs.exists == 'false'
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(find .github/workflows actions \
+            -type f \( -name '*.yml' -o -name '*.yaml' \) 2>/dev/null)
+          failed=0
+          for f in "${files[@]}"; do
+            if grep -nE 'uses:\s+\./actions/' "$f"; then
+              echo "::error file=${f}::Unfrozen relative action ref (./actions/)"
+              failed=1
+            fi
+            if grep -nE 'wphillipmoore/standard-actions/[^@[:space:]]+@develop' "$f"; then
+              echo "::error file=${f}::Unfrozen @develop action ref"
+              failed=1
+            fi
+          done
+          if [ "${failed}" -ne 0 ]; then
+            echo "::error::Internal refs were not fully frozen — aborting"
+            exit 1
           fi
 
       - name: Tag and release
