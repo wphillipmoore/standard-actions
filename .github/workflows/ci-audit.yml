@@ -32,7 +32,7 @@ jobs:
       - name: Install standard-tooling
         uses: ./actions/setup/standard-tooling
 
-      - name: Install dev dependencies
+      - name: Install dependencies
         if: inputs.language == 'python'
         run: uv sync --group dev --frozen
 
