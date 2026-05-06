@@ -46,6 +46,10 @@ jobs:
       - name: Install standard-tooling
         uses: ./actions/setup/standard-tooling
 
+      - name: Install dependencies
+        if: inputs.language == 'python'
+        run: uv sync --group dev --frozen
+
       - name: Run lint
         run: st-validate --check lint
 
@@ -62,6 +66,10 @@ jobs:
 
       - name: Install standard-tooling
         uses: ./actions/setup/standard-tooling
+
+      - name: Install dependencies
+        if: inputs.language == 'python'
+        run: uv sync --group dev --frozen
 
       - name: Run typecheck
         run: st-validate --check typecheck
