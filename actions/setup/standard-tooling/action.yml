@@ -1,8 +1,9 @@
 name: Install standard-tooling
 description: >-
   Reads the pinned standard-tooling version from standard-tooling.toml
-  and installs it via uv tool install. Skips installation if the tools
-  are already on PATH.
+  and installs it via uv tool install. When the consumer repo is
+  standard-tooling itself, skips the install so CI validates the PR's
+  code instead of the released version.
 
 runs:
   using: composite
@@ -14,6 +15,11 @@ runs:
     - name: Install standard-tooling
       shell: bash
       run: |
+        if grep -q '^name = "standard-tooling"' pyproject.toml 2>/dev/null; then
+          echo "Consumer repo is standard-tooling itself — skipping uv tool install"
+          exit 0
+        fi
+
         TAG=$(sed -n 's/^[[:space:]]*standard-tooling[[:space:]]*=[[:space:]]*"\(.*\)"/\1/p' standard-tooling.toml)
         if [ -z "${TAG:-}" ]; then
           echo "::error::standard-tooling.toml not found or missing version tag"
