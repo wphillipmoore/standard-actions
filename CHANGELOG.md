@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.5.10] - 2026-05-06
+
+### Bug fixes
+
+- run uv sync in standard-tooling self-install path
+
+### Features
+
+- add container-tag input, make common job container overridable
+- add container-suffix and container-tag inputs for standards job
+- add container-suffix and container-tag inputs for version-bump job
+
 ## [1.5.9] - 2026-05-06
 
 ### Bug fixes

@@ -9,13 +9,25 @@ on:
       run-release:
         type: boolean
         default: true
+      container-suffix:
+        type: string
+        required: false
+        description: >-
+          Container image name suffix for the version-bump job
+          (e.g. python, base). Defaults to "base".
+      container-tag:
+        type: string
+        required: false
+        description: >-
+          Container image tag for the version-bump job.
+          Defaults to "latest".
 
 jobs:
   version-bump:
     name: version-bump
     if: ${{ inputs.run-release }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-base:latest
+    container: ghcr.io/wphillipmoore/dev-${{ inputs.container-suffix || 'base' }}:${{ inputs.container-tag || 'latest' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
