@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Install standard-tooling
-        uses: ./actions/setup/standard-tooling
+        uses: wphillipmoore/standard-actions/actions/setup/standard-tooling@v1.5.10
 
       - name: Install dependencies
         if: inputs.language == 'python'
