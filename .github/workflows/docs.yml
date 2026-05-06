@@ -24,6 +24,6 @@ jobs:
           fetch-depth: 0
 
       - name: Deploy docs
-        uses: ./actions/docs-deploy
+        uses: wphillipmoore/standard-actions/actions/docs-deploy@v1.5.8
         with:
           version-command: cat VERSION | cut -d. -f1,2
