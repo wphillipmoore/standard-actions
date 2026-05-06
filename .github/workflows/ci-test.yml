@@ -1,3 +1,10 @@
+# PATH workaround (#362): GitHub Actions overrides the container WORKDIR to
+# /__w/<repo>/<repo>, so the Docker image's /workspace/.venv/bin PATH entry
+# never resolves.  Each st-validate step prepends $GITHUB_WORKSPACE/.venv/bin
+# to PATH so that st-validate itself (standard-tooling self-install case) and
+# dev tools it invokes (ruff, mypy, pytest, pip-audit) are findable.  This is
+# a harmless no-op for non-Python repos where .venv does not exist.
+
 name: CI Test
 
 on:
@@ -37,4 +44,6 @@ jobs:
         run: uv sync --group dev --frozen
 
       - name: Run unit tests
-        run: st-validate --check test
+        run: |
+          PATH="$GITHUB_WORKSPACE/.venv/bin:$PATH"
+          st-validate --check test
