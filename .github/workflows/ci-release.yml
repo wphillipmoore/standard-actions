@@ -23,10 +23,10 @@ jobs:
           fetch-depth: 0
 
       - name: Install standard-tooling
-        uses: ./actions/setup/standard-tooling
+        uses: wphillipmoore/standard-actions/actions/setup/standard-tooling@v1.5.7
 
       - name: Verify version bump
-        uses: ./actions/release-gates/version-divergence
+        uses: wphillipmoore/standard-actions/actions/release-gates/version-divergence@v1.5.7
         with:
           head-version-command: st-version show
           main-version-command: st-version show --ref origin/main
