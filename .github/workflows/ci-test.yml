@@ -32,5 +32,9 @@ jobs:
       - name: Install standard-tooling
         uses: ./actions/setup/standard-tooling
 
+      - name: Install dev dependencies
+        if: inputs.language == 'python'
+        run: uv sync --group dev --frozen
+
       - name: Run unit tests
         run: st-validate --check test
