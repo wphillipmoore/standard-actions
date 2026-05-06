@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.1/">
+        <link rel="canonical" href="https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.7/">
       
       
-        <link rel="prev" href="../v1.5.2/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../v1.5.0/">
+        <link rel="next" href="../v1.5.6/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>v1.5.1 - Standard Actions</title>
+        <title>v1.5.7 - Standard Actions</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#release-151-2026-05-05" class="md-skip">
+        <a href="#release-157-2026-05-06" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              v1.5.1
+              v1.5.7
             
           </span>
         </div>
@@ -653,10 +653,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../v1.5.7/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -667,6 +676,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -791,32 +801,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    v1.5.1
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../v1.5.1/" class="md-nav__link">
         
   
   
@@ -827,53 +815,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#bug-fixes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Bug fixes
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#documentation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Documentation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Features
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2485,41 +2426,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#bug-fixes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Bug fixes
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#documentation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Documentation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Features
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -2534,36 +2440,7 @@
 
 
 
-<h1 id="release-151-2026-05-05">Release 1.5.1 (2026-05-05)<a class="headerlink" href="#release-151-2026-05-05" title="Permanent link">&para;</a></h1>
-<h2 id="bug-fixes">Bug fixes<a class="headerlink" href="#bug-fixes" title="Permanent link">&para;</a></h2>
-<ul>
-<li>
-<p><strong>replace pip install uv with astral-sh/setup-uv</strong>
-Eliminates PEP 668 fragility by switching from pip install uv to the official astral-sh/setup-uv@v8 action, which also handles dependency caching natively — removing the need for a manual actions/cache step and the cache-prefix input. Closes #289</p>
-</li>
-<li>
-<p><strong>remove dead st-config.toml fallback from ci-security.yml</strong></p>
-</li>
-</ul>
-<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>add reusable workflows nav section to mkdocs config</strong></li>
-<li><strong>add reusable workflows overview page</strong></li>
-<li><strong>add ci-security workflow reference page</strong></li>
-<li><strong>add ci-quality workflow reference page</strong></li>
-<li><strong>add ci-audit workflow reference page</strong></li>
-<li><strong>add ci-test workflow reference page</strong></li>
-<li><strong>add ci-release workflow reference page</strong></li>
-<li><strong>update home page for v1.5 reusable workflow redesign</strong></li>
-<li><strong>update getting-started for v1.5 reusable workflow consumption</strong></li>
-<li><strong>update CI gates section for v1.5 reusable workflows</strong></li>
-<li><strong>sweep action reference pages for v1.5 accuracy</strong></li>
-</ul>
-<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>add p/ci base ruleset and auto-detect p/dockerfile, p/github-actions</strong>
-Add p/ci (147 CI pipeline security rules) to the base Semgrep config that runs for every scan. Auto-detect Dockerfiles and GitHub Actions workflow files in the repo and enable p/dockerfile and p/github-actions rulesets accordingly, following the same file-presence detection pattern used by ci-quality's common job. Consuming repos get expanded coverage automatically — no configuration changes needed. Ref #303</li>
-</ul>
+<h1 id="release-157-2026-05-06">Release 1.5.7 (2026-05-06)<a class="headerlink" href="#release-157-2026-05-06" title="Permanent link">&para;</a></h1>
 
 
 
