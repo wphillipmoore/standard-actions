@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.7/">
+        <link rel="canonical" href="https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.10/">
       
       
-        <link rel="prev" href="../v1.5.8/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../v1.5.6/">
+        <link rel="next" href="../v1.5.9/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>v1.5.7 - Standard Actions</title>
+        <title>v1.5.10 - Standard Actions</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#release-157-2026-05-06" class="md-skip">
+        <a href="#release-1510-2026-05-06" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              v1.5.7
+              v1.5.10
             
           </span>
         </div>
@@ -659,10 +659,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../v1.5.10/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    v1.5.10
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -673,6 +695,44 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bug-fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bug fixes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Features
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -728,19 +788,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../v1.5.7/" class="md-nav__link">
         
   
   
@@ -751,7 +802,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -2501,6 +2551,32 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bug-fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bug fixes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Features
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2515,7 +2591,27 @@
 
 
 
-<h1 id="release-157-2026-05-06">Release 1.5.7 (2026-05-06)<a class="headerlink" href="#release-157-2026-05-06" title="Permanent link">&para;</a></h1>
+<h1 id="release-1510-2026-05-06">Release 1.5.10 (2026-05-06)<a class="headerlink" href="#release-1510-2026-05-06" title="Permanent link">&para;</a></h1>
+<h2 id="bug-fixes">Bug fixes<a class="headerlink" href="#bug-fixes" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>run uv sync in standard-tooling self-install path</strong>
+When the composite action detects the consumer repo is standard-tooling itself, run uv sync --frozen --group dev to install CLI tools from source into .venv/bin/ instead of just skipping installation entirely. Ref #373</li>
+</ul>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>add container-tag input, make common job container overridable</strong>
+The common job now uses container-suffix (defaulting to base) and container-tag (defaulting to latest) instead of hardcoding dev-base:latest. This lets callers like standard-tooling provide a Python-capable container for the self-install case. Ref #373</p>
+</li>
+<li>
+<p><strong>add container-suffix and container-tag inputs for standards job</strong>
+The standards job now uses container-suffix (defaulting to base) and container-tag (defaulting to latest) instead of hardcoding dev-base:latest. This lets callers like standard-tooling provide a Python-capable container. Ref #373</p>
+</li>
+<li>
+<p><strong>add container-suffix and container-tag inputs for version-bump job</strong>
+The version-bump job now uses container-suffix (defaulting to base) and container-tag (defaulting to latest) instead of hardcoding dev-base:latest. This lets callers like standard-tooling provide a Python-capable container. Ref #373</p>
+</li>
+</ul>
 
 
 
