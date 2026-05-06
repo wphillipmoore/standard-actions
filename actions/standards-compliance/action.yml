@@ -15,7 +15,9 @@ runs:
     - name: Validate pull request issue linkage
       if: github.event_name == 'pull_request'
       shell: bash
-      run: st-pr-issue-linkage
+      run: |
+        PATH="$GITHUB_WORKSPACE/.venv/bin:$PATH"
+        st-pr-issue-linkage
 
     - name: Reject auto-close linkage keywords
       if: github.event_name == 'pull_request'

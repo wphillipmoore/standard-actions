@@ -39,6 +39,7 @@ runs:
       id: compare
       shell: bash
       run: |
+        PATH="$GITHUB_WORKSPACE/.venv/bin:$PATH"
         head_version=$(${{ inputs.head-version-command }})
 
         if ! main_version=$(${{ inputs.main-version-command }} 2>/dev/null) || [ -z "$main_version" ]; then
