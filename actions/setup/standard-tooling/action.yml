@@ -2,8 +2,8 @@ name: Install standard-tooling
 description: >-
   Reads the pinned standard-tooling version from standard-tooling.toml
   and installs it via uv tool install. When the consumer repo is
-  standard-tooling itself, skips the install so CI validates the PR's
-  code instead of the released version.
+  standard-tooling itself, runs uv sync to install from source so CI
+  validates the PR's code instead of the released version.
 
 runs:
   using: composite
@@ -16,7 +16,8 @@ runs:
       shell: bash
       run: |
         if grep -q '^name = "standard-tooling"' pyproject.toml 2>/dev/null; then
-          echo "Consumer repo is standard-tooling itself — skipping uv tool install"
+          echo "Consumer repo is standard-tooling itself — installing from source"
+          uv sync --frozen --group dev
           exit 0
         fi
 
