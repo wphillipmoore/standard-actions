@@ -37,10 +37,10 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Install standard-tooling
-        uses: ./actions/setup/standard-tooling
+        uses: wphillipmoore/standard-actions/actions/setup/standard-tooling@v1.5.6
 
       - name: Validate standards
-        uses: ./actions/standards-compliance
+        uses: wphillipmoore/standard-actions/actions/standards-compliance@v1.5.6
 
   codeql:
     name: codeql
@@ -53,7 +53,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Run CodeQL analysis
-        uses: ./actions/security/codeql
+        uses: wphillipmoore/standard-actions/actions/security/codeql@v1.5.6
         with:
           language: ${{ inputs.language }}
 
@@ -68,7 +68,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Run Trivy vulnerability scan
-        uses: ./actions/security/trivy
+        uses: wphillipmoore/standard-actions/actions/security/trivy@v1.5.6
         with:
           scan-type: fs
 
@@ -84,6 +84,6 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Run Semgrep SAST scan
-        uses: ./actions/security/semgrep
+        uses: wphillipmoore/standard-actions/actions/security/semgrep@v1.5.6
         with:
           language: ${{ inputs.language }}
