@@ -2613,7 +2613,7 @@
 branches (<code>main</code>, <code>develop</code>).</p>
 <h2 id="host-prerequisites">Host prerequisites<a class="headerlink" href="#host-prerequisites" title="Permanent link">&para;</a></h2>
 <p>Install the standard-tooling host tool, which provides <code>st-docker-run</code>,
-<code>st-commit</code>, <code>st-validate-local</code>, and other workflow commands:</p>
+<code>st-commit</code>, <code>st-validate</code>, and other workflow commands:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;standard-tooling @ git+https://github.com/wphillipmoore/standard-tooling@v1.4&#39;</span>
 </code></pre></div>
 <p>Docker must be running for <code>st-docker-run</code> to work.</p>
@@ -2623,7 +2623,7 @@ documentation tools (mkdocs-material, mike) are pre-installed in the
 <code>ghcr.io/wphillipmoore/dev-base:latest</code> container image. No manual host
 installs are needed — <code>st-docker-run</code> pulls and runs this image
 automatically.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>st-docker-run<span class="w"> </span>--<span class="w"> </span>st-validate-local<span class="w">       </span><span class="c1"># Run all validation checks</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>st-docker-run<span class="w"> </span>--<span class="w"> </span>st-validate<span class="w">             </span><span class="c1"># Run all validation checks</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>st-docker-run<span class="w"> </span>--<span class="w"> </span>mkdocs<span class="w"> </span>serve<span class="w"> </span>-f<span class="w"> </span>docs/site/mkdocs.yml<span class="w">   </span><span class="c1"># Preview docs locally</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>st-docker-run<span class="w"> </span>--<span class="w"> </span>mkdocs<span class="w"> </span>build<span class="w"> </span>-f<span class="w"> </span>docs/site/mkdocs.yml<span class="w"> </span>--strict<span class="w">  </span><span class="c1"># Strict docs build</span>
 </code></pre></div>
