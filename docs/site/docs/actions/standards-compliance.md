@@ -2,7 +2,7 @@
 
 PR-specific compliance checks: issue linkage and auto-close keyword rejection.
 Repository profile, markdown, and other structural validations are handled by
-`st-validate-local-common` (run separately in the CI workflow).
+`st-validate` (run separately in the CI workflow).
 
 ## Usage
 

@@ -14,7 +14,7 @@ branches (`main`, `develop`).
 ## Host prerequisites
 
 Install the standard-tooling host tool, which provides `st-docker-run`,
-`st-commit`, `st-validate-local`, and other workflow commands:
+`st-commit`, `st-validate`, and other workflow commands:
 
 ```bash
 uv tool install 'standard-tooling @ git+https://github.com/wphillipmoore/standard-tooling@v1.4'
@@ -31,7 +31,7 @@ installs are needed — `st-docker-run` pulls and runs this image
 automatically.
 
 ```bash
-st-docker-run -- st-validate-local       # Run all validation checks
+st-docker-run -- st-validate             # Run all validation checks
 st-docker-run -- mkdocs serve -f docs/site/mkdocs.yml   # Preview docs locally
 st-docker-run -- mkdocs build -f docs/site/mkdocs.yml --strict  # Strict docs build
 ```

@@ -109,7 +109,7 @@ to a tag or branch reference.
 git config core.hooksPath .githooks  # Enable the pre-commit gate
 ```
 
-Standard-tooling CLI tools (`st-commit`, `st-validate-local`, etc.) are
+Standard-tooling CLI tools (`st-commit`, `st-validate`, etc.) are
 pre-installed in the dev container images. No local setup required beyond
 the host-level tool (`st-docker-run`, `st-commit`, etc.):
 
@@ -124,7 +124,7 @@ host installs needed.
 ### Validation
 
 ```bash
-st-docker-run -- st-validate-local   # Canonical validation (runs in dev-base container)
+st-docker-run -- st-validate   # Canonical validation (runs in dev-base container)
 ```
 
 ## Architecture
@@ -150,15 +150,12 @@ action are validated by the same PR that modifies them.
 ### Standard-Tooling Integration
 
 Shared validators (`st-repo-profile`, `st-pr-issue-linkage`) and local
-validation (`st-validate-local`) are provided by `standard-tooling`. CI uses
+validation (`st-validate`) are provided by `standard-tooling`. CI uses
 the `ghcr.io/wphillipmoore/dev-base:latest` container image which has all
 validators pre-installed. Locally, `st-docker-run` uses the same image so
 validation results match CI exactly.
 
-### Repo-Specific Scripts
+### Validation
 
-```text
-scripts/
-└── bin/
-    └── validate-local-custom    # actionlint (repo-specific)
-```
+All validation — including actionlint — is handled by `st-validate` via the
+built-in command registry. No repo-specific validation scripts are needed.
