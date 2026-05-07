@@ -3,7 +3,7 @@
 ## Canonical command
 
 ```bash
-st-docker-run -- uv run st-validate
+st-docker-run -- st-validate
 ```
 
 This runs all validation inside the `ghcr.io/wphillipmoore/dev-base:latest`

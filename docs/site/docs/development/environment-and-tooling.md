@@ -31,7 +31,7 @@ installs are needed — `st-docker-run` pulls and runs this image
 automatically.
 
 ```bash
-st-docker-run -- uv run st-validate      # Run all validation checks
+st-docker-run -- st-validate             # Run all validation checks
 st-docker-run -- mkdocs serve -f docs/site/mkdocs.yml   # Preview docs locally
 st-docker-run -- mkdocs build -f docs/site/mkdocs.yml --strict  # Strict docs build
 ```

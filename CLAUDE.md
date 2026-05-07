@@ -124,7 +124,7 @@ host installs needed.
 ### Validation
 
 ```bash
-st-docker-run -- uv run st-validate   # Canonical validation (runs in dev-base container)
+st-docker-run -- st-validate   # Canonical validation (runs in dev-base container)
 ```
 
 ## Architecture
