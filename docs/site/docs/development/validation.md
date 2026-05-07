@@ -3,22 +3,19 @@
 ## Canonical command
 
 ```bash
-st-docker-run -- st-validate-local
+st-docker-run -- uv run st-validate
 ```
 
 This runs all validation inside the `ghcr.io/wphillipmoore/dev-base:latest`
 container, which has every required tool pre-installed. No manual host
 installs needed beyond the standard-tooling host tool.
 
-## Dispatch architecture
+## Architecture
 
-`st-validate-local` uses a dispatch architecture that separates common
-validation from repository-specific checks:
-
-1. **Common checks** (`st-validate-local-common`) — repo-profile validation,
-   markdown standards, shellcheck, and yamllint.
-2. **Custom checks** (`scripts/bin/validate-local-custom`) — repository-specific
-   validations defined locally (actionlint for this repository's workflow files).
+`st-validate` reads `primary_language` from `standard-tooling.toml` and runs
+common checks followed by language-specific checks from the built-in command
+registry. Common checks include repo-profile validation, markdownlint,
+shellcheck, yamllint, and actionlint.
 
 ## Tooling
 

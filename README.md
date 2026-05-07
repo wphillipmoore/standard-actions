@@ -45,5 +45,5 @@ Full documentation is available at
 ## Validation
 
 ```bash
-st-docker-run -- st-validate-local
+st-docker-run -- uv run st-validate
 ```
