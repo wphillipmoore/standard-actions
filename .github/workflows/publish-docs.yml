@@ -50,7 +50,9 @@ jobs:
       - name: Run pre-deploy command
         if: inputs.pre-deploy-command != ''
         shell: bash
-        run: ${{ inputs.pre-deploy-command }}
+        env:
+          PRE_DEPLOY_COMMAND: ${{ inputs.pre-deploy-command }}
+        run: eval "$PRE_DEPLOY_COMMAND"
 
       - name: Determine mike command
         id: mike
