@@ -34,7 +34,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install standard-tooling
-        uses: ./actions/setup/standard-tooling
+        uses: wphillipmoore/standard-actions/actions/setup/standard-tooling@v1.5.14
 
       - name: Detect ecosystem
         id: ecosystem
@@ -65,7 +65,7 @@ jobs:
           fi
 
       - name: Deploy docs
-        uses: ./actions/docs-deploy
+        uses: wphillipmoore/standard-actions/actions/docs-deploy@v1.5.14
         with:
           version-command: st-version show --major-minor
           mkdocs-config: ${{ inputs.mkdocs-config || 'docs/site/mkdocs.yml' }}
