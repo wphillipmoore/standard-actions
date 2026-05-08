@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.5.11] - 2026-05-08
+
+### Bug fixes
+
+- remove uv run prefix from st-docker-run invocations
+
 ## [1.5.10] - 2026-05-06
 
 ### Bug fixes
