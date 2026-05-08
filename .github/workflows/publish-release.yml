@@ -3,6 +3,14 @@ name: Publish release
 on:
   workflow_call:
     inputs:
+      language:
+        description: Primary language (matches dev container image suffix).
+        type: string
+        required: true
+      container-tag:
+        description: Dev container image tag override.
+        type: string
+        default: "latest"
       build-command:
         description: Override ecosystem-derived build command.
         type: string
@@ -57,6 +65,15 @@ jobs:
   publish:
     name: release
     runs-on: ubuntu-latest
+    container: ghcr.io/wphillipmoore/dev-${{ inputs.language }}:${{ inputs.container-tag }}
+    defaults:
+      run:
+        shell: bash
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+      attestations: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -66,55 +83,27 @@ jobs:
       - name: Install standard-tooling
         uses: wphillipmoore/standard-actions/actions/setup/standard-tooling@develop
 
-      - name: Detect ecosystem
-        id: ecosystem
+      - name: Configure Maven credentials
+        if: inputs.language == 'java'
+        shell: bash
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         run: |
-          lang=$(python3 -c "
-          import tomllib, pathlib
-          cfg = tomllib.loads(pathlib.Path('standard-tooling.toml').read_text())
-          print(cfg['project']['primary-language'])
-          ")
-          echo "language=$lang" >> "$GITHUB_OUTPUT"
-
-      # ── Ecosystem setup (one per language) ─────────────────────────
-
-      - name: Set up Python
-        if: steps.ecosystem.outputs.language == 'python'
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.14"
-
-      - name: Set up Rust
-        if: steps.ecosystem.outputs.language == 'rust'
-        uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          toolchain: "1.93"
-
-      - name: Set up Ruby
-        if: steps.ecosystem.outputs.language == 'ruby'
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.4"
-          bundler-cache: true
-
-      - name: Set up Go
-        if: steps.ecosystem.outputs.language == 'go'
-        uses: actions/setup-go@v6
-        with:
-          go-version-file: go.mod
-
-      - name: Set up Java
-        if: steps.ecosystem.outputs.language == 'java'
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: "17"
-          cache: maven
-          server-id: central
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml << 'XML'
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
+            <servers>
+              <server>
+                <id>central</id>
+                <username>${env.MAVEN_USERNAME}</username>
+                <password>${env.MAVEN_PASSWORD}</password>
+              </server>
+            </servers>
+          </settings>
+          XML
+          if [ -n "$GPG_PRIVATE_KEY" ]; then
+            echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+          fi
 
       # ── Version and gate checks ────────────────────────────────────
 
@@ -138,7 +127,7 @@ jobs:
         if: steps.tag_check.outputs.exists == 'false'
         id: commands
         env:
-          LANG: ${{ steps.ecosystem.outputs.language }}
+          LANG: ${{ inputs.language }}
         run: |
           build="${{ inputs.build-command }}"
           if [ -z "$build" ]; then
@@ -216,13 +205,13 @@ jobs:
 
       - name: Publish to PyPI
         if: >-
-          steps.ecosystem.outputs.language == 'python' &&
+          inputs.language == 'python' &&
           steps.tag_check.outputs.exists == 'false'
-        uses: pypa/gh-action-pypi-publish@release/v1
+        run: uv publish dist/*
 
       - name: Publish to registry
         if: >-
-          steps.ecosystem.outputs.language != 'python' &&
+          inputs.language != 'python' &&
           steps.commands.outputs.publish != '' &&
           steps.tag_check.outputs.exists == 'false'
         env:

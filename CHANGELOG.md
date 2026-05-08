@@ -5,17 +5,59 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.5.11] - 2026-05-08
+## [1.5.14] - 2026-05-08
+
+### Bug fixes
+
+- route pre-deploy-command through env var to avoid shell injection
+- containerize publish workflows to use dev-base images
+- set default shell to bash for containerized publish workflows
+
+### Chores
+
+- prepare release 1.5.11
+- bump version to 1.5.12
+- add publish section to standard-tooling.toml
+- fleet-wide config and workflow cleanup
+
+### Documentation
+
+- add design spec and plan for Docker CI centralization (#378)
+
+### Features
+
+- add publish-docs.yml dual-trigger reusable workflow, delete docs.yml
+
+### Refactoring
+
+- auto-derive release title and notes from repo metadata
+- remove domain-specific checkout-common inputs
+- use st-version bump instead of regex substitution
+- derive all inputs from standard-tooling.toml, zero required caller inputs
+- use st-version and auto-derived defaults in bespoke publish workflow
+
+## [1.5.11] - 2026-05-07
 
 ### Bug fixes
 
 - remove uv run prefix from st-docker-run invocations
+
+### Chores
+
+- prepare release 1.5.10
+- bump version to 1.5.11
+- decommission st-validate-local remnants
 
 ## [1.5.10] - 2026-05-06
 
 ### Bug fixes
 
 - run uv sync in standard-tooling self-install path
+
+### Chores
+
+- prepare release 1.5.9
+- bump version to 1.5.10
 
 ### Features
 
@@ -29,17 +71,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - complete .venv/bin PATH fix for all st-* invocations and add GHAS required checks
 
+### Chores
+
+- prepare release 1.5.8
+- bump version to 1.5.9
+
 ## [1.5.8] - 2026-05-06
 
 ### Bug fixes
 
 - prepend .venv/bin to PATH before st-validate calls
 
+### Chores
+
+- prepare release 1.5.6
+- merge main into release/1.5.7
+- prepare release 1.5.7
+- bump version to 1.5.8
+
+## [1.5.7] - 2026-05-06
+
+### Chores
+
+- bump version to 1.5.7
+
 ## [1.5.6] - 2026-05-06
 
 ### Bug fixes
 
 - skip uv tool install when consumer repo is standard-tooling
+
+### Chores
+
+- prepare release 1.5.5
+- bump version to 1.5.6
 
 ## [1.5.5] - 2026-05-06
 
@@ -49,11 +114,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - install dev dependencies in test and audit reusable workflows
 - rename step from Install dev dependencies to Install dependencies
 
+### Chores
+
+- prepare release 1.5.4
+- bump version to 1.5.5
+
 ## [1.5.4] - 2026-05-06
 
 ### Bug fixes
 
 - use relative action refs in CI workflows, freeze to tagged refs at publish time
+
+### Chores
+
+- prepare release 1.5.3
+- bump version to 1.5.4
 
 ## [1.5.3] - 2026-05-05
 
@@ -70,6 +145,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### CI
 
 - pass container-suffix to ci-quality for shell language
+
+### Chores
+
+- prepare release 1.5.2
+- bump version to 1.5.3
 
 ### Documentation
 
@@ -93,6 +173,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - pin astral-sh/setup-uv to v8.1.0
 
+### Chores
+
+- prepare release 1.5.1
+- bump version to 1.5.2
+
 ### Documentation
 
 - add design spec for publish and docs workflow rationalization
@@ -106,6 +191,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - replace pip install uv with astral-sh/setup-uv
 - remove dead st-config.toml fallback from ci-security.yml
+
+### Chores
+
+- prepare release 1.5.0
+- bump version to 1.5.1
+- align with st-github-config enforcement
 
 ### Documentation
 
@@ -127,6 +218,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [1.5.0] - 2026-05-04
 
+### Chores
+
+- prepare release 1.4.8
+- bump version to 1.4.9
+
 ### Features
 
 - add five reusable CI workflows for canonical check names
@@ -137,16 +233,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - skip language ruleset when not found in registry (#303) (#304)
 
+### Chores
+
+- prepare release 1.4.7
+- bump version to 1.4.8
+- add memory management policy (#299)
+- remove repo-local markdownlint config (standard-tooling#476) (#302)
+
 ### Documentation
 
 - remove stale include directives and update docs/repository-standards.md references
 
 ## [1.4.7] - 2026-05-01
 
+### Chores
+
+- prepare release 1.4.6
+- bump version to 1.4.7
+- remove legacy st-config.toml
+- update ci.yml install step to read standard-tooling.toml
+
 ### Refactoring
 
 - replace pip install with uv tool install and remove guard patterns
 - remove runtime tool installs now that dev-base image provides them
+
+## [1.4.6] - 2026-04-30
+
+### Chores
+
+- prepare release 1.4.5
+- bump version to 1.4.6
+- migrate ci-security.yml install step to standard-tooling.toml
+
+## [1.4.5] - 2026-04-30
+
+### Chores
+
+- prepare release 1.4.4
+- bump version to 1.4.5
+- strip config sections from repository-standards.md
+- read version tag from standard-tooling.toml with st-config.toml fallback
 
 ## [1.4.4] - 2026-04-29
 
@@ -154,7 +281,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - self-install standard-tooling when not on PATH
 
+### Chores
+
+- prepare release 1.4.3
+- bump version to 1.4.4
+- seed standard-tooling.toml
+
 ## [1.4.3] - 2026-04-29
+
+### Chores
+
+- prepare release 1.4.2
+- bump version to 1.4.3
 
 ### Refactoring
 
@@ -167,15 +305,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - install standard-tooling in standards-compliance job (#255)
 - add standard-tooling install to local ci.yml standards job (#255)
 
+### Chores
+
+- prepare release 1.4.1
+- bump version to 1.4.2
+- bootstrap st-config.toml for cache-first docker workflow
+
 ### Documentation
 
 - comprehensive documentation review for consistency after v1.4.x changes
 
 ## [1.4.1] - 2026-04-28
 
+### Chores
+
+- prepare release 1.4.0
+- bump version to 1.4.1
+- bump CI action pins: create-github-app-token v3, attest-build-provenance v4
+- align local validation with container-based st-docker-run workflow
+
 ### Features
 
 - add CI check to reject auto-close linkage keywords in PR bodies
+
+## [1.4.0] - 2026-04-28
+
+### Chores
+
+- prepare release 1.3.3
+- bump version to 1.3.4
+- bump version to 1.4.0
+
+## [1.3.3] - 2026-04-28
+
+### Chores
+
+- prepare release 1.3.1
+- merge main into release/1.3.2
+- prepare release 1.3.2
+- bump version to 1.3.3
+- remove add-to-project.yml workflow
+- bump aquasec/trivy from 0.69.2 to 0.70.0
 
 ## [1.3.2] - 2026-04-27
 
@@ -184,6 +354,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - use Issues API instead of Search API for tracking-issue lookup
 
 ## [1.3.1] - 2026-04-27
+
+### Chores
+
+- prepare release 1.3.0
+- merge main into release/1.3.0
+- prepare release 1.3.0
+- bump version to 1.3.1
 
 ### Features
 
@@ -196,6 +373,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - inline helper python scripts to fix container-job failure (#204)
 - add safe.directory '*' for container workspace ownership (#206)
 - use App token throughout publish.yml so freeze-refs commit can be pushed
+
+### Chores
+
+- prepare release 1.2.1
+- bump version to 1.2.2
+- vendor .githooks gate + .yamllint; clean stale CLAUDE.md refs (#208)
 
 ### Documentation
 
@@ -211,11 +394,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - use env vars + quoted heredoc in version-bump-pr Update step
 
+### Chores
+
+- merge main into release/1.2.0
+- prepare release 1.2.0
+- bump version to 1.2.1
+
 ### Release
 
 - 1.1.3 (#190)
 
 ## [1.2.0] - 2026-04-24
+
+### Chores
+
+- bump version to 1.1.4 (#191)
 
 ### Features
 
@@ -233,6 +426,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - remove standard-tooling setup hacks from standards-compliance (#179)
 
+### Chores
+
+- prepare release 1.1.2
+- bump version to 1.1.3
+- update toolchain dependencies for next development cycle (#162)
+- install standard-tooling plugin via marketplace (#165)
+- strip CLAUDE.md boilerplate now covered by plugin (#167)
+- add .markdownlintignore for auto-generated files (#190) (#170)
+- exclude AGENTS.md and CLAUDE.md from markdownlint
+- update CLAUDE.md for docker-only standard-tooling (#178)
+- ban MEMORY.md usage in CLAUDE.md (#180)
+
 ### Features
 
 - add shared publish-release reusable workflow (#163)
@@ -248,6 +453,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - install Trivy binary directly to avoid setup-trivy cache fallback failure (#152)
 - use setup-trivy with cache disabled instead of manual binary download (#153)
 - replace aquasecurity GitHub actions with Docker-based Trivy execution (#154)
+
+### Chores
+
+- bump version to 1.1.2
+- deploy standardized issue template (#156)
 
 ### Documentation
 
@@ -285,6 +495,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### CI
 
 - add publish workflow for tag, release, and version bump (#131)
+
+### Chores
+
+- bootstrap standard-actions (#2)
+- sync shared tooling to v1.0.5 (#35)
+- remove push trigger from CI workflow (#55)
+- sync standard-tooling v1.1.4 (#64)
+- standardize workflow files (#75)
+- remove SonarCloud and Code Climate integrations (#96)
+- upgrade CodeQL Action from v3 to v4 (#97)
+- add changelog and release notes infrastructure (#104)
+- stage changelog and release notes in docs-deploy action (#105)
+- reposition Releases in MkDocs nav (#107)
+- add tier-1 validation scripts (#113)
+- restructure Releases nav with TOC hiding, semver sort, and version injection (#126)
+- prepare release 1.1.0
+- bump version to 1.1.1
 
 ### Documentation
 

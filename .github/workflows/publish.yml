@@ -18,6 +18,10 @@ jobs:
   publish:
     name: "publish / release"
     runs-on: ubuntu-latest
+    container: ghcr.io/wphillipmoore/dev-base:latest
+    defaults:
+      run:
+        shell: bash
     steps:
       # Generate the App token first so checkout can use it. The freeze-
       # internal-refs step below modifies .github/workflows/*.yml, and
