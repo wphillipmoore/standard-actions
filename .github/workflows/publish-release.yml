@@ -3,143 +3,32 @@ name: Publish release
 on:
   workflow_call:
     inputs:
-      ecosystem:
-        description: >-
-          Language ecosystem: python, rust, ruby, go, java, or none.
-          Controls which setup action runs and ecosystem-specific publish
-          behavior.
-        type: string
-        required: true
-      python-version:
-        description: Python version for actions/setup-python.
-        type: string
-        default: "3.14"
-      rust-toolchain:
-        description: Rust toolchain for actions-rust-lang/setup-rust-toolchain.
-        type: string
-        default: "1.93"
-      ruby-version:
-        description: Ruby version for ruby/setup-ruby.
-        type: string
-        default: "3.4"
-      go-version-file:
-        description: Go version file for actions/setup-go.
-        type: string
-        default: "go.mod"
-      java-version:
-        description: Java version for actions/setup-java.
-        type: string
-        default: "17"
-      java-distribution:
-        description: Java distribution for actions/setup-java.
-        type: string
-        default: "temurin"
-      version-command:
-        description: >-
-          Shell command that prints the current version to stdout.
-          Runs after ecosystem setup so language-specific tools are
-          available.
-        type: string
-        required: true
-      registry-check-command:
-        description: >-
-          Shell command that prints "exists" or "not_found" to stdout.
-          $VERSION is available as an environment variable. Leave empty
-          to skip the registry check.
-        type: string
-        default: ""
       build-command:
-        description: >-
-          Shell command to build artifacts. $VERSION is available as an
-          environment variable. Leave empty to skip the build step.
-        type: string
-        default: ""
-      attestation-subject-path:
-        description: >-
-          Glob pattern for build provenance attestation (passed to
-          actions/attest-build-provenance). Leave empty to skip.
-        type: string
-        default: ""
-      sbom-output-file:
-        description: >-
-          Output path for the CycloneDX SBOM. Use $VERSION as a
-          placeholder — it is substituted automatically. Leave empty
-          to skip SBOM generation.
+        description: Override ecosystem-derived build command.
         type: string
         default: ""
       registry-publish-command:
-        description: >-
-          Shell command to publish to a package registry. Not used for
-          Python (PyPI uses OIDC trusted publishing via
-          pypa/gh-action-pypi-publish). $VERSION and ecosystem-specific
-          credential environment variables are set automatically from
-          secrets. Leave empty to skip registry publish.
+        description: Override ecosystem-derived publish command.
         type: string
         default: ""
-      release-title:
-        description: >-
-          Release title prefix (e.g. "pymqrest", "mqrestadmin").
+      attestation-subject-path:
+        description: Glob for build provenance attestation. Leave empty to skip.
         type: string
-        required: true
-      release-notes:
-        description: >-
-          Markdown body for the GitHub Release. Use $VERSION as a
-          placeholder — it is substituted automatically.
+        default: ""
+      sbom-output-file:
+        description: SBOM output path ($VERSION placeholder). Leave empty to skip.
         type: string
-        required: true
+        default: ""
       release-artifacts:
-        description: >-
-          Space-separated glob of files to attach to the GitHub Release.
-          Use $VERSION as a placeholder — it is substituted automatically.
-          Leave empty for no artifacts.
+        description: Files to attach to release ($VERSION placeholder).
         type: string
         default: ""
-      version-file:
-        description: >-
-          Path to the file containing the version string (passed to
-          version-bump-pr action).
-        type: string
-        required: true
-      version-regex:
-        description: >-
-          Python regex to match the version line. Use capture groups for
-          the parts to preserve (passed to version-bump-pr action).
-        type: string
-        required: true
-      version-replacement:
-        description: >-
-          Python replacement string with {version} placeholder
-          (e.g. '\g<1>{version}\2', passed to version-bump-pr action).
-        type: string
-        required: true
-      version-regex-multiline:
-        description: >-
-          Set to "true" to pass re.MULTILINE to the version regex
-          substitution (passed to version-bump-pr action).
-        type: string
-        default: "false"
-      develop-version-command:
-        description: >-
-          Shell command to extract the version from the version file.
-          Receives file content on stdin, prints version to stdout
-          (passed to version-bump-pr action).
-        type: string
-        required: true
       post-bump-command:
-        description: >-
-          Shell command to run after the version bump and before commit
-          (e.g. "uv lock --upgrade"). Leave empty to skip.
+        description: Override post-bump command for version-bump-pr.
         type: string
         default: ""
       extra-files:
-        description: >-
-          Space-separated list of additional files to git add in the
-          version bump commit (e.g. "uv.lock requirements.txt").
-        type: string
-        default: ""
-      pr-body-extra:
-        description: >-
-          Additional text appended to the version bump PR body.
+        description: Additional files for version bump commit.
         type: string
         default: ""
     secrets:
@@ -166,7 +55,7 @@ concurrency:
 
 jobs:
   publish:
-    name: "publish: release"
+    name: release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -174,39 +63,52 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install standard-tooling
+        uses: wphillipmoore/standard-actions/actions/setup/standard-tooling@develop
+
+      - name: Detect ecosystem
+        id: ecosystem
+        run: |
+          lang=$(python3 -c "
+          import tomllib, pathlib
+          cfg = tomllib.loads(pathlib.Path('standard-tooling.toml').read_text())
+          print(cfg['project']['primary-language'])
+          ")
+          echo "language=$lang" >> "$GITHUB_OUTPUT"
+
       # ── Ecosystem setup (one per language) ─────────────────────────
 
       - name: Set up Python
-        if: inputs.ecosystem == 'python'
+        if: steps.ecosystem.outputs.language == 'python'
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ inputs.python-version }}
+          python-version: "3.14"
 
       - name: Set up Rust
-        if: inputs.ecosystem == 'rust'
+        if: steps.ecosystem.outputs.language == 'rust'
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          toolchain: ${{ inputs.rust-toolchain }}
+          toolchain: "1.93"
 
       - name: Set up Ruby
-        if: inputs.ecosystem == 'ruby'
+        if: steps.ecosystem.outputs.language == 'ruby'
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ inputs.ruby-version }}
+          ruby-version: "3.4"
           bundler-cache: true
 
       - name: Set up Go
-        if: inputs.ecosystem == 'go'
+        if: steps.ecosystem.outputs.language == 'go'
         uses: actions/setup-go@v6
         with:
-          go-version-file: ${{ inputs.go-version-file }}
+          go-version-file: go.mod
 
       - name: Set up Java
-        if: inputs.ecosystem == 'java'
+        if: steps.ecosystem.outputs.language == 'java'
         uses: actions/setup-java@v5
         with:
-          distribution: ${{ inputs.java-distribution }}
-          java-version: ${{ inputs.java-version }}
+          distribution: temurin
+          java-version: "17"
           cache: maven
           server-id: central
           server-username: MAVEN_USERNAME
@@ -219,7 +121,7 @@ jobs:
       - name: Extract version
         id: version
         run: |
-          version=$(${{ inputs.version-command }})
+          version=$(st-version show)
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "tag=v$version" >> "$GITHUB_OUTPUT"
 
@@ -232,14 +134,41 @@ jobs:
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Check registry
-        if: inputs.registry-check-command != ''
-        id: registry_check
+      - name: Derive ecosystem commands
+        if: steps.tag_check.outputs.exists == 'false'
+        id: commands
         env:
-          VERSION: ${{ steps.version.outputs.version }}
+          LANG: ${{ steps.ecosystem.outputs.language }}
         run: |
-          status=$(${{ inputs.registry-check-command }})
-          echo "status=$status" >> "$GITHUB_OUTPUT"
+          build="${{ inputs.build-command }}"
+          if [ -z "$build" ]; then
+            case "$LANG" in
+              python) build="uv build" ;;
+              rust) build="cargo build --release" ;;
+              ruby) build="gem build *.gemspec" ;;
+              java) build="./mvnw -B package -DskipTests" ;;
+              *) build="" ;;
+            esac
+          fi
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+
+          publish="${{ inputs.registry-publish-command }}"
+          if [ -z "$publish" ]; then
+            case "$LANG" in
+              rust) publish="cargo publish" ;;
+              ruby) publish="gem push *.gem" ;;
+              java) publish="./mvnw -B deploy -DskipTests" ;;
+              *) publish="" ;;
+            esac
+          fi
+          echo "publish=$publish" >> "$GITHUB_OUTPUT"
+
+          case "$LANG" in
+            rust) echo "credential-secret=CARGO_REGISTRY_TOKEN" >> "$GITHUB_OUTPUT" ;;
+            ruby) echo "credential-secret=RUBYGEMS_API_KEY" >> "$GITHUB_OUTPUT" ;;
+            java) echo "credential-secret=CENTRAL_TOKEN" >> "$GITHUB_OUTPUT" ;;
+            *) echo "credential-secret=" >> "$GITHUB_OUTPUT" ;;
+          esac
 
       # ── Release pipeline (gated on new tag) ────────────────────────
 
@@ -249,20 +178,12 @@ jobs:
         env:
           VERSION: ${{ steps.version.outputs.version }}
           SBOM_OUTPUT_FILE: ${{ inputs.sbom-output-file }}
-          RELEASE_NOTES: ${{ inputs.release-notes }}
           RELEASE_ARTIFACTS: ${{ inputs.release-artifacts }}
         run: |
           echo "sbom-output-file=${SBOM_OUTPUT_FILE//\$VERSION/$VERSION}" \
             >> "$GITHUB_OUTPUT"
           echo "release-artifacts=${RELEASE_ARTIFACTS//\$VERSION/$VERSION}" \
             >> "$GITHUB_OUTPUT"
-
-          delimiter="NOTES_$(openssl rand -hex 8)"
-          {
-            echo "release-notes<<$delimiter"
-            echo "${RELEASE_NOTES//\$VERSION/$VERSION}"
-            echo "$delimiter"
-          } >> "$GITHUB_OUTPUT"
 
       - name: Ensure dist directory
         if: steps.tag_check.outputs.exists == 'false'
@@ -271,10 +192,10 @@ jobs:
       - name: Build
         if: >-
           steps.tag_check.outputs.exists == 'false' &&
-          inputs.build-command != ''
+          steps.commands.outputs.build != ''
         env:
           VERSION: ${{ steps.version.outputs.version }}
-        run: ${{ inputs.build-command }}
+        run: ${{ steps.commands.outputs.build }}
 
       - name: Attest build provenance
         if: >-
@@ -295,17 +216,15 @@ jobs:
 
       - name: Publish to PyPI
         if: >-
-          inputs.ecosystem == 'python' &&
-          steps.tag_check.outputs.exists == 'false' &&
-          steps.registry_check.outputs.status != 'exists'
+          steps.ecosystem.outputs.language == 'python' &&
+          steps.tag_check.outputs.exists == 'false'
         uses: pypa/gh-action-pypi-publish@release/v1
 
       - name: Publish to registry
         if: >-
-          inputs.ecosystem != 'python' &&
-          inputs.registry-publish-command != '' &&
-          steps.tag_check.outputs.exists == 'false' &&
-          steps.registry_check.outputs.status != 'exists'
+          steps.ecosystem.outputs.language != 'python' &&
+          steps.commands.outputs.publish != '' &&
+          steps.tag_check.outputs.exists == 'false'
         env:
           VERSION: ${{ steps.version.outputs.version }}
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
@@ -314,25 +233,15 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          # Credential guard — skip gracefully when secrets are not configured
-          case "${{ inputs.ecosystem }}" in
-            rust)
-              if [ "${{ secrets.CARGO_REGISTRY_TOKEN != '' }}" != "true" ]; then
-                echo "::notice::CARGO_REGISTRY_TOKEN not configured — skipping publish"
-                exit 0
-              fi ;;
-            ruby)
-              if [ "${{ secrets.RUBYGEMS_API_KEY != '' }}" != "true" ]; then
-                echo "::notice::RUBYGEMS_API_KEY not configured — skipping publish"
-                exit 0
-              fi ;;
-            java)
-              if [ "${{ secrets.CENTRAL_TOKEN != '' }}" != "true" ]; then
-                echo "::notice::CENTRAL_TOKEN not configured — skipping publish"
-                exit 0
-              fi ;;
-          esac
-          ${{ inputs.registry-publish-command }}
+          guard="${{ steps.commands.outputs.credential-secret }}"
+          if [ -n "$guard" ]; then
+            val=$(printenv "$guard" 2>/dev/null || true)
+            if [ -z "$val" ]; then
+              echo "::notice::${guard} not configured — skipping publish"
+              exit 0
+            fi
+          fi
+          ${{ steps.commands.outputs.publish }}
 
       # ── Tag, release, and post-release ─────────────────────────────
 
@@ -341,8 +250,6 @@ jobs:
         uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@develop
         with:
           version: ${{ steps.version.outputs.version }}
-          release-title: ${{ inputs.release-title }}
-          release-notes: ${{ steps.resolved.outputs.release-notes }}
           release-artifacts: ${{ steps.resolved.outputs.release-artifacts }}
 
       - name: Generate app token for bump PR
@@ -358,12 +265,6 @@ jobs:
         uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@develop
         with:
           current-version: ${{ steps.version.outputs.version }}
-          version-file: ${{ inputs.version-file }}
-          version-regex: ${{ inputs.version-regex }}
-          version-replacement: ${{ inputs.version-replacement }}
-          version-regex-multiline: ${{ inputs.version-regex-multiline }}
-          develop-version-command: ${{ inputs.develop-version-command }}
           post-bump-command: ${{ inputs.post-bump-command }}
           extra-files: ${{ inputs.extra-files }}
           app-token: ${{ steps.app-token.outputs.token }}
-          pr-body-extra: ${{ inputs.pr-body-extra }}

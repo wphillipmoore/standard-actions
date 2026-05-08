@@ -20,26 +20,9 @@ inputs:
       environment.
     required: false
     default: mike
-  checkout-common:
-    description: Whether to checkout mq-rest-admin-common.
-    required: false
-    default: "false"
-  checkout-common-ref:
-    description: Ref to checkout for mq-rest-admin-common.
-    required: false
-    default: develop
-
 runs:
   using: composite
   steps:
-    - name: Checkout mq-rest-admin-common
-      if: inputs.checkout-common == 'true'
-      uses: actions/checkout@v6
-      with:
-        repository: wphillipmoore/mq-rest-admin-common
-        ref: ${{ inputs.checkout-common-ref }}
-        path: .mq-rest-admin-common
-
     - name: Configure git identity
       shell: bash
       # --global avoids depending on cwd being inside the repo. Composite
