@@ -66,6 +66,9 @@ jobs:
     name: release
     runs-on: ubuntu-latest
     container: ghcr.io/wphillipmoore/dev-${{ inputs.language }}:${{ inputs.container-tag }}
+    defaults:
+      run:
+        shell: bash
     permissions:
       contents: write
       pull-requests: write
