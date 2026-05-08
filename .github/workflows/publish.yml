@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   publish:
-    name: "publish: release"
+    name: "publish / release"
     runs-on: ubuntu-latest
     steps:
       # Generate the App token first so checkout can use it. The freeze-
@@ -36,10 +36,13 @@ jobs:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
 
+      - name: Install standard-tooling
+        uses: ./actions/setup/standard-tooling
+
       - name: Extract version
         id: version
         run: |
-          version=$(cat VERSION)
+          version=$(st-version show)
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "tag=v$version" >> "$GITHUB_OUTPUT"
 
@@ -105,19 +108,10 @@ jobs:
         uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@develop
         with:
           version: ${{ steps.version.outputs.version }}
-          release-title: standard-actions
-          release-notes: |
-            ## standard-actions v${{ steps.version.outputs.version }}
-
-            Shared GitHub Actions for all managed repositories.
 
       - name: Version bump PR
         if: steps.tag_check.outputs.exists == 'false'
         uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@develop
         with:
           current-version: ${{ steps.version.outputs.version }}
-          version-file: VERSION
-          version-regex: '^\d+\.\d+\.\d+$'
-          version-replacement: '{version}'
-          develop-version-command: cat
           app-token: ${{ steps.app-token.outputs.token }}

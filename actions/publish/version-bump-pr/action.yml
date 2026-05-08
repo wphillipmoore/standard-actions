@@ -1,49 +1,25 @@
 name: Version bump PR
 description: >-
   Computes the next patch version, creates a branch from develop that merges
-  main, updates the version file(s) via regex replacement, and opens a PR.
-  Skips if develop already has the expected next version.  The PR is not
-  auto-merged — callers consume the `pr-url` output and drive the merge
-  themselves (e.g. via `st-merge-when-green` from a release skill) because
-  org-wide auto-merge is disabled.
+  main, bumps the version via st-version, and opens a PR.  Skips if develop
+  already has the expected next version.  The PR is not auto-merged — callers
+  consume the `pr-url` output and drive the merge themselves (e.g. via
+  `st-merge-when-green` from a release skill) because org-wide auto-merge
+  is disabled.
 
 inputs:
   current-version:
     description: The version that was just published (e.g. 1.2.3).
     required: true
-  version-file:
-    description: Path to the file containing the version string.
-    required: true
-  version-regex:
-    description: >-
-      Python regex to match the version line.  Use capture groups for the
-      parts you want to preserve (e.g. prefix and suffix around the version).
-    required: true
-  version-replacement:
-    description: >-
-      Python replacement string.  Use {version} as a placeholder for the
-      computed next version (e.g. '\g<1>{version}\2').
-    required: true
-  version-regex-multiline:
-    description: >-
-      Set to "true" to pass re.MULTILINE to the regex substitution.
-    required: false
-    default: "false"
-  develop-version-command:
-    description: >-
-      Shell command to extract the version from the version file on develop.
-      Receives the file content on stdin and must print the version to stdout.
-    required: true
   post-bump-command:
     description: >-
-      Shell command to run after version file edit and before commit
-      (e.g. "uv lock --upgrade && uv export ...").  Leave empty to skip.
+      Shell command to run after st-version bump and before commit.
+      Leave empty to skip.
     required: false
     default: ""
   extra-files:
     description: >-
-      Space-separated list of additional files to git add before committing
-      (e.g. "uv.lock requirements.txt").
+      Space-separated list of additional files to git add before committing.
     required: false
     default: ""
   app-token:
@@ -78,11 +54,6 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Set up Python 3
-      uses: actions/setup-python@v6
-      with:
-        python-version: "3.x"
-
     - name: Compute next patch version
       id: next
       shell: bash
@@ -100,9 +71,10 @@ runs:
       shell: bash
       run: |
         git fetch origin develop
-        current=$(git show "origin/develop:${{ inputs.version-file }}" \
-          | ${{ inputs.develop-version-command }})
-        if [ "$current" = "${{ steps.next.outputs.version }}" ]; then
+        git worktree add --detach /tmp/develop-check origin/develop 2>/dev/null
+        develop_version=$(cd /tmp/develop-check && st-version show 2>/dev/null) || true
+        git worktree remove /tmp/develop-check 2>/dev/null || true
+        if [ "$develop_version" = "${{ steps.next.outputs.version }}" ]; then
           echo "needed=false" >> "$GITHUB_OUTPUT"
         else
           echo "needed=true" >> "$GITHUB_OUTPUT"
@@ -119,38 +91,10 @@ runs:
         git checkout -b "${{ steps.next.outputs.branch }}" origin/develop
         git merge origin/main --no-edit -X theirs
 
-    - name: Update version file
+    - name: Bump version
       if: steps.check.outputs.needed == 'true'
       shell: bash
-      # Pass values via env vars and a single-quoted heredoc delimiter
-      # (<<'PYEOF') so bash does no interpolation on the body.  This
-      # avoids the class of bugs where double-quotes in the regex or
-      # replacement (common with `"version"` JSON keys, etc.) prematurely
-      # closed an outer bash string and broke the python invocation.
-      env:
-        VERSION_FILE: ${{ inputs.version-file }}
-        VERSION_REGEX: ${{ inputs.version-regex }}
-        VERSION_REPLACEMENT: ${{ inputs.version-replacement }}
-        NEXT_VERSION: ${{ steps.next.outputs.version }}
-        REGEX_MULTILINE: ${{ inputs.version-regex-multiline }}
-      run: |
-        python3 <<'PYEOF'
-        from pathlib import Path
-        import os
-        import re
-
-        p = Path(os.environ['VERSION_FILE'])
-        content = p.read_text()
-        flags = re.MULTILINE if os.environ['REGEX_MULTILINE'] == 'true' else 0
-        content = re.sub(
-            os.environ['VERSION_REGEX'],
-            os.environ['VERSION_REPLACEMENT'].replace('{version}', os.environ['NEXT_VERSION']),
-            content,
-            count=1,
-            flags=flags,
-        )
-        p.write_text(content)
-        PYEOF
+      run: st-version bump
 
     - name: Run post-bump command
       if: steps.check.outputs.needed == 'true' && inputs.post-bump-command != ''
@@ -161,7 +105,7 @@ runs:
       if: steps.check.outputs.needed == 'true'
       shell: bash
       run: |
-        git add "${{ inputs.version-file }}"
+        git add -A
         if [ -n "${{ inputs.extra-files }}" ]; then
           git add ${{ inputs.extra-files }}
         fi
@@ -180,10 +124,6 @@ runs:
           echo "Using explicit tracking-issue input: #${issue}"
         else
           echo "Searching for issue titled \"release: ${{ inputs.current-version }}\"..."
-          # Use the Issues API (real-time) with a client-side title filter,
-          # not the Search API (--search), which has indexing latency. The
-          # tracking issue is typically created seconds before this step
-          # runs, so it may not be in the search index yet.
           issue=$(gh issue list \
             --state all \
             --limit 200 \
@@ -239,8 +179,3 @@ runs:
           --body-file "$body_file")
         echo "pr-url=$pr_url" >> "$GITHUB_OUTPUT"
         rm -f "$body_file"
-
-        # The PR is intentionally not auto-merged — org policy disables
-        # pull_request auto-merge fleet-wide.  Callers consume pr-url
-        # and drive the merge themselves (e.g. via st-merge-when-green
-        # from a release skill).

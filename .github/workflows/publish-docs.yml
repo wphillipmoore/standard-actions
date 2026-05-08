@@ -1,0 +1,72 @@
+name: Publish docs
+
+on:
+  push:
+    branches: [develop, main]
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      pre-deploy-command:
+        description: Shell command to run before deploy.
+        type: string
+        default: ""
+      mkdocs-config:
+        description: Path to mkdocs.yml configuration file.
+        type: string
+        default: docs/site/mkdocs.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: docs
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: docs
+    runs-on: ubuntu-latest
+    container: ghcr.io/wphillipmoore/dev-base:latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install standard-tooling
+        uses: ./actions/setup/standard-tooling
+
+      - name: Detect ecosystem
+        id: ecosystem
+        shell: bash
+        run: |
+          lang=$(python3 -c "
+          import tomllib, pathlib
+          cfg = tomllib.loads(pathlib.Path('standard-tooling.toml').read_text())
+          print(cfg['project']['primary-language'])
+          ")
+          echo "language=$lang" >> "$GITHUB_OUTPUT"
+
+      - name: Run pre-deploy command
+        if: inputs.pre-deploy-command != ''
+        shell: bash
+        env:
+          PRE_DEPLOY_COMMAND: ${{ inputs.pre-deploy-command }}
+        run: eval "$PRE_DEPLOY_COMMAND"
+
+      - name: Determine mike command
+        id: mike
+        shell: bash
+        run: |
+          if [ "${{ steps.ecosystem.outputs.language }}" = "python" ]; then
+            echo "cmd=uv run mike" >> "$GITHUB_OUTPUT"
+          else
+            echo "cmd=mike" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy docs
+        uses: ./actions/docs-deploy
+        with:
+          version-command: st-version show --major-minor
+          mkdocs-config: ${{ inputs.mkdocs-config || 'docs/site/mkdocs.yml' }}
+          mike-command: ${{ steps.mike.outputs.cmd }}
