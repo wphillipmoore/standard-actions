@@ -5,11 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.5.12] - 2026-05-08
+## [1.5.13] - 2026-05-08
 
 ### Bug fixes
 
 - route pre-deploy-command through env var to avoid shell injection
+- containerize publish workflows to use dev-base images
 
 ### Chores
 
