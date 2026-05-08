@@ -9,11 +9,16 @@ inputs:
     description: Semver version string (e.g. 1.2.3).
     required: true
   release-title:
-    description: Release title prefix (e.g. mqrestadmin, pymqrest).
-    required: true
+    description: >-
+      Release title override. Defaults to "<repo-name> v<version>".
+    required: false
+    default: ""
   release-notes:
-    description: Full markdown body for the GitHub Release.
-    required: true
+    description: >-
+      Release notes override. Defaults to a link to the GitHub Pages
+      documentation site.
+    required: false
+    default: ""
   release-artifacts:
     description: >-
       Space-separated glob of files to attach to the GitHub Release.
@@ -85,12 +90,26 @@ runs:
       shell: bash
       env:
         GH_TOKEN: ${{ github.token }}
-        RELEASE_NOTES: ${{ inputs.release-notes }}
+        INPUT_RELEASE_NOTES: ${{ inputs.release-notes }}
+        INPUT_RELEASE_TITLE: ${{ inputs.release-title }}
       run: |
+        repo_name="${{ github.event.repository.name }}"
+        owner="${{ github.repository_owner }}"
+
+        title="$INPUT_RELEASE_TITLE"
+        if [ -z "$title" ]; then
+          title="${repo_name} ${{ steps.meta.outputs.tag }}"
+        fi
+
+        notes="$INPUT_RELEASE_NOTES"
+        if [ -z "$notes" ]; then
+          notes="Documentation: https://${owner}.github.io/${repo_name}/"
+        fi
+
         release_args=(
           "${{ steps.meta.outputs.tag }}"
-          --title "${{ inputs.release-title }} ${{ inputs.version }}"
-          --notes "$RELEASE_NOTES"
+          --title "$title"
+          --notes "$notes"
         )
         if [ -n "${{ inputs.release-artifacts }}" ]; then
           release_args+=( ${{ inputs.release-artifacts }} )
