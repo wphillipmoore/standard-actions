@@ -514,6 +514,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Reusable workflows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ci-pre-merge" class="md-nav__link">
+    <span class="md-ellipsis">
+      CI (pre-merge)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cd-post-merge" class="md-nav__link">
+    <span class="md-ellipsis">
+      CD (post-merge)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2772,6 +2796,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Reusable workflows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ci-pre-merge" class="md-nav__link">
+    <span class="md-ellipsis">
+      CI (pre-merge)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cd-post-merge" class="md-nav__link">
+    <span class="md-ellipsis">
+      CD (post-merge)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2858,9 +2906,9 @@ releases.</p>
 </tbody>
 </table>
 <h2 id="reusable-workflows">Reusable workflows<a class="headerlink" href="#reusable-workflows" title="Permanent link">&para;</a></h2>
-<p>v1.5.0 introduced reusable CI workflows that provide canonical job and check
-names across all managed repositories. See
-<a href="workflows/">Reusable Workflows</a> for details.</p>
+<p>Reusable workflows provide canonical job and check names across all managed
+repositories. See <a href="workflows/">Reusable Workflows</a> for details.</p>
+<h3 id="ci-pre-merge">CI (pre-merge)<a class="headerlink" href="#ci-pre-merge" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2891,11 +2939,30 @@ names across all managed repositories. See
 </tr>
 </tbody>
 </table>
+<h3 id="cd-post-merge">CD (post-merge)<a class="headerlink" href="#cd-post-merge" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Workflow</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cd-release</td>
+<td>Full release pipeline (tag, build, publish, version bump)</td>
+</tr>
+<tr>
+<td>cd-docs</td>
+<td>MkDocs documentation deployment</td>
+</tr>
+</tbody>
+</table>
 <h2 id="design-principles">Design principles<a class="headerlink" href="#design-principles" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Composite actions only</strong> — No custom JavaScript or Docker actions. Every
   action is a composite <code>action.yml</code> with shell steps.</li>
-<li><strong>Reusable workflows</strong> — CI workflows are provided as reusable
+<li><strong>Reusable workflows</strong> — CI and CD workflows are provided as reusable
   <code>workflow_call</code> templates that produce canonical check names across all
   consuming repositories.</li>
 <li><strong>Self-referencing CI</strong> — This repository's own CI uses <code>./actions/...</code> and
