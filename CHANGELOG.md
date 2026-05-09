@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.5.15] - 2026-05-09
+
+### Bug fixes
+
+- add GITHUB_PATH for st-* commands in self-install path (#403)
+
+### Chores
+
+- bump version to 1.5.15
+
+### Documentation
+
+- add CI/CD namespace convention design spec (#383)
+- move spec to docs/specs/ per project convention
+- add CI/CD namespace convention implementation plan (#383)
+- add CI YAML standardization design spec (#387)
+- add st-* command availability normalization spec (#403)
+- address pushback review for st-* normalization spec (#403)
+- add st-* command normalization implementation plan (#403)
+
 ## [1.5.14] - 2026-05-08
 
 ### Bug fixes
@@ -19,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - bump version to 1.5.12
 - add publish section to standard-tooling.toml
 - fleet-wide config and workflow cleanup
+- shorten issue template header comments to fit yamllint line-length
 
 ### Documentation
 
