@@ -32,7 +32,7 @@ names across all managed repositories. See
 | [ci-quality](workflows/ci-quality.md) | Common linting, language-specific lint and typecheck |
 | [ci-audit](workflows/ci-audit.md) | Dependency audit |
 | [ci-test](workflows/ci-test.md) | Unit and integration tests |
-| [ci-release](workflows/ci-release.md) | Release gate verification |
+| [ci-version-bump](workflows/ci-version-bump.md) | Version divergence gate |
 
 ## Design principles
 
