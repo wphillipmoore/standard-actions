@@ -1,4 +1,4 @@
-name: CI Release
+name: CI Version Bump
 
 on:
   workflow_call:
