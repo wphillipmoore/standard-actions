@@ -151,6 +151,11 @@ SBOM generation, credential guarding, and publish execution.
    is non-empty; if missing, emit `::notice::` and skip. Otherwise execute
    the resolved publish command with credential env vars set.
 
+**Permissions note:** Steps 6 (attestation) and 7 (SBOM/Trivy) require
+`id-token: write` and `attestations: write` on the calling workflow's job.
+The `cd-release.yml` job already declares these permissions — no change
+needed. Composite actions inherit the caller's permissions.
+
 ---
 
 ### `actions/publish/freeze-internal-refs`
