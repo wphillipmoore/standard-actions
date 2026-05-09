@@ -201,6 +201,10 @@
          <lastmod>2026-05-09</lastmod>
     </url>
     <url>
+         <loc>https://wphillipmoore.github.io/standard-actions/1.5/releases/v1.5.17/</loc>
+         <lastmod>2026-05-09</lastmod>
+    </url>
+    <url>
          <loc>https://wphillipmoore.github.io/standard-actions/1.5/releases/v1.5.2/</loc>
          <lastmod>2026-05-09</lastmod>
     </url>
@@ -245,15 +249,15 @@
          <lastmod>2026-05-09</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/1.5/workflows/ci-release/</loc>
-         <lastmod>2026-05-09</lastmod>
-    </url>
-    <url>
          <loc>https://wphillipmoore.github.io/standard-actions/1.5/workflows/ci-security/</loc>
          <lastmod>2026-05-09</lastmod>
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/1.5/workflows/ci-test/</loc>
+         <lastmod>2026-05-09</lastmod>
+    </url>
+    <url>
+         <loc>https://wphillipmoore.github.io/standard-actions/1.5/workflows/ci-version-bump/</loc>
          <lastmod>2026-05-09</lastmod>
     </url>
 </urlset>
