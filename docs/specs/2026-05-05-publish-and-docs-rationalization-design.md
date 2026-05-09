@@ -1,5 +1,12 @@
 # Rationalize publish and docs workflows as reusable workflows
 
+> **Note:** The `publish-*` naming convention in this spec has been
+> superseded by the CI/CD workflow convention
+> ([#383](https://github.com/wphillipmoore/standard-actions/issues/383)).
+> `publish-release.yml` → `cd-release.yml`, `publish-docs.yml` →
+> `cd-docs.yml`. Architectural decisions (thin callers, workflow_call
+> interfaces) remain valid.
+
 **Issue:** [#318](https://github.com/wphillipmoore/standard-actions/issues/318)
 **Date:** 2026-05-05
 **Status:** Design
