@@ -8,9 +8,9 @@ on:
         type: string
         required: true
       container-tag:
-        description: Dev container image tag override.
+        description: Dev container image tag (e.g. 3.14, 1.26).
         type: string
-        default: "latest"
+        required: true
       build-command:
         description: Override ecosystem-derived build command.
         type: string
