@@ -18,6 +18,7 @@ runs:
         if grep -q '^name = "standard-tooling"' pyproject.toml 2>/dev/null; then
           echo "Consumer repo is standard-tooling itself — installing from source"
           uv sync --frozen --group dev
+          echo "$GITHUB_WORKSPACE/.venv/bin" >> "$GITHUB_PATH"
           exit 0
         fi
 
