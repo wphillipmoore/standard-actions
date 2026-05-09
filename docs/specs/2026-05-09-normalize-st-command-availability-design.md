@@ -4,7 +4,7 @@
 
 **Date:** 2026-05-09
 
-**Status:** Draft
+**Status:** Ready for implementation
 
 ## Problem
 
@@ -88,7 +88,11 @@ IPC:
    prepends the entries to `PATH` for all subsequent steps.
 
 This sidesteps the UNIX constraint that a child process cannot modify its
-parent's environment.
+parent's environment. Because `$GITHUB_WORKSPACE` resolves to the runner's
+actual workspace mount point (`/__w/<repo>/<repo>`), this also eliminates the
+container WORKDIR mismatch described in the existing comment blocks (issue
+#362): the Docker image bakes `/workspace/.venv/bin` into PATH, but GitHub
+Actions mounts the workspace elsewhere, so that entry never resolves.
 
 ### Change to the setup action
 
@@ -154,3 +158,6 @@ After applying the fix, the standard-tooling repository's CI workflows (which
 consume these reusable workflows) should pass without any per-step PATH
 manipulation. The immediate validation is that the standard-tooling v1.4.29
 publish workflow succeeds at the `st-version show` step that currently fails.
+Additionally, the standard-tooling CI quality workflow (ci-quality.yml) —
+which currently uses per-step PATH workarounds in its lint, typecheck, and
+format jobs — should pass without them after the setup action change.
