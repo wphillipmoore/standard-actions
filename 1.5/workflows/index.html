@@ -614,6 +614,8 @@
       
         
       
+        
+      
     
     
     
@@ -657,6 +659,29 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../releases/v1.5.18/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    v1.5.18
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -2677,9 +2702,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#available-workflows" class="md-nav__link">
+  <a href="#ci-workflows-pre-merge" class="md-nav__link">
     <span class="md-ellipsis">
-      Available workflows
+      CI workflows (pre-merge)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cd-workflows-post-merge" class="md-nav__link">
+    <span class="md-ellipsis">
+      CD workflows (post-merge)
     </span>
   </a>
   
@@ -2732,14 +2766,14 @@
 <p>v1.5.0 introduced reusable CI workflows that provide canonical job and check
 names across all managed repositories. Each workflow bundles one or more
 composite actions with the container, tooling, and permission setup needed
-to run them.</p>
+to run them. CD workflows handle post-merge delivery (releases, documentation).</p>
 <h2 id="why-reusable-workflows">Why reusable workflows?<a class="headerlink" href="#why-reusable-workflows" title="Permanent link">&para;</a></h2>
 <p>Composite actions run as steps within a caller-defined job. Reusable workflows
 run as complete jobs, which means they control the job name that appears in
 GitHub's checks UI. This guarantees consistent, canonical check names across
 repositories — a requirement for pattern-based required status checks in
 rulesets.</p>
-<h2 id="available-workflows">Available workflows<a class="headerlink" href="#available-workflows" title="Permanent link">&para;</a></h2>
+<h2 id="ci-workflows-pre-merge">CI workflows (pre-merge)<a class="headerlink" href="#ci-workflows-pre-merge" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -2773,6 +2807,28 @@ rulesets.</p>
 <td><a href="ci-version-bump/">CI Version Bump</a></td>
 <td><code>ci-version-bump.yml</code></td>
 <td>Version divergence gate</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cd-workflows-post-merge">CD workflows (post-merge)<a class="headerlink" href="#cd-workflows-post-merge" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Workflow</th>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CD Release</td>
+<td><code>cd-release.yml</code></td>
+<td>Full release pipeline (tag, build, publish, version bump)</td>
+</tr>
+<tr>
+<td>CD Docs</td>
+<td><code>cd-docs.yml</code></td>
+<td>MkDocs documentation deployment</td>
 </tr>
 </tbody>
 </table>

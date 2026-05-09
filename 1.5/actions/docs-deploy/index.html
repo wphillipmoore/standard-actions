@@ -614,6 +614,8 @@
       
         
       
+        
+      
     
     
     
@@ -657,6 +659,29 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../releases/v1.5.18/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    v1.5.18
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1847,6 +1872,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#reusable-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reusable workflow
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">
       Examples
@@ -1857,9 +1891,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#standard-library-deployment" class="md-nav__link">
+  <a href="#direct-usage-standalone" class="md-nav__link">
     <span class="md-ellipsis">
-      Standard library deployment
+      Direct usage (standalone)
     </span>
   </a>
   
@@ -2844,6 +2878,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#reusable-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reusable workflow
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">
       Examples
@@ -2854,9 +2897,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#standard-library-deployment" class="md-nav__link">
+  <a href="#direct-usage-standalone" class="md-nav__link">
     <span class="md-ellipsis">
-      Standard library deployment
+      Direct usage (standalone)
     </span>
   </a>
   
@@ -2910,8 +2953,6 @@ git configuration, version detection, and mike deploy/set-default.</p>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">version-command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cat VERSION | cut -d. -f1,2</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">mkdocs-config</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs/site/mkdocs.yml</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">mike-command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mike</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="nt">checkout-common</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;false&quot;</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="nt">checkout-common-ref</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">develop</span>
 </code></pre></div>
 <h2 id="inputs">Inputs<a class="headerlink" href="#inputs" title="Permanent link">&para;</a></h2>
 <table>
@@ -2940,19 +2981,7 @@ git configuration, version detection, and mike deploy/set-default.</p>
 <td><code>mike-command</code></td>
 <td>No</td>
 <td><code>mike</code></td>
-<td>Command to run mike. Set to <code>uv run mike</code> for Python repos that manage their own dependencies. When not <code>mike</code>, the action skips Python setup and MkDocs installation.</td>
-</tr>
-<tr>
-<td><code>checkout-common</code></td>
-<td>No</td>
-<td><code>false</code></td>
-<td>Whether to checkout mq-rest-admin-common.</td>
-</tr>
-<tr>
-<td><code>checkout-common-ref</code></td>
-<td>No</td>
-<td><code>develop</code></td>
-<td>Ref to checkout for mq-rest-admin-common.</td>
+<td>Command to run mike. Set to <code>uv run mike</code> for Python repos that manage their own dependencies via their project's virtual environment.</td>
 </tr>
 </tbody>
 </table>
@@ -2962,44 +2991,42 @@ git configuration, version detection, and mike deploy/set-default.</p>
 </ul>
 <h2 id="behavior">Behavior<a class="headerlink" href="#behavior" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>Checkout common</strong> (optional) — If <code>checkout-common</code> is <code>true</code>, checks out
-   the <code>mq-rest-admin-common</code> repository for shared documentation fragments.</li>
-<li><strong>Set up Python 3.12</strong> — Only when <code>mike-command</code> is <code>mike</code> (default).</li>
-<li><strong>Install MkDocs and mike</strong> — <code>pip install mkdocs-material mike</code>. Skipped
-   when a custom <code>mike-command</code> is provided.</li>
 <li><strong>Configure git identity</strong> — Sets the git user to <code>github-actions[bot]</code> for
-   the deploy commit.</li>
+   the deploy commit. Marks the workspace as a safe directory to avoid
+   dubious-ownership errors in container jobs.</li>
 <li><strong>Determine version</strong> — On <code>main</code>, runs the <code>version-command</code> to extract the
    version and sets <code>alias=latest</code>. On all other branches, sets <code>version=dev</code>
    with no alias.</li>
+<li><strong>Stage changelog and release notes</strong> — Copies <code>CHANGELOG.md</code> and
+   <code>releases/*.md</code> into the docs directory, and generates a release notes index
+   page sorted by semver. Uses system Python (<code>/usr/local/bin/python3</code>) to avoid
+   venv PATH shadowing.</li>
+<li><strong>Patch mkdocs nav</strong> — Injects release version entries into the <code>mkdocs.yml</code>
+   nav under the Releases section.</li>
 <li><strong>Deploy docs</strong> — On <code>main</code>, runs <code>mike deploy --push --update-aliases
    &lt;version&gt; latest</code> followed by <code>mike set-default --push latest</code>. On other
    branches, runs <code>mike deploy --push dev</code>.</li>
 </ol>
-<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
-<h3 id="standard-library-deployment">Standard library deployment<a class="headerlink" href="#standard-library-deployment" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Documentation</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nt">on</span><span class="p">:</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">push</span><span class="p">:</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">develop</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">main</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nt">permissions</span><span class="p">:</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="nt">jobs</span><span class="p">:</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="nt">deploy</span><span class="p">:</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v6</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">          </span><span class="nt">fetch-depth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/docs-deploy@v1.5</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">          </span><span class="nt">version-command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cat VERSION | cut -d. -f1,2</span>
+<h2 id="reusable-workflow">Reusable workflow<a class="headerlink" href="#reusable-workflow" title="Permanent link">&para;</a></h2>
+<p>Docs deployment is typically consumed via the <code>cd-docs.yml</code> reusable workflow
+rather than calling the composite action directly:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">jobs</span><span class="p">:</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">docs</span><span class="p">:</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/.github/workflows/cd-docs.yml@v1.5</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">permissions</span><span class="p">:</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
 </code></pre></div>
-<h3 id="python-repo-with-uv-managed-dependencies">Python repo with uv-managed dependencies<a class="headerlink" href="#python-repo-with-uv-managed-dependencies" title="Permanent link">&para;</a></h3>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<h3 id="direct-usage-standalone">Direct usage (standalone)<a class="headerlink" href="#direct-usage-standalone" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/docs-deploy@v1.5</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">version-command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cat VERSION | cut -d. -f1,2</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">mike-command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uv run mike</span>
+</code></pre></div>
+<h3 id="python-repo-with-uv-managed-dependencies">Python repo with uv-managed dependencies<a class="headerlink" href="#python-repo-with-uv-managed-dependencies" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/docs-deploy@v1.5</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">version-command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cat VERSION | cut -d. -f1,2</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">mike-command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uv run mike</span>
 </code></pre></div>
 <h2 id="github-configuration">GitHub configuration<a class="headerlink" href="#github-configuration" title="Permanent link">&para;</a></h2>
 <ul>
