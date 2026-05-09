@@ -85,14 +85,18 @@ jobs:
           fetch-depth: 0
 
       - name: Validate inputs
+        env:
+          INPUT_LANGUAGE: ${{ inputs.language }}
+          INPUT_CONTAINER_TAG: ${{ inputs.container-tag }}
+          INPUT_REGISTRY_PUBLISH: ${{ inputs.registry-publish }}
         run: |
-          if [ "${{ inputs.language }}" != "base" ] && \
-             [ "${{ inputs.container-tag }}" = "latest" ]; then
-            echo "::error::language '${{ inputs.language }}' requires an explicit container-tag (language-specific images do not publish a :latest tag)"
+          if [ "$INPUT_LANGUAGE" != "base" ] && \
+             [ "$INPUT_CONTAINER_TAG" = "latest" ]; then
+            echo "::error::language '${INPUT_LANGUAGE}' requires an explicit container-tag (language-specific images do not publish a :latest tag)"
             exit 1
           fi
-          if [ "${{ inputs.registry-publish }}" = "true" ] && \
-             [ "${{ inputs.language }}" = "base" ]; then
+          if [ "$INPUT_REGISTRY_PUBLISH" = "true" ] && \
+             [ "$INPUT_LANGUAGE" = "base" ]; then
             echo "::error::registry-publish requires a language to derive ecosystem build/publish commands"
             exit 1
           fi
