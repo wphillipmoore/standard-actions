@@ -6,11 +6,15 @@ on:
       language:
         description: Primary language (matches dev container image suffix).
         type: string
-        required: true
+        default: "base"
       container-tag:
         description: Dev container image tag (e.g. 3.14, 1.26).
         type: string
-        required: true
+        default: "latest"
+      registry-publish:
+        description: Publish build artifacts to an external package registry.
+        type: boolean
+        default: false
       build-command:
         description: Override ecosystem-derived build command.
         type: string
@@ -79,6 +83,19 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+      - name: Validate inputs
+        run: |
+          if [ "${{ inputs.language }}" != "base" ] && \
+             [ "${{ inputs.container-tag }}" = "latest" ]; then
+            echo "::error::language '${{ inputs.language }}' requires an explicit container-tag (language-specific images do not publish a :latest tag)"
+            exit 1
+          fi
+          if [ "${{ inputs.registry-publish }}" = "true" ] && \
+             [ "${{ inputs.language }}" = "base" ]; then
+            echo "::error::registry-publish requires a language to derive ecosystem build/publish commands"
+            exit 1
+          fi
 
       - name: Install standard-tooling
         uses: wphillipmoore/standard-actions/actions/setup/standard-tooling@develop
