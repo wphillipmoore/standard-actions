@@ -84,7 +84,7 @@ nav:
       - ci-quality: workflows/ci-quality.md
       - ci-audit: workflows/ci-audit.md
       - ci-test: workflows/ci-test.md
-      - ci-release: workflows/ci-release.md
+      - ci-version-bump: workflows/ci-version-bump.md
   - CI Gate Requirements:
       - Overview: ci-gates/index.md
       - Required Checks: ci-gates/required-checks.md

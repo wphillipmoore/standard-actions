@@ -1,9 +1,6 @@
-name: Publish docs
+name: CD Docs
 
 on:
-  push:
-    branches: [develop, main]
-  workflow_dispatch:
   workflow_call:
     inputs:
       pre-deploy-command:
@@ -19,7 +16,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: docs
+  group: cd-docs
   cancel-in-progress: false
 
 jobs:

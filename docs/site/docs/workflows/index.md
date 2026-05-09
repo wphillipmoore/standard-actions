@@ -21,7 +21,7 @@ rulesets.
 | [CI Quality](ci-quality.md) | `ci-quality.yml` | Common linting, language-specific lint and typecheck |
 | [CI Audit](ci-audit.md) | `ci-audit.yml` | Dependency audit |
 | [CI Test](ci-test.md) | `ci-test.yml` | Unit and integration tests |
-| [CI Release](ci-release.md) | `ci-release.yml` | Release gate verification |
+| [CI Version Bump](ci-version-bump.md) | `ci-version-bump.yml` | Version divergence gate |
 
 ## Consuming a reusable workflow
 
