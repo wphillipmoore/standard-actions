@@ -8,6 +8,7 @@ Dependency audit workflow.
 | ------- | ------ | ---------- | --------- | ------------- |
 | `language` | string | yes | — | Primary language of the repository |
 | `versions` | string | yes | — | JSON array of language versions (e.g., `'["3.12", "3.13"]'`) |
+| `container-suffix` | string | no | `<language>` | Container image name suffix (e.g. `python`, `base`) |
 
 ## Jobs and check names
 

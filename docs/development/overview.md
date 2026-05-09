@@ -17,5 +17,5 @@ Define development workflow standards for this repository.
 
 - Environment and tooling: [environment-and-tooling.md](environment-and-tooling.md)
 - Tooling dependencies: [tooling-dependencies.md](tooling-dependencies.md)
-- Validation: [validation.md](validation.md)
+- CD workflow ordering: [publish-workflow.md](publish-workflow.md)
 - Repository bootstrap: [../operations/repository-bootstrap.md](../operations/repository-bootstrap.md)

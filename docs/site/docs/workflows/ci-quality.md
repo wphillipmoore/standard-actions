@@ -8,6 +8,8 @@ Code quality and linting workflow.
 | ------- | ------ | ---------- | --------- | ------------- |
 | `language` | string | yes | — | Primary language of the repository |
 | `versions` | string | yes | — | JSON array of language versions (e.g., `'["3.12", "3.13"]'`) |
+| `container-suffix` | string | no | `<language>` | Container image name suffix (e.g. `python`, `base`) |
+| `container-tag` | string | no | `latest` | Container image tag for non-matrix jobs |
 
 ## Jobs and check names
 
