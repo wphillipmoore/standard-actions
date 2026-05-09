@@ -79,7 +79,10 @@ runs:
           # installed), the action_path file lookup fails inside the
           # container even though sibling bash steps see the same dir.
           # Issue #204.
-          python3 - "$DOCS_DIR" <<'PY'
+          # Absolute path: the system Python has pyyaml and other packages
+          # baked into dev-base. A project venv (e.g. standard-tooling
+          # self-install) can shadow python3 with one that lacks them.
+          /usr/local/bin/python3 - "$DOCS_DIR" <<'PY'
         """Generate releases/index.md with a version table sorted by semver descending."""
         import pathlib
         import re
@@ -122,7 +125,9 @@ runs:
 
         # Inlined for the same reason as the index-generation script
         # above (see issue #204).
-        python3 - "${{ inputs.mkdocs-config }}" "$DOCS_DIR" <<'PY'
+        # Absolute path: same rationale as the index script above —
+        # a project venv can shadow python3 with one lacking pyyaml.
+        /usr/local/bin/python3 - "${{ inputs.mkdocs-config }}" "$DOCS_DIR" <<'PY'
         """Patch mkdocs.yml nav to inject release version entries under Release Notes."""
         import pathlib
         import re

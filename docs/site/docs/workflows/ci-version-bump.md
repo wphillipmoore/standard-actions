@@ -1,6 +1,6 @@
-# ci-release
+# ci-version-bump
 
-Release gate verification workflow.
+Version divergence gate workflow.
 
 ## Inputs
 
@@ -13,24 +13,24 @@ Release gate verification workflow.
 
 | Job | Check name | Condition |
 | ----- | ------------ | ----------- |
-| `version-bump` | `CI Release / version-bump` | `run-release` is true |
+| `version-bump` | `CI Version Bump / version-bump` | `run-release` is true |
 
 ## Usage
 
 ```yaml
 jobs:
-  release:
-    uses: wphillipmoore/standard-actions/.github/workflows/ci-release.yml@v1.5
+  version:
+    uses: wphillipmoore/standard-actions/.github/workflows/ci-version-bump.yml@v1.5
     with:
       language: python
 ```
 
-To skip release gates (e.g., for infrastructure repos that don't version):
+To skip version gates (e.g., for infrastructure repos that don't version):
 
 ```yaml
 jobs:
-  release:
-    uses: wphillipmoore/standard-actions/.github/workflows/ci-release.yml@v1.5
+  version:
+    uses: wphillipmoore/standard-actions/.github/workflows/ci-version-bump.yml@v1.5
     with:
       language: shell
       run-release: false

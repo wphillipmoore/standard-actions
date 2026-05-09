@@ -29,6 +29,6 @@ jobs:
       run-codeql: false
 
   release:
-    uses: ./.github/workflows/ci-release.yml
+    uses: ./.github/workflows/ci-version-bump.yml
     with:
       language: shell

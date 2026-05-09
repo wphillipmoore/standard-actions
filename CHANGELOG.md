@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.5.17] - 2026-05-09
+
+### Bug fixes
+
+- keep release job key until check name registry updates (#383)
+- use system Python to avoid venv PATH shadowing (#418)
+
+### Chores
+
+- bump version to 1.5.17
+
+### Documentation
+
+- add design spec for system Python fix (#418)
+- move spec to docs/specs/ (#418)
+
+### Features
+
+- add fleet-wide CI/CD workflow convention rollout script (#383)
+
 ## [1.5.16] - 2026-05-09
 
 ### Bug fixes
@@ -39,9 +59,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - move spec to docs/specs/ per project convention
 - add CI/CD namespace convention implementation plan (#383)
 - add CI YAML standardization design spec (#387)
+- combine #383 and #387 into single CI/CD workflow convention spec
+- add workflow conventions README (#383)
+- update site docs for CI/CD namespace convention (#383)
+- update documentation for CI/CD workflow convention (#383)
 - add st-* command availability normalization spec (#403)
 - address pushback review for st-* normalization spec (#403)
 - add st-* command normalization implementation plan (#403)
+
+### Features
+
+- rename ci-release.yml to ci-version-bump.yml (#383)
+- update workflow name and ci.yml reference for ci-version-bump.yml (#383)
+- rename publish-release.yml to cd-release.yml (#383)
+- split publish-docs.yml into cd-docs.yml (workflow_call only) (#383)
+- rename publish.yml to cd.yml umbrella with docs job (#383)
 
 ## [1.5.14] - 2026-05-08
 

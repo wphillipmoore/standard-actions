@@ -1,6 +1,6 @@
-# Publish workflow ordering
+# CD workflow ordering
 
-Each consuming repository has a `publish.yml` workflow that runs on push to
+Each consuming repository has a `cd.yml` workflow that runs on push to
 `main`. While the specific build, publish, and version-bump steps are
 language-specific, the **ordering of phases** must be consistent across all
 repositories.

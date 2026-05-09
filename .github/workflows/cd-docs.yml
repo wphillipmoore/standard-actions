@@ -1,9 +1,6 @@
-name: Publish docs
+name: CD Docs
 
 on:
-  push:
-    branches: [develop, main]
-  workflow_dispatch:
   workflow_call:
     inputs:
       pre-deploy-command:
@@ -19,7 +16,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: docs
+  group: cd-docs
   cancel-in-progress: false
 
 jobs:
@@ -40,7 +37,8 @@ jobs:
         id: ecosystem
         shell: bash
         run: |
-          lang=$(python3 -c "
+          # Absolute path: a project venv can shadow python3 (see #418).
+          lang=$(/usr/local/bin/python3 -c "
           import tomllib, pathlib
           cfg = tomllib.loads(pathlib.Path('standard-tooling.toml').read_text())
           print(cfg['project']['primary-language'])

@@ -206,7 +206,7 @@ gh secret set APP_PRIVATE_KEY --repo wphillipmoore/<repo> --body "$(cat <key>.pe
 - [ ] Add `add-to-project.yml` with the correct project URL
 - [ ] Add `ci.yml` with standard checks for the repository type
 - [ ] Add `docs.yml` if the repository has a documentation site
-- [ ] Add `publish.yml` if the repository publishes versioned artifacts
+- [ ] Add `cd.yml` if the repository publishes versioned artifacts
 
 ### 6. CI gates activation
 
