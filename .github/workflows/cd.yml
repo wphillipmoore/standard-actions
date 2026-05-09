@@ -1,9 +1,8 @@
-name: Publish release
+name: CD
 
 on:
   push:
-    branches:
-      - main
+    branches: [develop, main]
   workflow_dispatch:
 
 permissions:
@@ -11,12 +10,13 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: publish
+  group: cd
   cancel-in-progress: false
 
 jobs:
-  publish:
-    name: "publish / release"
+  release:
+    name: "cd / release"
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     container: ghcr.io/wphillipmoore/dev-base:latest
     defaults:
@@ -119,3 +119,8 @@ jobs:
         with:
           current-version: ${{ steps.version.outputs.version }}
           app-token: ${{ steps.app-token.outputs.token }}
+
+  docs:
+    uses: ./.github/workflows/cd-docs.yml
+    permissions:
+      contents: write
