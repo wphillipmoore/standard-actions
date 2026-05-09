@@ -1,4 +1,4 @@
-name: Publish release
+name: CD Release
 
 on:
   workflow_call:
@@ -58,11 +58,11 @@ on:
         required: false
 
 concurrency:
-  group: publish
+  group: cd
   cancel-in-progress: false
 
 jobs:
-  publish:
+  release:
     name: release
     runs-on: ubuntu-latest
     container: ghcr.io/wphillipmoore/dev-${{ inputs.language }}:${{ inputs.container-tag }}
@@ -104,8 +104,6 @@ jobs:
           if [ -n "$GPG_PRIVATE_KEY" ]; then
             echo "$GPG_PRIVATE_KEY" | gpg --batch --import
           fi
-
-      # ── Version and gate checks ────────────────────────────────────
 
       - name: Extract version
         id: version
@@ -158,8 +156,6 @@ jobs:
             java) echo "credential-secret=CENTRAL_TOKEN" >> "$GITHUB_OUTPUT" ;;
             *) echo "credential-secret=" >> "$GITHUB_OUTPUT" ;;
           esac
-
-      # ── Release pipeline (gated on new tag) ────────────────────────
 
       - name: Prepare version-dependent inputs
         if: steps.tag_check.outputs.exists == 'false'
@@ -231,8 +227,6 @@ jobs:
             fi
           fi
           ${{ steps.commands.outputs.publish }}
-
-      # ── Tag, release, and post-release ─────────────────────────────
 
       - name: Tag and release
         if: steps.tag_check.outputs.exists == 'false'
