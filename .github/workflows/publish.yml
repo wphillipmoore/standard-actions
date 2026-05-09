@@ -41,7 +41,7 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
 
       - name: Install standard-tooling
-        uses: ./actions/setup/standard-tooling
+        uses: wphillipmoore/standard-actions/actions/setup/standard-tooling@v1.5.16
 
       - name: Extract version
         id: version
@@ -61,7 +61,7 @@ jobs:
 
       # Rewrite internal action refs so the tagged snapshot is
       # self-consistent. Two passes:
-      #   1. ./actions/X  → wphillipmoore/standard-actions/actions/X@<tag>
+      #   1. wphillipmoore/standard-actions/actions/X@v1.5.16  → wphillipmoore/standard-actions/actions/X@<tag>
       #   2. ...@develop  → ...@<tag>
       # The commit is reachable only via the tag — never pushed to
       # develop or main.
@@ -76,7 +76,7 @@ jobs:
           mapfile -t files < <(find .github/workflows actions \
             -type f \( -name '*.yml' -o -name '*.yaml' \) 2>/dev/null)
           for f in "${files[@]}"; do
-            sed -i.bak -E "s|\./actions/([^[:space:]]+)|wphillipmoore/standard-actions/actions/\1@${RELEASE_TAG}|g" "$f"
+            sed -i.bak -E "s|\wphillipmoore/standard-actions/actions/([^[:space:]]+)|wphillipmoore/standard-actions/actions/\1@${RELEASE_TAG}|g"@v1.5.16 "$f"
             sed -i.bak -E "s|(wphillipmoore/standard-actions/[^@[:space:]]+)@develop|\1@${RELEASE_TAG}|g" "$f"
             rm -f "$f.bak"
           done
@@ -93,8 +93,8 @@ jobs:
             -type f \( -name '*.yml' -o -name '*.yaml' \) 2>/dev/null)
           failed=0
           for f in "${files[@]}"; do
-            if grep -nE 'uses:\s+\./actions/' "$f"; then
-              echo "::error file=${f}::Unfrozen relative action ref (./actions/)"
+            if grep -nE 'uses:\s+\wphillipmoore/standard-actions/actions/'@v1.5.16 "$f"; then
+              echo "::error file=${f}::Unfrozen relative action ref (wphillipmoore/standard-actions/actions/)"@v1.5.16
               failed=1
             fi
             if grep -nE 'wphillipmoore/standard-actions/[^@[:space:]]+@develop' "$f"; then
@@ -109,13 +109,13 @@ jobs:
 
       - name: Tag and release
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@develop
+        uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@v1.5.16
         with:
           version: ${{ steps.version.outputs.version }}
 
       - name: Version bump PR
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@develop
+        uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@v1.5.16
         with:
           current-version: ${{ steps.version.outputs.version }}
           app-token: ${{ steps.app-token.outputs.token }}
