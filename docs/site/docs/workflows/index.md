@@ -3,7 +3,7 @@
 v1.5.0 introduced reusable CI workflows that provide canonical job and check
 names across all managed repositories. Each workflow bundles one or more
 composite actions with the container, tooling, and permission setup needed
-to run them.
+to run them. CD workflows handle post-merge delivery (releases, documentation).
 
 ## Why reusable workflows?
 
@@ -13,7 +13,7 @@ GitHub's checks UI. This guarantees consistent, canonical check names across
 repositories — a requirement for pattern-based required status checks in
 rulesets.
 
-## Available workflows
+## CI workflows (pre-merge)
 
 | Workflow | File | Purpose |
 | ---------- | ------ | --------- |
@@ -22,6 +22,13 @@ rulesets.
 | [CI Audit](ci-audit.md) | `ci-audit.yml` | Dependency audit |
 | [CI Test](ci-test.md) | `ci-test.yml` | Unit and integration tests |
 | [CI Version Bump](ci-version-bump.md) | `ci-version-bump.yml` | Version divergence gate |
+
+## CD workflows (post-merge)
+
+| Workflow | File | Purpose |
+| ---------- | ------ | --------- |
+| CD Release | `cd-release.yml` | Full release pipeline (tag, build, publish, version bump) |
+| CD Docs | `cd-docs.yml` | MkDocs documentation deployment |
 
 ## Consuming a reusable workflow
 

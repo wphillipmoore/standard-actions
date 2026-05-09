@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.5.18] - 2026-05-09
+
+### Chores
+
+- bump version to 1.5.18
+
+### Documentation
+
+- sweep documentation for consistency with recent changes
+
+### Features
+
+- add ops-github-config reusable workflow (#424)
+
 ## [1.5.17] - 2026-05-09
 
 ### Bug fixes

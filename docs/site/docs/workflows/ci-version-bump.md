@@ -8,6 +8,8 @@ Version divergence gate workflow.
 | ------- | ------ | ---------- | --------- | ------------- |
 | `language` | string | yes | — | Primary language of the repository |
 | `run-release` | boolean | no | `true` | Run the version-bump verification job |
+| `container-suffix` | string | no | `base` | Container image name suffix (e.g. `python`, `base`) |
+| `container-tag` | string | no | `latest` | Container image tag (e.g. `3.14`, `1.26`) |
 
 ## Jobs and check names
 

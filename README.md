@@ -19,11 +19,20 @@ application and library repositories without workflow drift.
 ## Repository layout
 
 ```text
-actions/
-  <action-name>/
-    action.yml
-    README.md
-    scripts/
+actions/                          Composite GitHub Actions
+  docs-deploy/                    MkDocs + mike versioned deployment
+  publish/                        Release tagging and version bumps
+  python/setup/                   Python environment with uv and caching
+  release-gates/                  Pre-merge version validation
+  security/                       CodeQL, Semgrep, Trivy scanning
+  setup/standard-tooling/         standard-tooling CLI installer
+  standards-compliance/           PR issue linkage enforcement
+.github/workflows/
+  ci.yml                          Local CI umbrella (pull_request)
+  ci-*.yml                        Reusable pre-merge CI gates
+  cd.yml                          Local CD umbrella (push to main/develop)
+  cd-*.yml                        Reusable post-merge delivery
+docs/site/                        MkDocs documentation source
 ```
 
 ## Branching and releases

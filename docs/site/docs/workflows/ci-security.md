@@ -10,6 +10,8 @@ Standards compliance and security scanning workflow.
 | `run-standards` | boolean | no | `true` | Run the standards-compliance job |
 | `run-security` | boolean | no | `true` | Run security scanner jobs (CodeQL, Semgrep, Trivy) |
 | `run-codeql` | boolean | no | `true` | Run CodeQL analysis (disable for unsupported languages like `shell`) |
+| `container-suffix` | string | no | `base` | Container image name suffix for the standards job |
+| `container-tag` | string | no | `latest` | Container image tag for the standards job |
 
 ## Required permissions
 
