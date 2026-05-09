@@ -1,0 +1,84 @@
+name: Ops — GitHub Config
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  github-config:
+    name: github-config
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install standard-tooling
+        uses: ./actions/setup/standard-tooling
+
+      - name: Audit GitHub configuration
+        id: audit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          st-github-config audit --repo "${{ github.repository }}" 2>&1 \
+            | tee /tmp/audit-output.txt
+          rc=$?
+          set -e
+          if [ $rc -eq 0 ]; then
+            echo "compliant=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "compliant=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Manage drift issue
+        if: always() && steps.audit.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          TITLE="ops: GitHub configuration drift detected"
+
+          EXISTING=$(
+            gh issue list --repo "$REPO" --state open --label ops \
+              --search "in:title \"$TITLE\"" \
+              --json number --jq '.[0].number // empty'
+          )
+
+          if [ "${{ steps.audit.outputs.compliant }}" = "true" ]; then
+            if [ -n "$EXISTING" ]; then
+              gh issue close "$EXISTING" --repo "$REPO" \
+                --comment "Audit passed — configuration is now compliant."
+            fi
+            exit 0
+          fi
+
+          st-ensure-label --repo "$REPO" --name ops \
+            --description "Operational maintenance" --color "0E8A16"
+
+          {
+            echo "Scheduled audit detected configuration drift from the"
+            echo "canonical baseline."
+            echo ""
+            echo '```'
+            cat /tmp/audit-output.txt
+            echo '```'
+            echo ""
+            echo "**Remediation:**"
+            echo '```bash'
+            echo "st-github-config diff  --repo $REPO   # review drift"
+            echo "st-github-config apply --repo $REPO   # apply fixes"
+            echo '```'
+          } > /tmp/issue-body.md
+
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --repo "$REPO" \
+              --body-file /tmp/issue-body.md
+          else
+            gh issue create --repo "$REPO" --title "$TITLE" \
+              --body-file /tmp/issue-body.md --label ops
+          fi
+          exit 1
