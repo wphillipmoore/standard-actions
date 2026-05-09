@@ -37,7 +37,8 @@ jobs:
         id: ecosystem
         shell: bash
         run: |
-          lang=$(python3 -c "
+          # Absolute path: a project venv can shadow python3 (see #418).
+          lang=$(/usr/local/bin/python3 -c "
           import tomllib, pathlib
           cfg = tomllib.loads(pathlib.Path('standard-tooling.toml').read_text())
           print(cfg['project']['primary-language'])
