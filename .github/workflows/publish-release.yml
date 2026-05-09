@@ -6,11 +6,15 @@ on:
       language:
         description: Primary language (matches dev container image suffix).
         type: string
-        required: true
+        default: "base"
       container-tag:
-        description: Dev container image tag override.
+        description: Dev container image tag (e.g. 3.14, 1.26).
         type: string
         default: "latest"
+      registry-publish:
+        description: Publish build artifacts to an external package registry.
+        type: boolean
+        default: false
       build-command:
         description: Override ecosystem-derived build command.
         type: string
@@ -80,11 +84,28 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Validate inputs
+        env:
+          INPUT_LANGUAGE: ${{ inputs.language }}
+          INPUT_CONTAINER_TAG: ${{ inputs.container-tag }}
+          INPUT_REGISTRY_PUBLISH: ${{ inputs.registry-publish }}
+        run: |
+          if [ "$INPUT_LANGUAGE" != "base" ] && \
+             [ "$INPUT_CONTAINER_TAG" = "latest" ]; then
+            echo "::error::language '${INPUT_LANGUAGE}' requires an explicit container-tag (language-specific images do not publish a :latest tag)"
+            exit 1
+          fi
+          if [ "$INPUT_REGISTRY_PUBLISH" = "true" ] && \
+             [ "$INPUT_LANGUAGE" = "base" ]; then
+            echo "::error::registry-publish requires a language to derive ecosystem build/publish commands"
+            exit 1
+          fi
+
       - name: Install standard-tooling
         uses: wphillipmoore/standard-actions/actions/setup/standard-tooling@develop
 
       - name: Configure Maven credentials
-        if: inputs.language == 'java'
+        if: inputs.registry-publish && inputs.language == 'java'
         shell: bash
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -124,7 +145,9 @@ jobs:
           fi
 
       - name: Derive ecosystem commands
-        if: steps.tag_check.outputs.exists == 'false'
+        if: >-
+          inputs.registry-publish &&
+          steps.tag_check.outputs.exists == 'false'
         id: commands
         env:
           LANG: ${{ inputs.language }}
@@ -162,7 +185,9 @@ jobs:
       # ── Release pipeline (gated on new tag) ────────────────────────
 
       - name: Prepare version-dependent inputs
-        if: steps.tag_check.outputs.exists == 'false'
+        if: >-
+          inputs.registry-publish &&
+          steps.tag_check.outputs.exists == 'false'
         id: resolved
         env:
           VERSION: ${{ steps.version.outputs.version }}
@@ -175,11 +200,14 @@ jobs:
             >> "$GITHUB_OUTPUT"
 
       - name: Ensure dist directory
-        if: steps.tag_check.outputs.exists == 'false'
+        if: >-
+          inputs.registry-publish &&
+          steps.tag_check.outputs.exists == 'false'
         run: mkdir -p dist
 
       - name: Build
         if: >-
+          inputs.registry-publish &&
           steps.tag_check.outputs.exists == 'false' &&
           steps.commands.outputs.build != ''
         env:
@@ -188,6 +216,7 @@ jobs:
 
       - name: Attest build provenance
         if: >-
+          inputs.registry-publish &&
           steps.tag_check.outputs.exists == 'false' &&
           inputs.attestation-subject-path != ''
         uses: actions/attest-build-provenance@v4
@@ -196,6 +225,7 @@ jobs:
 
       - name: Generate SBOM
         if: >-
+          inputs.registry-publish &&
           steps.tag_check.outputs.exists == 'false' &&
           inputs.sbom-output-file != ''
         uses: wphillipmoore/standard-actions/actions/security/trivy@develop
@@ -205,12 +235,14 @@ jobs:
 
       - name: Publish to PyPI
         if: >-
+          inputs.registry-publish &&
           inputs.language == 'python' &&
           steps.tag_check.outputs.exists == 'false'
         run: uv publish dist/*
 
       - name: Publish to registry
         if: >-
+          inputs.registry-publish &&
           inputs.language != 'python' &&
           steps.commands.outputs.publish != '' &&
           steps.tag_check.outputs.exists == 'false'
