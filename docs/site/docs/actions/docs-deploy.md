@@ -11,8 +11,6 @@ git configuration, version detection, and mike deploy/set-default.
     version-command: cat VERSION | cut -d. -f1,2
     mkdocs-config: docs/site/mkdocs.yml
     mike-command: mike
-    checkout-common: "false"
-    checkout-common-ref: develop
 ```
 
 ## Inputs
@@ -21,9 +19,7 @@ git configuration, version detection, and mike deploy/set-default.
 | ------ | ---------- | --------- | ------------- |
 | `version-command` | **Yes** | — | Shell command to extract the version string on main (e.g. `cat VERSION`, `grep -oP ... version.go`). |
 | `mkdocs-config` | No | `docs/site/mkdocs.yml` | Path to mkdocs.yml configuration file. |
-| `mike-command` | No | `mike` | Command to run mike. Set to `uv run mike` for Python repos that manage their own dependencies. When not `mike`, the action skips Python setup and MkDocs installation. |
-| `checkout-common` | No | `false` | Whether to checkout mq-rest-admin-common. |
-| `checkout-common-ref` | No | `develop` | Ref to checkout for mq-rest-admin-common. |
+| `mike-command` | No | `mike` | Command to run mike. Set to `uv run mike` for Python repos that manage their own dependencies via their project's virtual environment. |
 
 ## Permissions
 
@@ -31,41 +27,43 @@ git configuration, version detection, and mike deploy/set-default.
 
 ## Behavior
 
-1. **Checkout common** (optional) — If `checkout-common` is `true`, checks out
-   the `mq-rest-admin-common` repository for shared documentation fragments.
-2. **Set up Python 3.12** — Only when `mike-command` is `mike` (default).
-3. **Install MkDocs and mike** — `pip install mkdocs-material mike`. Skipped
-   when a custom `mike-command` is provided.
-4. **Configure git identity** — Sets the git user to `github-actions[bot]` for
-   the deploy commit.
-5. **Determine version** — On `main`, runs the `version-command` to extract the
+1. **Configure git identity** — Sets the git user to `github-actions[bot]` for
+   the deploy commit. Marks the workspace as a safe directory to avoid
+   dubious-ownership errors in container jobs.
+2. **Determine version** — On `main`, runs the `version-command` to extract the
    version and sets `alias=latest`. On all other branches, sets `version=dev`
    with no alias.
-6. **Deploy docs** — On `main`, runs `mike deploy --push --update-aliases
+3. **Stage changelog and release notes** — Copies `CHANGELOG.md` and
+   `releases/*.md` into the docs directory, and generates a release notes index
+   page sorted by semver. Uses system Python (`/usr/local/bin/python3`) to avoid
+   venv PATH shadowing.
+4. **Patch mkdocs nav** — Injects release version entries into the `mkdocs.yml`
+   nav under the Releases section.
+5. **Deploy docs** — On `main`, runs `mike deploy --push --update-aliases
    <version> latest` followed by `mike set-default --push latest`. On other
    branches, runs `mike deploy --push dev`.
 
-## Examples
+## Reusable workflow
 
-### Standard library deployment
+Docs deployment is typically consumed via the `cd-docs.yml` reusable workflow
+rather than calling the composite action directly:
 
 ```yaml
-name: Documentation
-on:
-  push:
-    branches: [develop, main]
-permissions:
-  contents: write
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - uses: wphillipmoore/standard-actions/actions/docs-deploy@v1.5
-        with:
-          version-command: cat VERSION | cut -d. -f1,2
+  docs:
+    uses: wphillipmoore/standard-actions/.github/workflows/cd-docs.yml@v1.5
+    permissions:
+      contents: write
+```
+
+## Examples
+
+### Direct usage (standalone)
+
+```yaml
+- uses: wphillipmoore/standard-actions/actions/docs-deploy@v1.5
+  with:
+    version-command: cat VERSION | cut -d. -f1,2
 ```
 
 ### Python repo with uv-managed dependencies

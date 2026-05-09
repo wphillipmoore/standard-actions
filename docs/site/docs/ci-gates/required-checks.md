@@ -61,7 +61,7 @@ Each reusable workflow produces canonical check names. See
 | `ci-security.yml` | `CI Security / standards`, `CI Security / codeql`, `CI Security / trivy`, `CI Security / semgrep` |
 | `ci-quality.yml` | `CI Quality / common`, `CI Quality / lint / <version>`, `CI Quality / typecheck / <version>` |
 | `ci-audit.yml` | `CI Audit / dependencies / <version>` |
-| `ci-test.yml` | `CI Test / unit / <version>`, `CI Test / integration / <version>` |
+| `ci-test.yml` | `CI Test / unit / <version>` |
 | `ci-version-bump.yml` | `CI Version Bump / version-bump` |
 
 ## Reusable workflow flags

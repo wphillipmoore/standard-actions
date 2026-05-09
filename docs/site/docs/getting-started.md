@@ -36,14 +36,14 @@ jobs:
 
 ## Consuming reusable workflows
 
-v1.5.0 introduced reusable CI workflows that produce canonical check names.
+Reusable workflows produce canonical check names across all repositories.
 Reference workflows using the full path to the workflow file:
 
 ```yaml
 uses: wphillipmoore/standard-actions/.github/workflows/ci-security.yml@v1.5
 ```
 
-### Minimal workflow example using reusable workflows
+### CI workflow example
 
 ```yaml
 name: CI
@@ -69,6 +69,33 @@ jobs:
       security-events: write
     with:
       language: python
+```
+
+### CD workflow example
+
+```yaml
+name: CD
+
+on:
+  push:
+    branches: [develop, main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  docs:
+    uses: wphillipmoore/standard-actions/.github/workflows/cd-docs.yml@v1.5
+    permissions:
+      contents: write
+
+  release:
+    if: github.ref == 'refs/heads/main'
+    uses: wphillipmoore/standard-actions/.github/workflows/cd-release.yml@v1.5
+    with:
+      language: python
+    secrets: inherit
 ```
 
 See [Reusable Workflows](workflows/index.md) for the full list and

@@ -22,9 +22,10 @@ releases.
 
 ## Reusable workflows
 
-v1.5.0 introduced reusable CI workflows that provide canonical job and check
-names across all managed repositories. See
-[Reusable Workflows](workflows/index.md) for details.
+Reusable workflows provide canonical job and check names across all managed
+repositories. See [Reusable Workflows](workflows/index.md) for details.
+
+### CI (pre-merge)
 
 | Workflow | Purpose |
 | ---------- | --------- |
@@ -34,11 +35,18 @@ names across all managed repositories. See
 | [ci-test](workflows/ci-test.md) | Unit and integration tests |
 | [ci-version-bump](workflows/ci-version-bump.md) | Version divergence gate |
 
+### CD (post-merge)
+
+| Workflow | Purpose |
+| ---------- | --------- |
+| cd-release | Full release pipeline (tag, build, publish, version bump) |
+| cd-docs | MkDocs documentation deployment |
+
 ## Design principles
 
 - **Composite actions only** — No custom JavaScript or Docker actions. Every
   action is a composite `action.yml` with shell steps.
-- **Reusable workflows** — CI workflows are provided as reusable
+- **Reusable workflows** — CI and CD workflows are provided as reusable
   `workflow_call` templates that produce canonical check names across all
   consuming repositories.
 - **Self-referencing CI** — This repository's own CI uses `./actions/...` and

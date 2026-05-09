@@ -133,13 +133,36 @@ st-docker-run -- st-validate   # Canonical validation (runs in dev-base containe
 
 All actions live under `actions/` as composite GitHub Actions:
 
-- `actions/standards-compliance` — PR-specific compliance checks: issue
-  linkage and auto-close keyword rejection
+- `actions/docs-deploy` — MkDocs Material + mike versioned documentation
+  deployment
+- `actions/publish/tag-and-release` — Annotated git tags, rolling minor
+  tags, and GitHub Releases
+- `actions/publish/version-bump-pr` — Post-release version bump PRs
 - `actions/python/setup` — Python environment setup with uv and caching
+- `actions/release-gates/version-divergence` — Pre-merge version
+  validation
 - `actions/security/codeql` — CodeQL static analysis
 - `actions/security/semgrep` — Semgrep SAST scanning
 - `actions/security/trivy` — Trivy vulnerability scanning (filesystem,
   SBOM, container image)
+- `actions/setup/standard-tooling` — Installs standard-tooling from the
+  version pinned in `standard-tooling.toml`
+- `actions/standards-compliance` — PR-specific compliance checks: issue
+  linkage and auto-close keyword rejection
+
+### Reusable Workflows
+
+CI and CD workflows live under `.github/workflows/` and are consumed via
+`workflow_call`:
+
+- `ci-quality.yml` — Common linting, language-specific lint and typecheck
+- `ci-security.yml` — Standards compliance and security scanning
+- `ci-test.yml` — Unit and integration tests
+- `ci-audit.yml` — Dependency audit
+- `ci-version-bump.yml` — Version divergence gate
+- `cd-release.yml` — Full release pipeline (tag, build, publish, version
+  bump)
+- `cd-docs.yml` — MkDocs documentation deployment
 
 ### Self-Referencing CI
 
