@@ -267,6 +267,22 @@ jobs:
           version: ${{ steps.version.outputs.version }}
           release-artifacts: ${{ steps.resolved.outputs.release-artifacts }}
 
+      - name: Verify tag is resolvable from remote
+        if: steps.tag_check.outputs.exists == 'false'
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          repo_url="https://github.com/${{ github.repository }}"
+          tmp="$(mktemp -d)"
+          if git clone --depth 1 --branch "$TAG" "$repo_url" "$tmp" 2>/dev/null; then
+            rm -rf "$tmp"
+            exit 0
+          fi
+          echo "::warning::Tag $TAG has missing objects on remote — resyncing"
+          git push --no-thin origin "$TAG" --force
+          git clone --depth 1 --branch "$TAG" "$repo_url" "$tmp"
+          rm -rf "$tmp"
+
       - name: Generate app token for bump PR
         if: steps.tag_check.outputs.exists == 'false'
         id: app-token
