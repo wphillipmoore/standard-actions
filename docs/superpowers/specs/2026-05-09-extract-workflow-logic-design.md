@@ -55,6 +55,10 @@ and `ci-audit.yml` are left as-is. They are already at shim level (one-line
    an optional input. Transparent and auditable, matching the pattern used
    by `version-bump-pr`.
 
+6. **`env:` over `${{ }}` in shell.** All action inputs passed to `run:`
+   steps use `env:` variables, never direct `${{ }}` interpolation. This
+   prevents expression injection from caller-provided values.
+
 ---
 
 ## Action specifications
@@ -79,6 +83,10 @@ Pre-flight validation for `cd-release.yml` inputs.
    error: language-specific images do not publish a `:latest` tag.
 2. If `registry-publish` is `true` and `language` is `base` — fail with
    error: publishing requires a language to derive ecosystem commands.
+3. If `registry-publish` is `true` and `language` is not in the supported
+   set (`python`, `java`, `ruby`, `rust`, `go`) — fail with error: unsupported
+   language for registry publishing. The supported set is maintained as a
+   single list for easy extension as new ecosystems are added.
 
 Passes silently on success.
 
@@ -94,7 +102,7 @@ SBOM generation, credential guarding, and publish execution.
 
 | Input | Required | Default | Description |
 |-------|----------|---------|-------------|
-| `language` | yes | — | Primary language (`python`, `rust`, `ruby`, `java`) |
+| `language` | yes | — | Primary language (`python`, `rust`, `ruby`, `java`, `go`) |
 | `version` | yes | — | Semver version string |
 | `build-command` | no | `""` | Override ecosystem-derived build command |
 | `publish-command` | no | `""` | Override ecosystem-derived publish command |
@@ -106,6 +114,11 @@ SBOM generation, credential guarding, and publish execution.
 | `central-token` | no | `""` | Java: Maven Central token |
 | `gpg-private-key` | no | `""` | Java: GPG signing key |
 | `gpg-passphrase` | no | `""` | Java: GPG passphrase |
+
+> **Name mapping note:** The workflow-level input `registry-publish-command`
+> maps to this action's `publish-command` input. The `registry-` prefix is
+> redundant within the action's own namespace. A broader namespace
+> rationalization is tracked in #440.
 
 **Outputs:**
 
@@ -127,6 +140,11 @@ SBOM generation, credential guarding, and publish execution.
    | `rust` | `cargo build --release` | `cargo publish` | `CARGO_REGISTRY_TOKEN` |
    | `ruby` | `gem build *.gemspec` | `gem push *.gem` | `GEM_HOST_API_KEY` |
    | `java` | `./mvnw -B package -DskipTests` | `./mvnw -B deploy -DskipTests` | `CENTRAL_TOKEN` |
+   | `go` | `go build ./...` | _(no registry publish)_ | — |
+
+   The case statement includes a default guard that fails with an error for
+   unrecognized languages (defense in depth — `validate-inputs` catches this
+   first).
 
 2. **Maven credential provisioning** — if `language == java`: write
    `~/.m2/settings.xml` referencing `MAVEN_USERNAME`/`MAVEN_PASSWORD` env
@@ -146,10 +164,19 @@ SBOM generation, credential guarding, and publish execution.
    `wphillipmoore/standard-actions/actions/security/trivy@develop` with
    `scan-type: sbom` if `sbom-output-file` is set.
 
-8. **Publish** — for Python: `uv publish dist/*` (trusted publishing, no
-   credential guard). For others: check that the relevant credential secret
-   is non-empty; if missing, emit `::notice::` and skip. Otherwise execute
-   the resolved publish command with credential env vars set.
+8. **Publish** — single path for all languages. Execute the resolved
+   publish command (derived or overridden). If the language has a credential
+   secret defined, check that it is non-empty before executing; if missing,
+   emit `::notice::` and skip. Languages with no credential requirement
+   (Python via trusted publishing, Go with no registry) skip the guard.
+   If the resolved publish command is empty, skip the step entirely.
+
+**Security constraint:** All inputs passed to shell steps must use `env:`
+variables, not `${{ }}` expression interpolation in `run:` blocks. This
+prevents expression injection from caller-provided override inputs
+(`build-command`, `publish-command`). Example: use
+`env: { BUILD_CMD: "${{ inputs.build-command }}" }` then `$BUILD_CMD` in
+the script, not `${{ inputs.build-command }}` directly in the shell.
 
 **Permissions note:** Steps 6 (attestation) and 7 (SBOM/Trivy) require
 `id-token: write` and `attestations: write` on the calling workflow's job.
@@ -177,7 +204,8 @@ all workflow and action YAML files, then validates completeness.
 1. **Configure git identity** — `github-actions[bot]`.
 
 2. **Freeze refs** — find all `.yml`/`.yaml` files under
-   `.github/workflows` and `actions/`. Two sed passes:
+   `.github/workflows` and `actions/`. Two sed passes, restricted to
+   lines matching `uses:` (avoids rewriting comments or strings):
    - `./actions/X` → `{owner-repo}/actions/X@{tag}`
    - `{owner-repo}/...@develop` → `{owner-repo}/...@{tag}`
 
