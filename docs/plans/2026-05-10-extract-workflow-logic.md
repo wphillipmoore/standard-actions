@@ -122,6 +122,10 @@ inputs:
   version:
     description: Semver version string (e.g. 1.2.3).
     required: true
+  registry-publish:
+    description: Whether to execute the final registry publish step.
+    required: false
+    default: "false"
   build-command:
     description: Override ecosystem-derived build command.
     required: false
@@ -303,11 +307,11 @@ Append to the `steps:` list. Uses `env:` for all inputs per the security constra
 
 - [ ] **Step 6: Add the publish step**
 
-Single path for all languages. Credential guard checks the relevant secret is non-empty before executing. Skips entirely if the resolved publish command is empty.
+Only executes when `registry-publish` is true. Single path for all languages. Credential guard checks the relevant secret is non-empty before executing. Skips entirely if the resolved publish command is empty.
 
 ```yaml
     - name: Publish
-      if: steps.commands.outputs.publish != ''
+      if: inputs.registry-publish == 'true' && steps.commands.outputs.publish != ''
       shell: bash
       env:
         VERSION: ${{ inputs.version }}
@@ -385,12 +389,11 @@ Remove these steps from `cd-release.yml`:
 - "Publish to PyPI" (lines 232–237)
 - "Publish to registry" (lines 239–261)
 
-Replace with a single `release-artifacts` resolution step and the `registry-publish` action call:
+Replace with a single `release-artifacts` resolution step and the `registry-publish` action call. Note: the pipeline is gated on language being in the supported build set (not on `registry-publish`), ensuring all buildable releases get the same audit bar:
 
 ```yaml
       - name: Resolve release artifacts
         if: >-
-          inputs.registry-publish &&
           steps.tag_check.outputs.exists == 'false'
         id: resolved
         env:
@@ -400,14 +403,15 @@ Replace with a single `release-artifacts` resolution step and the `registry-publ
           echo "release-artifacts=${RELEASE_ARTIFACTS//\$VERSION/$VERSION}" \
             >> "$GITHUB_OUTPUT"
 
-      - name: Publish
+      - name: Build and publish
         if: >-
-          inputs.registry-publish &&
+          contains(fromJSON('["python","java","ruby","rust","go"]'), inputs.language) &&
           steps.tag_check.outputs.exists == 'false'
         uses: ./actions/publish/registry-publish
         with:
           language: ${{ inputs.language }}
           version: ${{ steps.version.outputs.version }}
+          registry-publish: ${{ inputs.registry-publish }}
           build-command: ${{ inputs.build-command }}
           publish-command: ${{ inputs.registry-publish-command }}
           attestation-subject-path: ${{ inputs.attestation-subject-path }}

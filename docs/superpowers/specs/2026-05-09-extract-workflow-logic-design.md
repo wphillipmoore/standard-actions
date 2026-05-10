@@ -104,6 +104,7 @@ SBOM generation, credential guarding, and publish execution.
 |-------|----------|---------|-------------|
 | `language` | yes | — | Primary language (`python`, `rust`, `ruby`, `java`, `go`) |
 | `version` | yes | — | Semver version string |
+| `registry-publish` | no | `false` | Whether to execute the final registry publish step |
 | `build-command` | no | `""` | Override ecosystem-derived build command |
 | `publish-command` | no | `""` | Override ecosystem-derived publish command |
 | `attestation-subject-path` | no | `""` | Glob for build provenance attestation |
@@ -164,12 +165,13 @@ SBOM generation, credential guarding, and publish execution.
    `wphillipmoore/standard-actions/actions/security/trivy@develop` with
    `scan-type: sbom` if `sbom-output-file` is set.
 
-8. **Publish** — single path for all languages. Execute the resolved
-   publish command (derived or overridden). If the language has a credential
-   secret defined, check that it is non-empty before executing; if missing,
-   emit `::notice::` and skip. Languages with no credential requirement
-   (Python via trusted publishing, Go with no registry) skip the guard.
-   If the resolved publish command is empty, skip the step entirely.
+8. **Publish** — only executes when the `registry-publish` input is
+   `true`. Single path for all languages. Execute the resolved publish
+   command (derived or overridden). If the language has a credential secret
+   defined, check that it is non-empty before executing; if missing, emit
+   `::notice::` and skip. Languages with no credential requirement (Python
+   via trusted publishing, Go with no registry) skip the guard. If the
+   resolved publish command is empty, skip the step entirely.
 
 **Security constraint:** All inputs passed to shell steps must use `env:`
 variables, not `${{ }}` expression interpolation in `run:` blocks. This
@@ -177,6 +179,9 @@ prevents expression injection from caller-provided override inputs
 (`build-command`, `publish-command`). Example: use
 `env: { BUILD_CMD: "${{ inputs.build-command }}" }` then `$BUILD_CMD` in
 the script, not `${{ inputs.build-command }}` directly in the shell.
+Commands stored in env vars are executed via `eval` to support glob
+expansion (e.g. `uv publish dist/*`). This is safe because the `env:`
+boundary prevents injection at the shell-interpolation layer.
 
 **Permissions note:** Steps 6 (attestation) and 7 (SBOM/Trivy) require
 `id-token: write` and `attestations: write` on the calling workflow's job.
@@ -259,12 +264,20 @@ After extraction, the workflow steps are:
 4. Version extraction (trivial `$GITHUB_OUTPUT` glue)
 5. Tag existence check (trivial `$GITHUB_OUTPUT` glue)
 6. Release-artifacts `$VERSION` resolution (one-liner)
-7. `./actions/publish/registry-publish` — full publish pipeline
+7. `./actions/publish/registry-publish` — build, audit, and publish pipeline
+   (gated on language ∈ supported set, not on `registry-publish` flag)
 8. `./actions/publish/tag-and-release`
 9. `actions/create-github-app-token@v3`
 10. `./actions/publish/version-bump-pr`
 
 No case statements, no inline credential provisioning, no multi-line bash.
+
+**Pipeline gate:** Step 7 runs when `language` is one of the five supported
+build languages (`python`, `java`, `ruby`, `rust`, `go`) and the tag is new.
+The `registry-publish` flag only controls whether the final publish-to-registry
+step executes inside the action. This ensures all buildable releases get the
+same audit bar (build verification, attestation, SBOM) regardless of whether
+they publish to an external registry.
 
 ### `cd.yml`
 
