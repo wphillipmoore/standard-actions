@@ -231,9 +231,43 @@ clear migration point.
 ### CLAUDE.md
 
 Replace the current action listing with the new structure organized by
-pipeline phase, and add the navigation convention note.
+pipeline phase, and add the navigation convention note explaining the
+phase/domain/action hierarchy and the `shared/` and `local/` directories.
 
 ### MkDocs site
 
-Update action path references in `docs/site/docs/getting-started.md` and
-`docs/site/docs/index.md` to use the new paths.
+The documentation impact is significant — action paths appear throughout
+the site. Three categories of changes:
+
+**1. Action doc page renames** (`docs/site/docs/actions/`):
+
+| Old filename | New filename |
+|-------------|-------------|
+| `standards-compliance.md` | `ci-security-standards-compliance.md` |
+| `security-codeql.md` | `ci-security-codeql.md` |
+| `security-semgrep.md` | `ci-security-semgrep.md` |
+| `security-trivy.md` | `shared-security-trivy.md` |
+| `release-gates-version-divergence.md` | `ci-version-bump-version-divergence.md` |
+| `publish-tag-and-release.md` | `cd-release-tag-and-release.md` |
+| `publish-version-bump-pr.md` | `cd-release-version-bump-pr.md` |
+| `docs-deploy.md` | `cd-docs-deploy.md` |
+| `python-setup.md` | `shared-setup-python.md` |
+
+**2. Remote action path references** in code examples and usage snippets
+across multiple doc pages. Every occurrence of
+`wphillipmoore/standard-actions/actions/<old-path>@v1.5` must update to
+the new path (e.g., `actions/security/codeql` →
+`actions/ci/security/codeql`).
+
+Affected files include: `getting-started.md`, `index.md`,
+`configuration.md`, `development/contributing.md`,
+`ci-gates/security-scanning.md`, `ci-gates/index.md`, and every
+individual action doc page.
+
+**3. mkdocs.yml nav entries** must update to reference the new doc page
+filenames.
+
+**4. contributing.md** describes the convention for adding new actions
+(`actions/<category>/<action-name>/action.yml`). This must be updated to
+describe the new `actions/{phase}/{domain}/{action}/` convention with
+guidance on when to use `shared/` vs a phase-specific directory.
