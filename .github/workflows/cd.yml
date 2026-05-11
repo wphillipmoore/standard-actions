@@ -18,7 +18,7 @@ jobs:
     name: "cd / release"
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-base:latest
+    container: ghcr.io/wphillipmoore/prod-base:latest
     defaults:
       run:
         shell: bash
