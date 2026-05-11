@@ -131,24 +131,35 @@ st-docker-run -- st-validate   # Canonical validation (runs in dev-base containe
 
 ### Composite Actions
 
-All actions live under `actions/` as composite GitHub Actions:
+All actions live under `actions/` organized by pipeline phase:
 
-- `actions/docs-deploy` — MkDocs Material + mike versioned documentation
-  deployment
-- `actions/publish/tag-and-release` — Annotated git tags, rolling minor
-  tags, and GitHub Releases
-- `actions/publish/version-bump-pr` — Post-release version bump PRs
-- `actions/python/setup` — Python environment setup with uv and caching
-- `actions/release-gates/version-divergence` — Pre-merge version
+**Convention:** The `actions/` directory mirrors the workflow namespace.
+To find an action, take the workflow filename (e.g., `ci-security.yml`),
+split on the first `-` to get phase and domain (`ci` / `security`), and
+look in `actions/{phase}/{domain}/`. Cross-phase actions live in
+`actions/shared/`. Repo-local actions live in `actions/local/`.
+
+- `actions/ci/security/standards-compliance` — PR-specific compliance
+  checks: issue linkage and auto-close keyword rejection
+- `actions/ci/security/codeql` — CodeQL static analysis
+- `actions/ci/security/semgrep` — Semgrep SAST scanning
+- `actions/ci/version-bump/version-divergence` — Pre-merge version
   validation
-- `actions/security/codeql` — CodeQL static analysis
-- `actions/security/semgrep` — Semgrep SAST scanning
-- `actions/security/trivy` — Trivy vulnerability scanning (filesystem,
-  SBOM, container image)
-- `actions/setup/standard-tooling` — Installs standard-tooling from the
-  version pinned in `standard-tooling.toml`
-- `actions/standards-compliance` — PR-specific compliance checks: issue
-  linkage and auto-close keyword rejection
+- `actions/cd/release/validate-inputs` — Pre-flight release input
+  validation
+- `actions/cd/release/registry-publish` — Build and publish pipeline
+  for any supported language ecosystem
+- `actions/cd/release/tag-and-release` — Annotated git tags, rolling
+  minor tags, and GitHub Releases
+- `actions/cd/release/version-bump-pr` — Post-release version bump PRs
+- `actions/cd/docs/deploy` — MkDocs Material + mike versioned
+  documentation deployment
+- `actions/shared/security/trivy` — Trivy vulnerability scanning
+  (filesystem, SBOM, container image)
+- `actions/shared/setup/standard-tooling` — Installs standard-tooling
+  from the version pinned in `standard-tooling.toml`
+- `actions/local/freeze-internal-refs` — Freezes relative action refs
+  to absolute tagged refs (repo-local)
 
 ### Reusable Workflows
 

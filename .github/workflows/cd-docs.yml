@@ -35,7 +35,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install standard-tooling
-        uses: ./actions/setup/standard-tooling
+        uses: ./actions/shared/setup/standard-tooling
 
       - name: Run pre-deploy command
         if: inputs.pre-deploy-command != ''
@@ -45,7 +45,7 @@ jobs:
         run: eval "$PRE_DEPLOY_COMMAND"
 
       - name: Deploy docs
-        uses: ./actions/docs-deploy
+        uses: ./actions/cd/docs/deploy
         with:
           version-command: st-version show --major-minor
           mkdocs-config: ${{ inputs.mkdocs-config || 'docs/site/mkdocs.yml' }}

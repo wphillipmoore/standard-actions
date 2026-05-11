@@ -6,9 +6,9 @@ Three security scanning tools provide layered coverage:
 
 | Tool | Purpose | Output |
 | ------ | --------- | -------- |
-| [CodeQL](../actions/security-codeql.md) | GitHub-native SAST with deep semantic analysis | SARIF uploaded to code scanning |
-| [Semgrep](../actions/security-semgrep.md) | Fast pattern-based SAST with community rulesets | SARIF uploaded to code scanning |
-| [Trivy](../actions/security-trivy.md) | Dependency vulnerability scanning and SBOM generation | SARIF uploaded to code scanning |
+| [CodeQL](../actions/ci-security-codeql.md) | GitHub-native SAST with deep semantic analysis | SARIF uploaded to code scanning |
+| [Semgrep](../actions/ci-security-semgrep.md) | Fast pattern-based SAST with community rulesets | SARIF uploaded to code scanning |
+| [Trivy](../actions/shared-security-trivy.md) | Dependency vulnerability scanning and SBOM generation | SARIF uploaded to code scanning |
 
 ## GHAS requirements
 
@@ -56,7 +56,7 @@ control flow, and language-specific patterns.
   project.
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/security/codeql@v1.5
+- uses: wphillipmoore/standard-actions/actions/ci/security/codeql@v1.5
   with:
     language: python
 ```
@@ -75,7 +75,7 @@ Default rulesets enabled for every scan:
 Additional rulesets can be added via `extra-config`:
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/security/semgrep@v1.5
+- uses: wphillipmoore/standard-actions/actions/ci/security/semgrep@v1.5
   with:
     language: golang
     extra-config: "p/owasp-top-ten"
@@ -99,7 +99,7 @@ By default, only `CRITICAL` and `HIGH` severity vulnerabilities are reported.
 This can be adjusted:
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/security/trivy@v1.5
+- uses: wphillipmoore/standard-actions/actions/shared/security/trivy@v1.5
   with:
     scan-type: fs
     severity: "CRITICAL,HIGH,MEDIUM"
@@ -111,7 +111,7 @@ By default, Trivy exits with code `1` when vulnerabilities are found, failing
 the CI check. Set `exit-code: "0"` for advisory-only mode:
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/security/trivy@v1.5
+- uses: wphillipmoore/standard-actions/actions/shared/security/trivy@v1.5
   with:
     scan-type: fs
     exit-code: "0"

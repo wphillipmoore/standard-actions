@@ -11,14 +11,14 @@ releases.
 
 ## Action categories
 
-| Category | Actions | Purpose |
+| Phase | Actions | Purpose |
 | ---------- | --------- | --------- |
-| CI & Validation | [standards-compliance](actions/standards-compliance.md) | PR issue linkage and auto-close keyword rejection |
-| Documentation | [docs-deploy](actions/docs-deploy.md) | MkDocs Material + mike versioned deployment |
-| Python | [python/setup](actions/python-setup.md) | Python environment with uv and caching |
-| Security | [security/codeql](actions/security-codeql.md), [security/semgrep](actions/security-semgrep.md), [security/trivy](actions/security-trivy.md) | SAST and vulnerability scanning |
-| Publishing | [publish/tag-and-release](actions/publish-tag-and-release.md), [publish/version-bump-pr](actions/publish-version-bump-pr.md) | Release tagging and post-release version bumps |
-| Release Gates | [release-gates/version-divergence](actions/release-gates-version-divergence.md) | Pre-merge version validation |
+| CI / Security | [standards-compliance](actions/ci-security-standards-compliance.md), [codeql](actions/ci-security-codeql.md), [semgrep](actions/ci-security-semgrep.md) | Compliance checks and SAST scanning |
+| CI / Version Bump | [version-divergence](actions/ci-version-bump-version-divergence.md) | Pre-merge version validation |
+| CD / Release | [tag-and-release](actions/cd-release-tag-and-release.md), [version-bump-pr](actions/cd-release-version-bump-pr.md) | Release tagging and post-release version bumps |
+| CD / Docs | [deploy](actions/cd-docs-deploy.md) | MkDocs Material + mike versioned deployment |
+| Shared / Security | [trivy](actions/shared-security-trivy.md) | Vulnerability scanning and SBOM generation |
+| Shared / Setup | [standard-tooling](actions/index.md) | Standard-tooling and environment setup |
 
 ## Reusable workflows
 
