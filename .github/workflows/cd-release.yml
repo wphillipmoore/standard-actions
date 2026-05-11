@@ -89,14 +89,14 @@ jobs:
           fetch-depth: 0
 
       - name: Validate inputs
-        uses: ./actions/cd/release/validate-inputs
+        uses: wphillipmoore/standard-actions/actions/cd/release/validate-inputs@v1.5.23
         with:
           language: ${{ inputs.language }}
           container-tag: ${{ inputs.container-tag }}
           registry-publish: ${{ inputs.registry-publish }}
 
       - name: Install standard-tooling
-        uses: wphillipmoore/standard-actions/actions/shared/setup/standard-tooling@develop
+        uses: wphillipmoore/standard-actions/actions/shared/setup/standard-tooling@v1.5.23
 
       - name: Extract version
         id: version
@@ -129,7 +129,7 @@ jobs:
         if: >-
           contains(fromJSON('["python","java","ruby","rust","go"]'), inputs.language) &&
           steps.tag_check.outputs.exists == 'false'
-        uses: ./actions/cd/release/registry-publish
+        uses: wphillipmoore/standard-actions/actions/cd/release/registry-publish@v1.5.23
         with:
           language: ${{ inputs.language }}
           version: ${{ steps.version.outputs.version }}
@@ -147,7 +147,7 @@ jobs:
 
       - name: Tag and release
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/cd/release/tag-and-release@develop
+        uses: wphillipmoore/standard-actions/actions/cd/release/tag-and-release@v1.5.23
         with:
           version: ${{ steps.version.outputs.version }}
           release-artifacts: ${{ steps.resolved.outputs.release-artifacts }}
@@ -178,7 +178,7 @@ jobs:
 
       - name: Version bump PR
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/cd/release/version-bump-pr@develop
+        uses: wphillipmoore/standard-actions/actions/cd/release/version-bump-pr@v1.5.23
         with:
           current-version: ${{ steps.version.outputs.version }}
           post-bump-command: ${{ inputs.post-bump-command }}

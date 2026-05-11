@@ -41,7 +41,7 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
 
       - name: Install standard-tooling
-        uses: ./actions/shared/setup/standard-tooling
+        uses: wphillipmoore/standard-actions/actions/shared/setup/standard-tooling@v1.5.23
 
       - name: Extract version
         id: version
@@ -61,19 +61,19 @@ jobs:
 
       - name: Freeze internal refs to release tag
         if: steps.tag_check.outputs.exists == 'false'
-        uses: ./actions/local/freeze-internal-refs
+        uses: wphillipmoore/standard-actions/actions/local/freeze-internal-refs@v1.5.23
         with:
           tag: ${{ steps.version.outputs.tag }}
 
       - name: Tag and release
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/cd/release/tag-and-release@develop
+        uses: wphillipmoore/standard-actions/actions/cd/release/tag-and-release@v1.5.23
         with:
           version: ${{ steps.version.outputs.version }}
 
       - name: Version bump PR
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/cd/release/version-bump-pr@develop
+        uses: wphillipmoore/standard-actions/actions/cd/release/version-bump-pr@v1.5.23
         with:
           current-version: ${{ steps.version.outputs.version }}
           app-token: ${{ steps.app-token.outputs.token }}

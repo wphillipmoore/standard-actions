@@ -10,7 +10,7 @@ runs:
   steps:
     - name: Install standard-tooling
       if: github.event_name == 'pull_request'
-      uses: ./actions/shared/setup/standard-tooling
+      uses: wphillipmoore/standard-actions/actions/shared/setup/standard-tooling@v1.5.23
 
     - name: Validate pull request issue linkage
       if: github.event_name == 'pull_request'
