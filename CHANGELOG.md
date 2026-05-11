@@ -5,7 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.5.20] - 2026-05-10
+## [1.5.21] - 2026-05-11
+
+### Bug fixes
+
+- verify tag is resolvable after push, resync if needed
+
+### CI
+
+- rename release caller key to version
+
+### Chores
+
+- bump version to 1.5.21
+
+### Documentation
+
+- add design spec for extracting workflow logic into composite actions
+- add permissions note to registry-publish spec
+- apply pushback review to extraction spec (#436)
+- add implementation plan for extracting workflow logic (#436)
+- decouple build audits from registry-publish gate (#436)
+- add alignment review for workflow extraction (#436)
+
+### Features
+
+- switch all CI/CD container images from dev- to prod- prefix
+- add container-prefix input to all reusable workflows, default to prod
+
+### Refactoring
+
+- align PR and issue templates with standard-tooling
+
+## [1.5.20] - 2026-05-09
 
 ### Chores
 
