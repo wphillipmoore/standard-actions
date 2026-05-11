@@ -21,39 +21,35 @@
          <lastmod>2026-05-11</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/docs-deploy/</loc>
+         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/cd-docs-deploy/</loc>
          <lastmod>2026-05-11</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/publish-tag-and-release/</loc>
+         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/cd-release-tag-and-release/</loc>
          <lastmod>2026-05-11</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/publish-version-bump-pr/</loc>
+         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/cd-release-version-bump-pr/</loc>
          <lastmod>2026-05-11</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/python-setup/</loc>
+         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/ci-security-codeql/</loc>
          <lastmod>2026-05-11</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/release-gates-version-divergence/</loc>
+         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/ci-security-semgrep/</loc>
          <lastmod>2026-05-11</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/security-codeql/</loc>
+         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/ci-security-standards-compliance/</loc>
          <lastmod>2026-05-11</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/security-semgrep/</loc>
+         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/ci-version-bump-version-divergence/</loc>
          <lastmod>2026-05-11</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/security-trivy/</loc>
-         <lastmod>2026-05-11</lastmod>
-    </url>
-    <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/standards-compliance/</loc>
+         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/shared-security-trivy/</loc>
          <lastmod>2026-05-11</lastmod>
     </url>
     <url>
@@ -222,6 +218,10 @@
     </url>
     <url>
          <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.21/</loc>
+         <lastmod>2026-05-11</lastmod>
+    </url>
+    <url>
+         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.22/</loc>
          <lastmod>2026-05-11</lastmod>
     </url>
     <url>
