@@ -28,7 +28,8 @@ Specific inconsistencies:
 **In scope:**
 
 - Directory restructure of `actions/` to mirror the workflow namespace
-- All `uses:` path updates in workflow files
+- All `uses:` path updates in workflow and action files
+- Deletion of dead code (`actions/python/setup/`)
 - Input name harmonization (one mismatch)
 - CLAUDE.md and MkDocs documentation updates
 
@@ -108,7 +109,6 @@ actions/
       trivy/action.yml
     setup/
       standard-tooling/action.yml
-      python/action.yml
   local/
     freeze-internal-refs/action.yml
 ```
@@ -128,13 +128,13 @@ actions/
 | `actions/publish/version-bump-pr/` | `actions/cd/release/version-bump-pr/` |
 | `actions/docs-deploy/` | `actions/cd/docs/deploy/` |
 | `actions/setup/standard-tooling/` | `actions/shared/setup/standard-tooling/` |
-| `actions/python/setup/` | `actions/shared/setup/python/` |
 | `actions/publish/freeze-internal-refs/` | `actions/local/freeze-internal-refs/` |
+| `actions/python/setup/` | *(delete — dead code, unreferenced)* |
 
-### Workflow reference updates
+### Reference updates
 
-Every `uses:` path in the workflow files updates to match the new directory
-structure.
+Every `uses:` path in workflow and action files updates to match the new
+directory structure.
 
 #### Local path updates
 
@@ -152,9 +152,9 @@ structure.
 
 #### `./actions/setup/standard-tooling` → `./actions/shared/setup/standard-tooling`
 
-This reference appears in seven workflows: `ci-quality.yml`, `ci-test.yml`,
-`ci-audit.yml`, `ci-version-bump.yml`, `cd.yml`, `cd-docs.yml`,
-`ops-github-config.yml`.
+This reference appears in eight workflows: `ci-quality.yml`, `ci-test.yml`,
+`ci-audit.yml`, `ci-version-bump.yml`, `ci-security.yml`, `cd.yml`,
+`cd-docs.yml`, `ops-github-config.yml`.
 
 #### Remote ref updates
 
@@ -165,6 +165,16 @@ This reference appears in seven workflows: `ci-quality.yml`, `ci-test.yml`,
 | `cd-release.yml` | `wphillipmoore/standard-actions/actions/publish/version-bump-pr@develop` | `wphillipmoore/standard-actions/actions/cd/release/version-bump-pr@develop` |
 | `cd.yml` | `wphillipmoore/standard-actions/actions/publish/tag-and-release@develop` | `wphillipmoore/standard-actions/actions/cd/release/tag-and-release@develop` |
 | `cd.yml` | `wphillipmoore/standard-actions/actions/publish/version-bump-pr@develop` | `wphillipmoore/standard-actions/actions/cd/release/version-bump-pr@develop` |
+
+#### Action-to-action reference updates
+
+Some composite actions reference other actions. These paths also need
+updating:
+
+| Action file | Old `uses:` | New `uses:` |
+|-------------|------------|-------------|
+| `standards-compliance/action.yml` | `./actions/setup/standard-tooling` | `./actions/shared/setup/standard-tooling` |
+| `registry-publish/action.yml` | `wphillipmoore/standard-actions/actions/security/trivy@develop` | `wphillipmoore/standard-actions/actions/shared/security/trivy@develop` |
 
 ### Input name harmonization
 
@@ -183,16 +193,14 @@ input to `publish-command`.
 `registry-publish-command` must update to `publish-command`. This is a
 one-line change per consumer.
 
-### freeze-internal-refs update
+### freeze-internal-refs compatibility
 
 The `freeze-internal-refs` action rewrites action paths in workflow and
-action YAML files. Its path-matching logic must be verified to ensure it
-handles the new deeper directory structure correctly. Specifically, the
-regex or glob patterns that find `./actions/` references and rewrite them
-to absolute tagged refs need to work with paths like
-`./actions/ci/security/codeql` (three levels deep) and
-`./actions/shared/setup/standard-tooling` (three levels deep), not just
-the current two-level paths.
+action YAML files. Its sed pattern (`\./actions/([^[:space:]]+)`) captures
+everything after `./actions/` up to whitespace, regardless of path depth.
+Paths like `./actions/ci/security/codeql` (three levels) work identically
+to the current two-level paths. No changes to the action are needed.
+Confirm with a test during implementation.
 
 ## Migration strategy
 
@@ -201,12 +209,13 @@ the current two-level paths.
 All changes land in one PR:
 
 1. `git mv` every action to its new path.
-2. Update all `uses:` references in workflow files.
-3. Rename the `registry-publish-command` input to `publish-command` in
+2. Delete dead code: `rm -rf actions/python/setup/`.
+3. Update all `uses:` references in workflow and action files.
+4. Rename the `registry-publish-command` input to `publish-command` in
    `cd-release.yml`.
-4. Update `CLAUDE.md`.
-5. Update MkDocs site docs.
-6. Run `st-validate` to confirm everything passes.
+5. Update `CLAUDE.md`.
+6. Update MkDocs site docs.
+7. Run `st-validate` to confirm everything passes.
 
 No deprecation window, no aliases, no shims. The old paths stop existing.
 Since this repo's CI uses local paths (`./actions/...`), the PR validates
@@ -251,7 +260,7 @@ the site. Three categories of changes:
 | `publish-tag-and-release.md` | `cd-release-tag-and-release.md` |
 | `publish-version-bump-pr.md` | `cd-release-version-bump-pr.md` |
 | `docs-deploy.md` | `cd-docs-deploy.md` |
-| `python-setup.md` | `shared-setup-python.md` |
+| `python-setup.md` | *(delete — action removed)* |
 
 **2. Remote action path references** in code examples and usage snippets
 across multiple doc pages. Every occurrence of
