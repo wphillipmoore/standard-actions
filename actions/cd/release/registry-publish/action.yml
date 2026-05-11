@@ -1,0 +1,197 @@
+name: Registry publish
+description: >-
+  Full build-and-publish pipeline for any supported language ecosystem.
+  Handles command derivation, credential provisioning, build,
+  attestation, SBOM generation, and publish execution.
+
+inputs:
+  language:
+    description: Primary language (python, rust, ruby, java, go).
+    required: true
+  version:
+    description: Semver version string (e.g. 1.2.3).
+    required: true
+  registry-publish:
+    description: Whether to execute the final registry publish step.
+    required: false
+    default: "false"
+  build-command:
+    description: Override ecosystem-derived build command.
+    required: false
+    default: ""
+  publish-command:
+    description: Override ecosystem-derived publish command.
+    required: false
+    default: ""
+  attestation-subject-path:
+    description: Glob for build provenance attestation. Leave empty to skip.
+    required: false
+    default: ""
+  sbom-output-file:
+    description: SBOM output path ($VERSION placeholder). Leave empty to skip.
+    required: false
+    default: ""
+  cargo-registry-token:
+    description: "Rust: crates.io token."
+    required: false
+    default: ""
+  rubygems-api-key:
+    description: "Ruby: RubyGems API key."
+    required: false
+    default: ""
+  central-username:
+    description: "Java: Maven Central username."
+    required: false
+    default: ""
+  central-token:
+    description: "Java: Maven Central token."
+    required: false
+    default: ""
+  gpg-private-key:
+    description: "Java: GPG signing key."
+    required: false
+    default: ""
+  gpg-passphrase:
+    description: "Java: GPG passphrase."
+    required: false
+    default: ""
+
+outputs:
+  build-command:
+    description: Resolved build command (derived or overridden).
+    value: ${{ steps.commands.outputs.build }}
+  publish-command:
+    description: Resolved publish command (derived or overridden).
+    value: ${{ steps.commands.outputs.publish }}
+  sbom-output-file:
+    description: Resolved SBOM path (empty if skipped).
+    value: ${{ steps.resolve.outputs.sbom-output-file }}
+
+runs:
+  using: composite
+  steps:
+    - name: Derive ecosystem commands
+      id: commands
+      shell: bash
+      env:
+        INPUT_LANGUAGE: ${{ inputs.language }}
+        INPUT_BUILD_COMMAND: ${{ inputs.build-command }}
+        INPUT_PUBLISH_COMMAND: ${{ inputs.publish-command }}
+      run: |
+        build="$INPUT_BUILD_COMMAND"
+        if [ -z "$build" ]; then
+          case "$INPUT_LANGUAGE" in
+            python) build="uv build" ;;
+            rust)   build="cargo build --release" ;;
+            ruby)   build="gem build *.gemspec" ;;
+            java)   build="./mvnw -B package -DskipTests" ;;
+            go)     build="go build ./..." ;;
+            *)
+              echo "::error::unrecognized language '${INPUT_LANGUAGE}' — cannot derive build command"
+              exit 1
+              ;;
+          esac
+        fi
+        echo "build=$build" >> "$GITHUB_OUTPUT"
+
+        publish="$INPUT_PUBLISH_COMMAND"
+        if [ -z "$publish" ]; then
+          case "$INPUT_LANGUAGE" in
+            python) publish="uv publish dist/*" ;;
+            rust)   publish="cargo publish" ;;
+            ruby)   publish="gem push *.gem" ;;
+            java)   publish="./mvnw -B deploy -DskipTests" ;;
+            go)     publish="" ;;
+            *)
+              echo "::error::unrecognized language '${INPUT_LANGUAGE}' — cannot derive publish command"
+              exit 1
+              ;;
+          esac
+        fi
+        echo "publish=$publish" >> "$GITHUB_OUTPUT"
+
+        case "$INPUT_LANGUAGE" in
+          rust) echo "credential-secret=CARGO_REGISTRY_TOKEN" >> "$GITHUB_OUTPUT" ;;
+          ruby) echo "credential-secret=RUBYGEMS_API_KEY" >> "$GITHUB_OUTPUT" ;;
+          java) echo "credential-secret=CENTRAL_TOKEN" >> "$GITHUB_OUTPUT" ;;
+          *)    echo "credential-secret=" >> "$GITHUB_OUTPUT" ;;
+        esac
+
+    - name: Configure Maven credentials
+      if: inputs.language == 'java'
+      shell: bash
+      env:
+        GPG_PRIVATE_KEY: ${{ inputs.gpg-private-key }}
+      run: |
+        mkdir -p ~/.m2
+        cat > ~/.m2/settings.xml << 'XML'
+        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
+          <servers>
+            <server>
+              <id>central</id>
+              <username>${env.MAVEN_USERNAME}</username>
+              <password>${env.MAVEN_PASSWORD}</password>
+            </server>
+          </servers>
+        </settings>
+        XML
+        if [ -n "$GPG_PRIVATE_KEY" ]; then
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+        fi
+
+    - name: Resolve version placeholders
+      id: resolve
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+        SBOM_OUTPUT_FILE: ${{ inputs.sbom-output-file }}
+      run: |
+        echo "sbom-output-file=${SBOM_OUTPUT_FILE//\$VERSION/$VERSION}" \
+          >> "$GITHUB_OUTPUT"
+
+    - name: Ensure dist directory
+      shell: bash
+      run: mkdir -p dist
+
+    - name: Build
+      if: steps.commands.outputs.build != ''
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+        BUILD_CMD: ${{ steps.commands.outputs.build }}
+      run: eval "$BUILD_CMD"
+
+    - name: Attest build provenance
+      if: inputs.attestation-subject-path != ''
+      uses: actions/attest-build-provenance@v4
+      with:
+        subject-path: ${{ inputs.attestation-subject-path }}
+
+    - name: Generate SBOM
+      if: inputs.sbom-output-file != ''
+      uses: wphillipmoore/standard-actions/actions/shared/security/trivy@develop
+      with:
+        scan-type: sbom
+        output-file: ${{ steps.resolve.outputs.sbom-output-file }}
+
+    - name: Publish
+      if: inputs.registry-publish == 'true' && steps.commands.outputs.publish != ''
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+        PUBLISH_CMD: ${{ steps.commands.outputs.publish }}
+        CREDENTIAL_SECRET: ${{ steps.commands.outputs.credential-secret }}
+        CARGO_REGISTRY_TOKEN: ${{ inputs.cargo-registry-token }}
+        GEM_HOST_API_KEY: ${{ inputs.rubygems-api-key }}
+        MAVEN_USERNAME: ${{ inputs.central-username }}
+        MAVEN_PASSWORD: ${{ inputs.central-token }}
+        MAVEN_GPG_PASSPHRASE: ${{ inputs.gpg-passphrase }}
+      run: |
+        if [ -n "$CREDENTIAL_SECRET" ]; then
+          val=$(printenv "$CREDENTIAL_SECRET" 2>/dev/null || true)
+          if [ -z "$val" ]; then
+            echo "::notice::${CREDENTIAL_SECRET} not configured — skipping publish"
+            exit 0
+          fi
+        fi
+        eval "$PUBLISH_CMD"

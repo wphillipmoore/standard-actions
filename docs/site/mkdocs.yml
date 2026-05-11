@@ -63,21 +63,17 @@ nav:
   - Repository Configuration: configuration.md
   - Action Reference:
       - Overview: actions/index.md
-      - CI & Validation:
-          - standards-compliance: actions/standards-compliance.md
-      - Documentation:
-          - docs-deploy: actions/docs-deploy.md
-      - Python:
-          - python/setup: actions/python-setup.md
-      - Security:
-          - security/codeql: actions/security-codeql.md
-          - security/semgrep: actions/security-semgrep.md
-          - security/trivy: actions/security-trivy.md
-      - Publishing:
-          - publish/tag-and-release: actions/publish-tag-and-release.md
-          - publish/version-bump-pr: actions/publish-version-bump-pr.md
-      - Release Gates:
-          - release-gates/version-divergence: actions/release-gates-version-divergence.md
+      - CI:
+          - ci/security/standards-compliance: actions/ci-security-standards-compliance.md
+          - ci/security/codeql: actions/ci-security-codeql.md
+          - ci/security/semgrep: actions/ci-security-semgrep.md
+          - ci/version-bump/version-divergence: actions/ci-version-bump-version-divergence.md
+      - CD:
+          - cd/release/tag-and-release: actions/cd-release-tag-and-release.md
+          - cd/release/version-bump-pr: actions/cd-release-version-bump-pr.md
+          - cd/docs/deploy: actions/cd-docs-deploy.md
+      - Shared:
+          - shared/security/trivy: actions/shared-security-trivy.md
   - Reusable Workflows:
       - Overview: workflows/index.md
       - ci-security: workflows/ci-security.md

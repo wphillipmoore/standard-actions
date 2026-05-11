@@ -23,7 +23,7 @@ on:
         description: Override ecosystem-derived build command.
         type: string
         default: ""
-      registry-publish-command:
+      publish-command:
         description: Override ecosystem-derived publish command.
         type: string
         default: ""
@@ -89,46 +89,14 @@ jobs:
           fetch-depth: 0
 
       - name: Validate inputs
-        env:
-          INPUT_LANGUAGE: ${{ inputs.language }}
-          INPUT_CONTAINER_TAG: ${{ inputs.container-tag }}
-          INPUT_REGISTRY_PUBLISH: ${{ inputs.registry-publish }}
-        run: |
-          if [ "$INPUT_LANGUAGE" != "base" ] && \
-             [ "$INPUT_CONTAINER_TAG" = "latest" ]; then
-            echo "::error::language '${INPUT_LANGUAGE}' requires an explicit container-tag (language-specific images do not publish a :latest tag)"
-            exit 1
-          fi
-          if [ "$INPUT_REGISTRY_PUBLISH" = "true" ] && \
-             [ "$INPUT_LANGUAGE" = "base" ]; then
-            echo "::error::registry-publish requires a language to derive ecosystem build/publish commands"
-            exit 1
-          fi
+        uses: ./actions/cd/release/validate-inputs
+        with:
+          language: ${{ inputs.language }}
+          container-tag: ${{ inputs.container-tag }}
+          registry-publish: ${{ inputs.registry-publish }}
 
       - name: Install standard-tooling
-        uses: wphillipmoore/standard-actions/actions/setup/standard-tooling@develop
-
-      - name: Configure Maven credentials
-        if: inputs.registry-publish && inputs.language == 'java'
-        shell: bash
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-        run: |
-          mkdir -p ~/.m2
-          cat > ~/.m2/settings.xml << 'XML'
-          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
-            <servers>
-              <server>
-                <id>central</id>
-                <username>${env.MAVEN_USERNAME}</username>
-                <password>${env.MAVEN_PASSWORD}</password>
-              </server>
-            </servers>
-          </settings>
-          XML
-          if [ -n "$GPG_PRIVATE_KEY" ]; then
-            echo "$GPG_PRIVATE_KEY" | gpg --batch --import
-          fi
+        uses: wphillipmoore/standard-actions/actions/shared/setup/standard-tooling@develop
 
       - name: Extract version
         id: version
@@ -146,127 +114,40 @@ jobs:
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Derive ecosystem commands
+      - name: Resolve release artifacts
         if: >-
-          inputs.registry-publish &&
-          steps.tag_check.outputs.exists == 'false'
-        id: commands
-        env:
-          LANG: ${{ inputs.language }}
-        run: |
-          build="${{ inputs.build-command }}"
-          if [ -z "$build" ]; then
-            case "$LANG" in
-              python) build="uv build" ;;
-              rust) build="cargo build --release" ;;
-              ruby) build="gem build *.gemspec" ;;
-              java) build="./mvnw -B package -DskipTests" ;;
-              *) build="" ;;
-            esac
-          fi
-          echo "build=$build" >> "$GITHUB_OUTPUT"
-
-          publish="${{ inputs.registry-publish-command }}"
-          if [ -z "$publish" ]; then
-            case "$LANG" in
-              rust) publish="cargo publish" ;;
-              ruby) publish="gem push *.gem" ;;
-              java) publish="./mvnw -B deploy -DskipTests" ;;
-              *) publish="" ;;
-            esac
-          fi
-          echo "publish=$publish" >> "$GITHUB_OUTPUT"
-
-          case "$LANG" in
-            rust) echo "credential-secret=CARGO_REGISTRY_TOKEN" >> "$GITHUB_OUTPUT" ;;
-            ruby) echo "credential-secret=RUBYGEMS_API_KEY" >> "$GITHUB_OUTPUT" ;;
-            java) echo "credential-secret=CENTRAL_TOKEN" >> "$GITHUB_OUTPUT" ;;
-            *) echo "credential-secret=" >> "$GITHUB_OUTPUT" ;;
-          esac
-
-      - name: Prepare version-dependent inputs
-        if: >-
-          inputs.registry-publish &&
           steps.tag_check.outputs.exists == 'false'
         id: resolved
         env:
           VERSION: ${{ steps.version.outputs.version }}
-          SBOM_OUTPUT_FILE: ${{ inputs.sbom-output-file }}
           RELEASE_ARTIFACTS: ${{ inputs.release-artifacts }}
         run: |
-          echo "sbom-output-file=${SBOM_OUTPUT_FILE//\$VERSION/$VERSION}" \
-            >> "$GITHUB_OUTPUT"
           echo "release-artifacts=${RELEASE_ARTIFACTS//\$VERSION/$VERSION}" \
             >> "$GITHUB_OUTPUT"
 
-      - name: Ensure dist directory
+      - name: Build and publish
         if: >-
-          inputs.registry-publish &&
+          contains(fromJSON('["python","java","ruby","rust","go"]'), inputs.language) &&
           steps.tag_check.outputs.exists == 'false'
-        run: mkdir -p dist
-
-      - name: Build
-        if: >-
-          inputs.registry-publish &&
-          steps.tag_check.outputs.exists == 'false' &&
-          steps.commands.outputs.build != ''
-        env:
-          VERSION: ${{ steps.version.outputs.version }}
-        run: ${{ steps.commands.outputs.build }}
-
-      - name: Attest build provenance
-        if: >-
-          inputs.registry-publish &&
-          steps.tag_check.outputs.exists == 'false' &&
-          inputs.attestation-subject-path != ''
-        uses: actions/attest-build-provenance@v4
+        uses: ./actions/cd/release/registry-publish
         with:
-          subject-path: ${{ inputs.attestation-subject-path }}
-
-      - name: Generate SBOM
-        if: >-
-          inputs.registry-publish &&
-          steps.tag_check.outputs.exists == 'false' &&
-          inputs.sbom-output-file != ''
-        uses: wphillipmoore/standard-actions/actions/security/trivy@develop
-        with:
-          scan-type: sbom
-          output-file: ${{ steps.resolved.outputs.sbom-output-file }}
-
-      - name: Publish to PyPI
-        if: >-
-          inputs.registry-publish &&
-          inputs.language == 'python' &&
-          steps.tag_check.outputs.exists == 'false'
-        run: uv publish dist/*
-
-      - name: Publish to registry
-        if: >-
-          inputs.registry-publish &&
-          inputs.language != 'python' &&
-          steps.commands.outputs.publish != '' &&
-          steps.tag_check.outputs.exists == 'false'
-        env:
-          VERSION: ${{ steps.version.outputs.version }}
-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-          GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
-          MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        run: |
-          guard="${{ steps.commands.outputs.credential-secret }}"
-          if [ -n "$guard" ]; then
-            val=$(printenv "$guard" 2>/dev/null || true)
-            if [ -z "$val" ]; then
-              echo "::notice::${guard} not configured — skipping publish"
-              exit 0
-            fi
-          fi
-          ${{ steps.commands.outputs.publish }}
+          language: ${{ inputs.language }}
+          version: ${{ steps.version.outputs.version }}
+          registry-publish: ${{ inputs.registry-publish }}
+          build-command: ${{ inputs.build-command }}
+          publish-command: ${{ inputs.publish-command }}
+          attestation-subject-path: ${{ inputs.attestation-subject-path }}
+          sbom-output-file: ${{ inputs.sbom-output-file }}
+          cargo-registry-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          rubygems-api-key: ${{ secrets.RUBYGEMS_API_KEY }}
+          central-username: ${{ secrets.CENTRAL_USERNAME }}
+          central-token: ${{ secrets.CENTRAL_TOKEN }}
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Tag and release
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@develop
+        uses: wphillipmoore/standard-actions/actions/cd/release/tag-and-release@develop
         with:
           version: ${{ steps.version.outputs.version }}
           release-artifacts: ${{ steps.resolved.outputs.release-artifacts }}
@@ -297,7 +178,7 @@ jobs:
 
       - name: Version bump PR
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@develop
+        uses: wphillipmoore/standard-actions/actions/cd/release/version-bump-pr@develop
         with:
           current-version: ${{ steps.version.outputs.version }}
           post-bump-command: ${{ inputs.post-bump-command }}

@@ -15,11 +15,11 @@ inputs:
     default: docs/site/mkdocs.yml
   mike-command:
     description: >-
-      Command to run mike. Set to "uv run mike" for Python repos that
-      manage their own dependencies via their project's virtual
-      environment.
+      Command to run mike. Auto-detected from standard-tooling.toml when
+      omitted: "uv run mike" for Python repos, "mike" otherwise. Set
+      explicitly to override.
     required: false
-    default: mike
+    default: ""
 runs:
   using: composite
   steps:
@@ -41,6 +41,28 @@ runs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git config --global --add safe.directory '*'
+
+    - name: Resolve mike command
+      id: mike-cmd
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      env:
+        INPUT_MIKE_COMMAND: ${{ steps.mike-cmd.outputs.cmd }}
+      run: |
+        if [ -n "$INPUT_MIKE_COMMAND" ]; then
+          echo "cmd=$INPUT_MIKE_COMMAND" >> "$GITHUB_OUTPUT"
+        else
+          lang=$(/usr/local/bin/python3 -c "
+          import tomllib, pathlib
+          cfg = tomllib.loads(pathlib.Path('standard-tooling.toml').read_text())
+          print(cfg['project']['primary-language'])
+          ")
+          if [ "$lang" = "python" ]; then
+            echo "cmd=uv run mike" >> "$GITHUB_OUTPUT"
+          else
+            echo "cmd=mike" >> "$GITHUB_OUTPUT"
+          fi
+        fi
 
     - name: Determine version
       id: version
@@ -172,19 +194,19 @@ runs:
       working-directory: ${{ github.workspace }}
       run: |
         if [ -n "${{ steps.version.outputs.alias }}" ]; then
-          ${{ inputs.mike-command }} deploy \
+          ${{ steps.mike-cmd.outputs.cmd }} deploy \
             -F ${{ inputs.mkdocs-config }} --push --update-aliases \
             ${{ steps.version.outputs.version }} \
             ${{ steps.version.outputs.alias }}
-          ${{ inputs.mike-command }} set-default \
+          ${{ steps.mike-cmd.outputs.cmd }} set-default \
             -F ${{ inputs.mkdocs-config }} --push latest
         else
-          ${{ inputs.mike-command }} deploy -F ${{ inputs.mkdocs-config }} --push ${{ steps.version.outputs.version }}
+          ${{ steps.mike-cmd.outputs.cmd }} deploy -F ${{ inputs.mkdocs-config }} --push ${{ steps.version.outputs.version }}
           # Set dev as default if no default exists yet (pre-release repos)
-          CURRENT_DEFAULT=$(${{ inputs.mike-command }} list \
+          CURRENT_DEFAULT=$(${{ steps.mike-cmd.outputs.cmd }} list \
             -F ${{ inputs.mkdocs-config }} 2>/dev/null \
             | grep '\[default\]' || true)
           if [ -z "$CURRENT_DEFAULT" ]; then
-            ${{ inputs.mike-command }} set-default -F ${{ inputs.mkdocs-config }} --push dev
+            ${{ steps.mike-cmd.outputs.cmd }} set-default -F ${{ inputs.mkdocs-config }} --push dev
           fi
         fi

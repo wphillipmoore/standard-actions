@@ -41,7 +41,7 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
 
       - name: Install standard-tooling
-        uses: ./actions/setup/standard-tooling
+        uses: ./actions/shared/setup/standard-tooling
 
       - name: Extract version
         id: version
@@ -59,63 +59,21 @@ jobs:
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
-      # Rewrite internal action refs so the tagged snapshot is
-      # self-consistent. Two passes:
-      #   1. ./actions/X  → wphillipmoore/standard-actions/actions/X@<tag>
-      #   2. ...@develop  → ...@<tag>
-      # The commit is reachable only via the tag — never pushed to
-      # develop or main.
       - name: Freeze internal refs to release tag
         if: steps.tag_check.outputs.exists == 'false'
-        env:
-          RELEASE_TAG: ${{ steps.version.outputs.tag }}
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          mapfile -t files < <(find .github/workflows actions \
-            -type f \( -name '*.yml' -o -name '*.yaml' \) 2>/dev/null)
-          for f in "${files[@]}"; do
-            sed -i.bak -E "s|\./actions/([^[:space:]]+)|wphillipmoore/standard-actions/actions/\1@${RELEASE_TAG}|g" "$f"
-            sed -i.bak -E "s|(wphillipmoore/standard-actions/[^@[:space:]]+)@develop|\1@${RELEASE_TAG}|g" "$f"
-            rm -f "$f.bak"
-          done
-          if ! git diff --quiet; then
-            git add .github/workflows actions
-            git commit -m "chore(release): freeze internal refs to ${RELEASE_TAG}"
-          fi
-
-      - name: Validate no unfrozen internal refs
-        if: steps.tag_check.outputs.exists == 'false'
-        run: |
-          set -euo pipefail
-          mapfile -t files < <(find .github/workflows actions \
-            -type f \( -name '*.yml' -o -name '*.yaml' \) 2>/dev/null)
-          failed=0
-          for f in "${files[@]}"; do
-            if grep -nE 'uses:\s+\./actions/' "$f"; then
-              echo "::error file=${f}::Unfrozen relative action ref (./actions/)"
-              failed=1
-            fi
-            if grep -nE 'wphillipmoore/standard-actions/[^@[:space:]]+@develop' "$f"; then
-              echo "::error file=${f}::Unfrozen @develop action ref"
-              failed=1
-            fi
-          done
-          if [ "${failed}" -ne 0 ]; then
-            echo "::error::Internal refs were not fully frozen — aborting"
-            exit 1
-          fi
+        uses: ./actions/local/freeze-internal-refs
+        with:
+          tag: ${{ steps.version.outputs.tag }}
 
       - name: Tag and release
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@develop
+        uses: wphillipmoore/standard-actions/actions/cd/release/tag-and-release@develop
         with:
           version: ${{ steps.version.outputs.version }}
 
       - name: Version bump PR
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@develop
+        uses: wphillipmoore/standard-actions/actions/cd/release/version-bump-pr@develop
         with:
           current-version: ${{ steps.version.outputs.version }}
           app-token: ${{ steps.app-token.outputs.token }}

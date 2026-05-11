@@ -2,14 +2,18 @@
 
 ## Adding a new action
 
-1. Create a directory under `actions/` following the existing naming pattern:
-   `actions/<category>/<action-name>/action.yml`.
+1. Create a directory under `actions/` following the namespace convention:
+   `actions/{phase}/{domain}/{action}/action.yml`. The phase (`ci`, `cd`)
+   and domain (`security`, `release`, etc.) match the workflow filename
+   that will consume the action. Use `shared/` for cross-phase actions
+   and `local/` for actions specific to this repo.
 2. Define the action as a **composite action** — no custom JavaScript or Docker
    actions.
 3. Include clear `name`, `description`, `inputs`, and `outputs` in `action.yml`.
-4. Add supporting scripts under `actions/<action-name>/scripts/` if needed.
-5. Add the action to the CI workflow (`.github/workflows/ci.yml`) using a local
-   path reference (`./actions/<path>`).
+4. Add supporting scripts under the action directory's `scripts/` subdirectory
+   if needed.
+5. Add the action to the appropriate workflow using a local path reference
+   (`./actions/{phase}/{domain}/{action}`).
 6. Add a documentation page under `docs/site/docs/actions/` and update the nav
    in `docs/site/mkdocs.yml`.
 
@@ -29,7 +33,7 @@ This repository tests its own actions by using local path references in the CI
 workflow:
 
 ```yaml
-- uses: ./actions/standards-compliance   # Not the remote reference
+- uses: ./actions/ci/security/standards-compliance   # Not the remote reference
 ```
 
 When you modify an action, the PR's CI run uses your modified version. This

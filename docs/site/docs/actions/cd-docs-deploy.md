@@ -6,7 +6,7 @@ git configuration, version detection, and mike deploy/set-default.
 ## Usage
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/docs-deploy@v1.5
+- uses: wphillipmoore/standard-actions/actions/cd/docs/deploy@v1.5
   with:
     version-command: cat VERSION | cut -d. -f1,2
     mkdocs-config: docs/site/mkdocs.yml
@@ -61,7 +61,7 @@ jobs:
 ### Direct usage (standalone)
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/docs-deploy@v1.5
+- uses: wphillipmoore/standard-actions/actions/cd/docs/deploy@v1.5
   with:
     version-command: cat VERSION | cut -d. -f1,2
 ```
@@ -69,7 +69,7 @@ jobs:
 ### Python repo with uv-managed dependencies
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/docs-deploy@v1.5
+- uses: wphillipmoore/standard-actions/actions/cd/docs/deploy@v1.5
   with:
     version-command: cat VERSION | cut -d. -f1,2
     mike-command: uv run mike

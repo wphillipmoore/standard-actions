@@ -31,7 +31,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: wphillipmoore/standard-actions/actions/standards-compliance@v1.5
+      - uses: wphillipmoore/standard-actions/actions/ci/security/standards-compliance@v1.5
 ```
 
 ## Consuming reusable workflows
