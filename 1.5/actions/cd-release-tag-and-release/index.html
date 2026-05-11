@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://wphillipmoore.github.io/standard-actions/1.5/actions/publish-tag-and-release/">
+        <link rel="canonical" href="https://wphillipmoore.github.io/standard-actions/1.5/actions/cd-release-tag-and-release/">
       
       
-        <link rel="prev" href="../security-trivy/">
+        <link rel="prev" href="../ci-version-bump-version-divergence/">
       
       
-        <link rel="next" href="../publish-version-bump-pr/">
+        <link rel="next" href="../cd-release-version-bump-pr/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>publish/tag-and-release - Standard Actions</title>
+        <title>cd/release/tag-and-release - Standard Actions</title>
       
     
     
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              publish/tag-and-release
+              cd/release/tag-and-release
             
           </span>
         </div>
@@ -622,6 +622,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -665,6 +669,52 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../releases/v1.5.23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    v1.5.23
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../releases/v1.5.22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    v1.5.22
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1667,12 +1717,6 @@
       
         
       
-        
-      
-        
-      
-        
-      
     
     
     
@@ -1732,6 +1776,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1756,7 +1806,7 @@
   
   
   <span class="md-ellipsis">
-    CI & Validation
+    CI
     
   </span>
   
@@ -1767,7 +1817,7 @@
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_2">
             <span class="md-nav__icon md-icon"></span>
-            CI & Validation
+            CI
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -1778,259 +1828,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../standards-compliance/" class="md-nav__link">
+      <a href="../ci-security-standards-compliance/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    standards-compliance
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-      
-        
-      
-    
-    
-    
-      
-      
-        
-          
-          
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    Documentation
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_3">
-            <span class="md-nav__icon md-icon"></span>
-            Documentation
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../docs-deploy/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    docs-deploy
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-      
-        
-      
-    
-    
-    
-      
-      
-        
-          
-          
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_4" >
-        
-          
-          <label class="md-nav__link" for="__nav_5_4" id="__nav_5_4_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    Python
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_4">
-            <span class="md-nav__icon md-icon"></span>
-            Python
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../python-setup/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    python/setup
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-      
-        
-      
-        
-      
-        
-      
-    
-    
-    
-      
-      
-        
-          
-          
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_5_5" id="__nav_5_5_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    Security
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_5">
-            <span class="md-nav__icon md-icon"></span>
-            Security
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../security-codeql/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    security/codeql
+    ci/security/standards-compliance
     
   </span>
   
@@ -2048,12 +1851,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../security-semgrep/" class="md-nav__link">
+      <a href="../ci-security-codeql/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    security/semgrep
+    ci/security/codeql
     
   </span>
   
@@ -2071,12 +1874,35 @@
   
   
     <li class="md-nav__item">
-      <a href="../security-trivy/" class="md-nav__link">
+      <a href="../ci-security-semgrep/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    security/trivy
+    ci/security/semgrep
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-version-bump-version-divergence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ci/version-bump/version-divergence
     
   </span>
   
@@ -2105,6 +1931,8 @@
   
     
     
+      
+        
       
         
       
@@ -2126,15 +1954,15 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_5_6" id="__nav_5_6_label" tabindex="">
+          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
-    Publishing
+    CD
     
   </span>
   
@@ -2142,10 +1970,10 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_5_6">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_3">
             <span class="md-nav__icon md-icon"></span>
-            Publishing
+            CD
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -2170,7 +1998,7 @@
   
   
   <span class="md-ellipsis">
-    publish/tag-and-release
+    cd/release/tag-and-release
     
   </span>
   
@@ -2183,7 +2011,7 @@
   
   
   <span class="md-ellipsis">
-    publish/tag-and-release
+    cd/release/tag-and-release
     
   </span>
   
@@ -2308,12 +2136,35 @@
   
   
     <li class="md-nav__item">
-      <a href="../publish-version-bump-pr/" class="md-nav__link">
+      <a href="../cd-release-version-bump-pr/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    publish/version-bump-pr
+    cd/release/version-bump-pr
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cd-docs-deploy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    cd/docs/deploy
     
   </span>
   
@@ -2359,15 +2210,15 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_4" >
         
           
-          <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="">
+          <label class="md-nav__link" for="__nav_5_4" id="__nav_5_4_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
-    Release Gates
+    Shared
     
   </span>
   
@@ -2375,10 +2226,10 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_7">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_4">
             <span class="md-nav__icon md-icon"></span>
-            Release Gates
+            Shared
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -2389,12 +2240,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../release-gates-version-divergence/" class="md-nav__link">
+      <a href="../shared-security-trivy/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    release-gates/version-divergence
+    shared/security/trivy
     
   </span>
   
@@ -3024,7 +2875,7 @@
 Release. All mutating steps are skipped when the tag already exists, making the
 action safe to re-run.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/publish/tag-and-release@v1.5</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/cd/release/tag-and-release@v1.5</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1.2.3&quot;</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">release-title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mqrestadmin</span>
@@ -3123,14 +2974,14 @@ action safe to re-run.</p>
 </ol>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <h3 id="standard-library-release">Standard library release<a class="headerlink" href="#standard-library-release" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/publish/tag-and-release@v1.5</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/cd/release/tag-and-release@v1.5</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.version.outputs.version }}</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">release-title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mqrestadmin</span>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">release-notes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.changelog.outputs.notes }}</span>
 </code></pre></div>
 <h3 id="release-with-build-artifacts">Release with build artifacts<a class="headerlink" href="#release-with-build-artifacts" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/publish/tag-and-release@v1.5</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/cd/release/tag-and-release@v1.5</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;2.0.0&quot;</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">release-title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myapp</span>

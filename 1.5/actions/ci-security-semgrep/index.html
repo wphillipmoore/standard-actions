@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://wphillipmoore.github.io/standard-actions/1.5/actions/release-gates-version-divergence/">
+        <link rel="canonical" href="https://wphillipmoore.github.io/standard-actions/1.5/actions/ci-security-semgrep/">
       
       
-        <link rel="prev" href="../publish-version-bump-pr/">
+        <link rel="prev" href="../ci-security-codeql/">
       
       
-        <link rel="next" href="../../workflows/">
+        <link rel="next" href="../ci-version-bump-version-divergence/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>release-gates/version-divergence - Standard Actions</title>
+        <title>ci/security/semgrep - Standard Actions</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#release-gatesversion-divergence" class="md-skip">
+        <a href="#securitysemgrep" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              release-gates/version-divergence
+              ci/security/semgrep
             
           </span>
         </div>
@@ -622,6 +622,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -665,6 +669,52 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../releases/v1.5.23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    v1.5.23
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../releases/v1.5.22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    v1.5.22
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1667,12 +1717,6 @@
       
         
       
-        
-      
-        
-      
-        
-      
     
     
     
@@ -1725,10 +1769,18 @@
                 
   
   
+    
+  
   
   
     
     
+      
+        
+      
+        
+      
+        
       
         
       
@@ -1744,11 +1796,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" checked>
         
           
           <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="">
@@ -1756,7 +1808,7 @@
   
   
   <span class="md-ellipsis">
-    CI & Validation
+    CI
     
   </span>
   
@@ -1764,10 +1816,10 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5_2">
             <span class="md-nav__icon md-icon"></span>
-            CI & Validation
+            CI
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -1778,12 +1830,201 @@
   
   
     <li class="md-nav__item">
-      <a href="../standards-compliance/" class="md-nav__link">
+      <a href="../ci-security-standards-compliance/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    standards-compliance
+    ci/security/standards-compliance
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-security-codeql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ci/security/codeql
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    ci/security/semgrep
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    ci/security/semgrep
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inputs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Permissions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      Behavior
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#python-semgrep-scan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python Semgrep scan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#go-with-additional-owasp-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Go with additional OWASP rules
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#github-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      GitHub configuration
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-version-bump-version-divergence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ci/version-bump/version-divergence
     
   </span>
   
@@ -1813,6 +2054,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1837,7 +2082,7 @@
   
   
   <span class="md-ellipsis">
-    Documentation
+    CD
     
   </span>
   
@@ -1848,7 +2093,7 @@
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_3">
             <span class="md-nav__icon md-icon"></span>
-            Documentation
+            CD
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -1859,12 +2104,58 @@
   
   
     <li class="md-nav__item">
-      <a href="../docs-deploy/" class="md-nav__link">
+      <a href="../cd-release-tag-and-release/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    docs-deploy
+    cd/release/tag-and-release
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cd-release-version-bump-pr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    cd/release/version-bump-pr
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cd-docs-deploy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    cd/docs/deploy
     
   </span>
   
@@ -1918,7 +2209,7 @@
   
   
   <span class="md-ellipsis">
-    Python
+    Shared
     
   </span>
   
@@ -1929,7 +2220,7 @@
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_4">
             <span class="md-nav__icon md-icon"></span>
-            Python
+            Shared
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -1940,466 +2231,17 @@
   
   
     <li class="md-nav__item">
-      <a href="../python-setup/" class="md-nav__link">
+      <a href="../shared-security-trivy/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    python/setup
+    shared/security/trivy
     
   </span>
   
 
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-      
-        
-      
-        
-      
-        
-      
-    
-    
-    
-      
-      
-        
-          
-          
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_5_5" id="__nav_5_5_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    Security
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_5">
-            <span class="md-nav__icon md-icon"></span>
-            Security
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../security-codeql/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    security/codeql
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../security-semgrep/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    security/semgrep
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../security-trivy/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    security/trivy
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-      
-        
-      
-        
-      
-    
-    
-    
-      
-      
-        
-          
-          
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_5_6" id="__nav_5_6_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    Publishing
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_6">
-            <span class="md-nav__icon md-icon"></span>
-            Publishing
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../publish-tag-and-release/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    publish/tag-and-release
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../publish-version-bump-pr/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    publish/version-bump-pr
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    
-    
-      
-        
-      
-    
-    
-    
-      
-      
-        
-          
-          
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    Release Gates
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_5_7">
-            <span class="md-nav__icon md-icon"></span>
-            Release Gates
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    release-gates/version-divergence
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    release-gates/version-divergence
-    
-  </span>
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      Usage
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#inputs" class="md-nav__link">
-    <span class="md-ellipsis">
-      Inputs
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#outputs" class="md-nav__link">
-    <span class="md-ellipsis">
-      Outputs
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#permissions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Permissions
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#behavior" class="md-nav__link">
-    <span class="md-ellipsis">
-      Behavior
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Examples">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#simple-version-file-check" class="md-nav__link">
-    <span class="md-ellipsis">
-      Simple VERSION file check
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#python-project-version-check" class="md-nav__link">
-    <span class="md-ellipsis">
-      Python project version check
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#github-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      GitHub configuration
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2935,15 +2777,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#outputs" class="md-nav__link">
-    <span class="md-ellipsis">
-      Outputs
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#permissions" class="md-nav__link">
     <span class="md-ellipsis">
       Permissions
@@ -2972,18 +2805,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#simple-version-file-check" class="md-nav__link">
+  <a href="#python-semgrep-scan" class="md-nav__link">
     <span class="md-ellipsis">
-      Simple VERSION file check
+      Python Semgrep scan
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#python-project-version-check" class="md-nav__link">
+  <a href="#go-with-additional-owasp-rules" class="md-nav__link">
     <span class="md-ellipsis">
-      Python project version check
+      Go with additional OWASP rules
     </span>
   </a>
   
@@ -3019,14 +2852,14 @@
 
 
 
-<h1 id="release-gatesversion-divergence">release-gates/version-divergence<a class="headerlink" href="#release-gatesversion-divergence" title="Permanent link">&para;</a></h1>
-<p>Verifies that the PR branch version differs from the main branch version. Fails
-the step if the two versions are identical.</p>
+<h1 id="securitysemgrep">security/semgrep<a class="headerlink" href="#securitysemgrep" title="Permanent link">&para;</a></h1>
+<p>Runs Semgrep static analysis with language-specific and cross-cutting security
+rulesets.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/release-gates/version-divergence@v1.5</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/ci/security/semgrep@v1.5</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">head-version-command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cat VERSION</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">main-version-command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git show origin/main:VERSION</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">extra-config</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;p/owasp-top-ten&quot;</span>
 </code></pre></div>
 <h2 id="inputs">Inputs<a class="headerlink" href="#inputs" title="Permanent link">&para;</a></h2>
 <table>
@@ -3040,78 +2873,78 @@ the step if the two versions are identical.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>head-version-command</code></td>
+<td><code>language</code></td>
 <td><strong>Yes</strong></td>
 <td>—</td>
-<td>Shell command that prints the HEAD (PR branch) version to stdout.</td>
+<td>Language ruleset to enable (maps to <code>p/&lt;language&gt;</code>, e.g. <code>python</code>, <code>java</code>, <code>golang</code>).</td>
 </tr>
 <tr>
-<td><code>main-version-command</code></td>
-<td><strong>Yes</strong></td>
-<td>—</td>
-<td>Shell command that prints the main branch version to stdout.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="outputs">Outputs<a class="headerlink" href="#outputs" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>head-version</code></td>
-<td>The version extracted from the PR branch.</td>
-</tr>
-<tr>
-<td><code>main-version</code></td>
-<td>The version extracted from the main branch.</td>
-</tr>
-<tr>
-<td><code>diverged</code></td>
-<td><code>true</code> if versions differ, <code>false</code> otherwise.</td>
+<td><code>extra-config</code></td>
+<td>No</td>
+<td><code>""</code></td>
+<td>Additional Semgrep config strings, space-separated (e.g. <code>p/owasp-top-ten</code>).</td>
 </tr>
 </tbody>
 </table>
 <h2 id="permissions">Permissions<a class="headerlink" href="#permissions" title="Permanent link">&para;</a></h2>
 <ul>
-<li><code>contents: read</code> (default)</li>
+<li><code>security-events: write</code> (required for uploading SARIF results)</li>
+<li><code>contents: read</code></li>
 </ul>
 <h2 id="behavior">Behavior<a class="headerlink" href="#behavior" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>Fetch main branch</strong> — Runs <code>git fetch origin main --depth=1</code>.</li>
-<li><strong>Compare versions</strong> — Executes both version commands and compares the
-   results. If the versions are identical, the step fails with exit code 1 and
-   a diagnostic message. If they differ, the step succeeds.</li>
+<li><strong>Check language ruleset</strong> — Queries the Semgrep registry to verify that
+   <code>p/&lt;language&gt;</code> exists. If the registry does not have a ruleset for the
+   specified language, the language-specific config is silently skipped.</li>
+<li><strong>Auto-detect rulesets</strong> — Scans the repository for content that benefits
+   from specialized rulesets:<ul>
+<li><code>p/dockerfile</code> — enabled when <code>Dockerfile*</code> files are present</li>
+<li><code>p/github-actions</code> — enabled when <code>.github/workflows/</code> contains workflow
+  files</li>
+</ul>
+</li>
+<li><strong>Run scan</strong> — Executes <code>semgrep scan</code> with the following config rulesets:<ul>
+<li><code>p/ci</code> — CI pipeline security rules (injection, secrets in workflows,
+  unsafe patterns)</li>
+<li><code>p/security-audit</code> — Cross-cutting security audit rules</li>
+<li><code>p/secrets</code> — Secret detection rules</li>
+<li><code>p/&lt;language&gt;</code> — Language-specific rules (if available in the registry)</li>
+<li><code>p/dockerfile</code> — Dockerfile best practices (if Dockerfiles detected)</li>
+<li><code>p/github-actions</code> — GitHub Actions injection patterns (if workflow files
+  detected)</li>
+<li>Any additional rulesets from <code>extra-config</code></li>
+</ul>
+</li>
+<li><strong>Upload SARIF</strong> — Uploads the SARIF output file to GitHub code scanning
+   using <code>github/codeql-action/upload-sarif@v4</code>, categorized as <code>semgrep</code>.
+   This step runs even if the scan finds issues (<code>if: always()</code>).</li>
 </ol>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
-<h3 id="simple-version-file-check">Simple VERSION file check<a class="headerlink" href="#simple-version-file-check" title="Permanent link">&para;</a></h3>
+<h3 id="python-semgrep-scan">Python Semgrep scan<a class="headerlink" href="#python-semgrep-scan" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">jobs</span><span class="p">:</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">version-gate</span><span class="p">:</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;release:</span><span class="nv"> </span><span class="s">version-divergence&quot;</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">semgrep</span><span class="p">:</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;security:</span><span class="nv"> </span><span class="s">semgrep&quot;</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v6</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/release-gates/version-divergence@v1.5</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">          </span><span class="nt">head-version-command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cat VERSION</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">          </span><span class="nt">main-version-command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git show origin/main:VERSION</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">permissions</span><span class="p">:</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="nt">security-events</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v6</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/ci/security/semgrep@v1.5</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">          </span><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python</span>
 </code></pre></div>
-<h3 id="python-project-version-check">Python project version check<a class="headerlink" href="#python-project-version-check" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/release-gates/version-divergence@v1.5</span>
+<h3 id="go-with-additional-owasp-rules">Go with additional OWASP rules<a class="headerlink" href="#go-with-additional-owasp-rules" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wphillipmoore/standard-actions/actions/ci/security/semgrep@v1.5</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">head-version-command</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">      </span><span class="no">grep -oP &#39;version\s*=\s*&quot;\K[^&quot;]+&#39; pyproject.toml</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">main-version-command</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">      </span><span class="no">git show origin/main:pyproject.toml | grep -oP &#39;version\s*=\s*&quot;\K[^&quot;]+&#39;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">golang</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">extra-config</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;p/owasp-top-ten&quot;</span>
 </code></pre></div>
 <h2 id="github-configuration">GitHub configuration<a class="headerlink" href="#github-configuration" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Required status check</strong> — Add this as a required status check on the
-  <code>develop</code> branch to prevent PRs from merging without a version bump.</li>
+<li><strong>GitHub Advanced Security (GHAS)</strong> — Must be enabled for SARIF upload.</li>
+<li><strong>Code scanning alerts</strong> — Results appear in the repository's <strong>Security &gt;
+  Code scanning alerts</strong> tab alongside CodeQL results.</li>
 </ul>
 
 
