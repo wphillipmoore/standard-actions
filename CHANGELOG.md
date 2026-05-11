@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.5.23] - 2026-05-11
+
+### Chores
+
+- bump version to 1.5.23
+
+### Documentation
+
+- update actions/index.md cross-references for new namespace
+
 ## [1.5.22] - 2026-05-11
 
 ### Chores
