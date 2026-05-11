@@ -1,0 +1,53 @@
+name: Validate publish inputs
+description: >-
+  Pre-flight validation for cd-release inputs. Fails early on invalid
+  input combinations.
+
+inputs:
+  language:
+    description: Primary language string.
+    required: true
+  container-tag:
+    description: Dev container image tag.
+    required: true
+  registry-publish:
+    description: Whether publishing is enabled.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Validate inputs
+      shell: bash
+      env:
+        INPUT_LANGUAGE: ${{ inputs.language }}
+        INPUT_CONTAINER_TAG: ${{ inputs.container-tag }}
+        INPUT_REGISTRY_PUBLISH: ${{ inputs.registry-publish }}
+      run: |
+        supported_languages="python java ruby rust go"
+
+        if [ "$INPUT_LANGUAGE" != "base" ] && \
+           [ "$INPUT_CONTAINER_TAG" = "latest" ]; then
+          echo "::error::language '${INPUT_LANGUAGE}' requires an explicit container-tag (language-specific images do not publish a :latest tag)"
+          exit 1
+        fi
+
+        if [ "$INPUT_REGISTRY_PUBLISH" = "true" ] && \
+           [ "$INPUT_LANGUAGE" = "base" ]; then
+          echo "::error::registry-publish requires a language to derive ecosystem build/publish commands"
+          exit 1
+        fi
+
+        if [ "$INPUT_REGISTRY_PUBLISH" = "true" ]; then
+          found=0
+          for lang in $supported_languages; do
+            if [ "$INPUT_LANGUAGE" = "$lang" ]; then
+              found=1
+              break
+            fi
+          done
+          if [ "$found" -eq 0 ]; then
+            echo "::error::unsupported language '${INPUT_LANGUAGE}' for registry publishing (supported: ${supported_languages})"
+            exit 1
+          fi
+        fi
