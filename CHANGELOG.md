@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.5.22] - 2026-05-11
+
+### Chores
+
+- bump version to 1.5.22
+- archive 6 completed plans to docs/plans/completed/
+
+### Documentation
+
+- add design spec for actions/ namespace rationalization (#440)
+- expand documentation section in namespace rationalization spec (#440)
+- apply pushback review to namespace rationalization spec (#440)
+- add implementation plan for actions/ namespace rationalization (#440)
+- update action listing to new namespace (#440)
+- rename and update action doc pages for new namespace (#440)
+- update doc cross-references for new action namespace (#440)
+- update nav entries for new action namespace (#440)
+
+### Refactoring
+
+- extract inline logic from reusable workflows into composite actions
+- move actions to phase/domain/action namespace hierarchy (#440)
+- update local action paths to new namespace (#440)
+- update remote action refs to new namespace (#440)
+- update action-to-action refs to new namespace (#440)
+- rename registry-publish-command input to publish-command (#440)
+
 ## [1.5.21] - 2026-05-11
 
 ### Bug fixes
