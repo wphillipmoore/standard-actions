@@ -23,7 +23,7 @@ on:
         description: Override ecosystem-derived build command.
         type: string
         default: ""
-      registry-publish-command:
+      publish-command:
         description: Override ecosystem-derived publish command.
         type: string
         default: ""
@@ -135,7 +135,7 @@ jobs:
           version: ${{ steps.version.outputs.version }}
           registry-publish: ${{ inputs.registry-publish }}
           build-command: ${{ inputs.build-command }}
-          publish-command: ${{ inputs.registry-publish-command }}
+          publish-command: ${{ inputs.publish-command }}
           attestation-subject-path: ${{ inputs.attestation-subject-path }}
           sbom-output-file: ${{ inputs.sbom-output-file }}
           cargo-registry-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
