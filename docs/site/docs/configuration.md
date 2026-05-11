@@ -51,7 +51,7 @@ gh secret set PROJECT_TOKEN --repo wphillipmoore/<repo> --body "<token>"
 
 These secrets are used together to generate a GitHub App installation token at
 publish time. The token is passed to the
-[`publish/version-bump-pr`](actions/publish-version-bump-pr.md) action.
+[`publish/version-bump-pr`](actions/cd-release-version-bump-pr.md) action.
 
 **Why a GitHub App?** Pull requests created by the default `GITHUB_TOKEN` do not
 trigger CI workflows. This is a GitHub security measure to prevent recursive
