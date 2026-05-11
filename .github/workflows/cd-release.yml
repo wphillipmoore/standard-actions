@@ -89,7 +89,7 @@ jobs:
           fetch-depth: 0
 
       - name: Validate inputs
-        uses: ./actions/publish/validate-inputs
+        uses: ./actions/cd/release/validate-inputs
         with:
           language: ${{ inputs.language }}
           container-tag: ${{ inputs.container-tag }}
@@ -129,7 +129,7 @@ jobs:
         if: >-
           contains(fromJSON('["python","java","ruby","rust","go"]'), inputs.language) &&
           steps.tag_check.outputs.exists == 'false'
-        uses: ./actions/publish/registry-publish
+        uses: ./actions/cd/release/registry-publish
         with:
           language: ${{ inputs.language }}
           version: ${{ steps.version.outputs.version }}
