@@ -43,7 +43,7 @@ jobs:
     name: standards
     if: ${{ inputs.run-standards }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-${{ inputs.container-suffix || 'base' }}:${{ inputs.container-tag || 'latest' }}
+    container: ghcr.io/wphillipmoore/prod-${{ inputs.container-suffix || 'base' }}:${{ inputs.container-tag || 'latest' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -88,7 +88,7 @@ jobs:
     name: semgrep
     if: ${{ inputs.run-security }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-base:latest
+    container: ghcr.io/wphillipmoore/prod-base:latest
     permissions:
       security-events: write
     steps:

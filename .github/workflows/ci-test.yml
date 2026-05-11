@@ -21,7 +21,7 @@ jobs:
   unit:
     name: unit / ${{ matrix.version }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-${{ inputs.container-suffix || inputs.language }}:${{ matrix.version }}
+    container: ghcr.io/wphillipmoore/prod-${{ inputs.container-suffix || inputs.language }}:${{ matrix.version }}
     strategy:
       matrix:
         version: ${{ fromJSON(inputs.versions) }}

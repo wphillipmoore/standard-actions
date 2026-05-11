@@ -27,7 +27,7 @@ jobs:
   common:
     name: common
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-${{ inputs.container-suffix || 'base' }}:${{ inputs.container-tag || 'latest' }}
+    container: ghcr.io/wphillipmoore/prod-${{ inputs.container-suffix || 'base' }}:${{ inputs.container-tag || 'latest' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -41,7 +41,7 @@ jobs:
   lint:
     name: lint / ${{ matrix.version }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-${{ inputs.container-suffix || inputs.language }}:${{ matrix.version }}
+    container: ghcr.io/wphillipmoore/prod-${{ inputs.container-suffix || inputs.language }}:${{ matrix.version }}
     strategy:
       matrix:
         version: ${{ fromJSON(inputs.versions) }}
@@ -62,7 +62,7 @@ jobs:
   typecheck:
     name: typecheck / ${{ matrix.version }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-${{ inputs.container-suffix || inputs.language }}:${{ matrix.version }}
+    container: ghcr.io/wphillipmoore/prod-${{ inputs.container-suffix || inputs.language }}:${{ matrix.version }}
     strategy:
       matrix:
         version: ${{ fromJSON(inputs.versions) }}

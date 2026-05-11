@@ -69,7 +69,7 @@ jobs:
   release:
     name: release
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-${{ inputs.language }}:${{ inputs.container-tag }}
+    container: ghcr.io/wphillipmoore/prod-${{ inputs.language }}:${{ inputs.container-tag }}
     defaults:
       run:
         shell: bash

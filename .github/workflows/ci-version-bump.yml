@@ -27,7 +27,7 @@ jobs:
     name: version-bump
     if: ${{ inputs.run-release }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-${{ inputs.container-suffix || 'base' }}:${{ inputs.container-tag || 'latest' }}
+    container: ghcr.io/wphillipmoore/prod-${{ inputs.container-suffix || 'base' }}:${{ inputs.container-tag || 'latest' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
