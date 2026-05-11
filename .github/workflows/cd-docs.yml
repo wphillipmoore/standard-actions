@@ -11,6 +11,10 @@ on:
         description: Path to mkdocs.yml configuration file.
         type: string
         default: docs/site/mkdocs.yml
+      container-prefix:
+        description: Container image name prefix (prod or dev). Defaults to "prod".
+        type: string
+        default: prod
 
 permissions:
   contents: write
@@ -23,7 +27,7 @@ jobs:
   deploy:
     name: docs
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/prod-base:latest
+    container: ghcr.io/wphillipmoore/${{ inputs.container-prefix || 'prod' }}-base:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v6

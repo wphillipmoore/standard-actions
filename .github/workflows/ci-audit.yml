@@ -16,12 +16,18 @@ on:
           Container image name suffix (e.g. python, go, base). Defaults
           to the language input. Callers whose language is "shell" or
           "none" should pass "base".
+      container-prefix:
+        type: string
+        required: false
+        default: prod
+        description: >-
+          Container image name prefix (prod or dev). Defaults to "prod".
 
 jobs:
   dependencies:
     name: dependencies / ${{ matrix.version }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/prod-${{ inputs.container-suffix || inputs.language }}:${{ matrix.version }}
+    container: ghcr.io/wphillipmoore/${{ inputs.container-prefix || 'prod' }}-${{ inputs.container-suffix || inputs.language }}:${{ matrix.version }}
     strategy:
       matrix:
         version: ${{ fromJSON(inputs.versions) }}
