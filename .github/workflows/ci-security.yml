@@ -33,6 +33,12 @@ on:
         description: >-
           Container image tag for the standards job.
           Defaults to "latest".
+      container-prefix:
+        type: string
+        required: false
+        default: prod
+        description: >-
+          Container image name prefix (prod or dev). Defaults to "prod".
 
 permissions:
   contents: read
@@ -43,7 +49,7 @@ jobs:
     name: standards
     if: ${{ inputs.run-standards }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-${{ inputs.container-suffix || 'base' }}:${{ inputs.container-tag || 'latest' }}
+    container: ghcr.io/wphillipmoore/${{ inputs.container-prefix || 'prod' }}-${{ inputs.container-suffix || 'base' }}:${{ inputs.container-tag || 'latest' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -88,7 +94,7 @@ jobs:
     name: semgrep
     if: ${{ inputs.run-security }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-base:latest
+    container: ghcr.io/wphillipmoore/${{ inputs.container-prefix || 'prod' }}-base:latest
     permissions:
       security-events: write
     steps:

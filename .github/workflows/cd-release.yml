@@ -4,13 +4,17 @@ on:
   workflow_call:
     inputs:
       language:
-        description: Primary language (matches dev container image suffix).
+        description: Primary language (matches container image suffix).
         type: string
         default: "base"
       container-tag:
-        description: Dev container image tag (e.g. 3.14, 1.26).
+        description: Container image tag (e.g. 3.14, 1.26).
         type: string
         default: "latest"
+      container-prefix:
+        description: Container image name prefix (prod or dev). Defaults to "prod".
+        type: string
+        default: prod
       registry-publish:
         description: Publish build artifacts to an external package registry.
         type: boolean
@@ -69,7 +73,7 @@ jobs:
   release:
     name: release
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/dev-${{ inputs.language }}:${{ inputs.container-tag }}
+    container: ghcr.io/wphillipmoore/${{ inputs.container-prefix || 'prod' }}-${{ inputs.language }}:${{ inputs.container-tag }}
     defaults:
       run:
         shell: bash
