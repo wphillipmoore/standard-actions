@@ -106,7 +106,7 @@ jobs:
           fi
 
       - name: Install standard-tooling
-        uses: wphillipmoore/standard-actions/actions/setup/standard-tooling@develop
+        uses: wphillipmoore/standard-actions/actions/setup/standard-tooling@v1.5.21
 
       - name: Configure Maven credentials
         if: inputs.registry-publish && inputs.language == 'java'
@@ -228,7 +228,7 @@ jobs:
           inputs.registry-publish &&
           steps.tag_check.outputs.exists == 'false' &&
           inputs.sbom-output-file != ''
-        uses: wphillipmoore/standard-actions/actions/security/trivy@develop
+        uses: wphillipmoore/standard-actions/actions/security/trivy@v1.5.21
         with:
           scan-type: sbom
           output-file: ${{ steps.resolved.outputs.sbom-output-file }}
@@ -266,7 +266,7 @@ jobs:
 
       - name: Tag and release
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@develop
+        uses: wphillipmoore/standard-actions/actions/publish/tag-and-release@v1.5.21
         with:
           version: ${{ steps.version.outputs.version }}
           release-artifacts: ${{ steps.resolved.outputs.release-artifacts }}
@@ -297,7 +297,7 @@ jobs:
 
       - name: Version bump PR
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@develop
+        uses: wphillipmoore/standard-actions/actions/publish/version-bump-pr@v1.5.21
         with:
           current-version: ${{ steps.version.outputs.version }}
           post-bump-command: ${{ inputs.post-bump-command }}
