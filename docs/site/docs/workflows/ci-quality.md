@@ -21,7 +21,7 @@ Code quality and linting workflow.
 
 ## Common checks
 
-The `common` job runs inside the `ghcr.io/wphillipmoore/dev-base:latest`
+The `common` job runs inside the `ghcr.io/vergil-project/dev-base:latest`
 container and conditionally executes each linter based on whether matching
 files exist in the repository:
 
@@ -38,7 +38,7 @@ files exist in the repository:
 ```yaml
 jobs:
   quality:
-    uses: wphillipmoore/standard-actions/.github/workflows/ci-quality.yml@v1.5
+    uses: vergil-project/vergil-actions/.github/workflows/ci-quality.yml@v1.5
     with:
       language: python
       versions: '["3.12", "3.13", "3.14"]'

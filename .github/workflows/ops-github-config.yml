@@ -14,8 +14,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Install standard-tooling
-        uses: ./actions/shared/setup/standard-tooling
+      - name: Install vergil-tooling
+        uses: ./actions/shared/setup/vergil
 
       - name: Audit GitHub configuration
         env:

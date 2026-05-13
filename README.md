@@ -25,7 +25,7 @@ actions/                          Composite GitHub Actions
   python/setup/                   Python environment with uv and caching
   release-gates/                  Pre-merge version validation
   security/                       CodeQL, Semgrep, Trivy scanning
-  setup/standard-tooling/         standard-tooling CLI installer
+  setup/vergil-tooling/         vergil-tooling CLI installer
   standards-compliance/           PR issue linkage enforcement
 .github/workflows/
   ci.yml                          Local CI umbrella (pull_request)
@@ -49,10 +49,10 @@ docs/site/                        MkDocs documentation source
 ## Documentation
 
 Full documentation is available at
-<https://wphillipmoore.github.io/standard-actions/>.
+<https://vergil-project.github.io/vergil-actions/>.
 
 ## Validation
 
 ```bash
-st-docker-run -- st-validate
+vrg-docker-run -- vrg-validate
 ```

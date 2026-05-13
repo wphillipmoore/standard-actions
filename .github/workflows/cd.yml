@@ -18,7 +18,7 @@ jobs:
     name: "cd / release"
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/prod-base:latest
+    container: ghcr.io/vergil-project/prod-base:latest
     defaults:
       run:
         shell: bash
@@ -40,8 +40,8 @@ jobs:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
 
-      - name: Install standard-tooling
-        uses: ./actions/shared/setup/standard-tooling
+      - name: Install vergil-tooling
+        uses: ./actions/shared/setup/vergil
 
       - name: Extract version
         id: version
@@ -67,13 +67,13 @@ jobs:
 
       - name: Tag and release
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/cd/release/tag-and-release@develop
+        uses: vergil-project/vergil-actions/actions/cd/release/tag-and-release@develop
         with:
           version: ${{ steps.version.outputs.version }}
 
       - name: Version bump PR
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/cd/release/version-bump-pr@develop
+        uses: vergil-project/vergil-actions/actions/cd/release/version-bump-pr@develop
         with:
           current-version: ${{ steps.version.outputs.version }}
           app-token: ${{ steps.app-token.outputs.token }}

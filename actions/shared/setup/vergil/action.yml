@@ -1,0 +1,30 @@
+name: Install vergil-tooling
+description: >-
+  Reads the pinned vergil version from vergil.toml
+  and installs it via uv tool install. When the consumer repo is
+  vergil-tooling itself, runs uv sync to install from source so CI
+  validates the PR's code instead of the released version.
+
+runs:
+  using: composite
+  steps:
+    - name: Mark workspace safe for git
+      shell: bash
+      run: git config --global --add safe.directory "${GITHUB_WORKSPACE:-$(pwd)}"
+
+    - name: Install vergil-tooling
+      shell: bash
+      run: |
+        if grep -q '^name = "vergil-tooling"' pyproject.toml 2>/dev/null; then
+          echo "Consumer repo is vergil-tooling itself — installing from source"
+          uv sync --frozen --group dev
+          echo "$GITHUB_WORKSPACE/.venv/bin" >> "$GITHUB_PATH"
+          exit 0
+        fi
+
+        TAG=$(sed -n 's/^[[:space:]]*vergil[[:space:]]*=[[:space:]]*"\(.*\)"/\1/p' vergil.toml)
+        if [ -z "${TAG:-}" ]; then
+          echo "::error::vergil.toml not found or missing version tag"
+          exit 1
+        fi
+        uv tool install "vergil-tooling @ git+https://github.com/vergil-project/vergil-tooling@${TAG}"

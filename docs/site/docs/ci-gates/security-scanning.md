@@ -56,7 +56,7 @@ control flow, and language-specific patterns.
   project.
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/ci/security/codeql@v1.5
+- uses: vergil-project/vergil-actions/actions/ci/security/codeql@v1.5
   with:
     language: python
 ```
@@ -75,7 +75,7 @@ Default rulesets enabled for every scan:
 Additional rulesets can be added via `extra-config`:
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/ci/security/semgrep@v1.5
+- uses: vergil-project/vergil-actions/actions/ci/security/semgrep@v1.5
   with:
     language: golang
     extra-config: "p/owasp-top-ten"
@@ -99,7 +99,7 @@ By default, only `CRITICAL` and `HIGH` severity vulnerabilities are reported.
 This can be adjusted:
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/shared/security/trivy@v1.5
+- uses: vergil-project/vergil-actions/actions/shared/security/trivy@v1.5
   with:
     scan-type: fs
     severity: "CRITICAL,HIGH,MEDIUM"
@@ -111,7 +111,7 @@ By default, Trivy exits with code `1` when vulnerabilities are found, failing
 the CI check. Set `exit-code: "0"` for advisory-only mode:
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/shared/security/trivy@v1.5
+- uses: vergil-project/vergil-actions/actions/shared/security/trivy@v1.5
   with:
     scan-type: fs
     exit-code: "0"

@@ -25,7 +25,7 @@ standards-and-conventions framework.
 
 - `AGENTS.md`
 - `docs/standards-and-conventions.md`
-- `standard-tooling.toml`
+- `vergil.toml`
 
 ## AGENTS.md template
 
@@ -35,8 +35,8 @@ Use includes and keep local overrides explicit.
 # <Repository> Agent Instructions
 
 **Standards reference**: <https://github.com/wphillipmoore/standards-and-conventions>
-— active standards documentation lives in the standard-tooling repository under `docs/`.
-Repository profile: `standard-tooling.toml`.
+— active standards documentation lives in the vergil-tooling repository under `docs/`.
+Repository profile: `vergil.toml`.
 
 ## User Overrides (Optional)
 
@@ -77,7 +77,7 @@ include chain pattern described in the canonical standards.
 
 ## Repository profile
 
-The repository profile lives in `standard-tooling.toml` under `[project]`.
+The repository profile lives in `vergil.toml` under `[project]`.
 Required fields: `repository-type`, `versioning-scheme`, `branching-model`,
 `release-model`, `primary-language`. Co-author identities live under
 `[project.co-authors]`.
