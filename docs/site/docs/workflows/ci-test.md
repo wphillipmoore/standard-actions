@@ -21,7 +21,7 @@ Unit and integration test workflow.
 ```yaml
 jobs:
   test:
-    uses: vergil-project/vergil-actions/.github/workflows/ci-test.yml@v1.5
+    uses: vergil-project/vergil-actions/.github/workflows/ci-test.yml@v2.0
     with:
       language: python
       versions: '["3.12", "3.13", "3.14"]'
