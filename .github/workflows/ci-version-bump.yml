@@ -33,15 +33,15 @@ jobs:
     name: version-bump
     if: ${{ inputs.run-release }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/${{ inputs.container-prefix || 'prod' }}-${{ inputs.container-suffix || 'base' }}:${{ inputs.container-tag || 'latest' }}
+    container: ghcr.io/vergil-project/${{ inputs.container-prefix || 'prod' }}-${{ inputs.container-suffix || 'base' }}:${{ inputs.container-tag || 'latest' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - name: Install standard-tooling
-        uses: ./actions/shared/setup/standard-tooling
+      - name: Install vergil-tooling
+        uses: ./actions/shared/setup/vergil
 
       - name: Verify version bump
         uses: ./actions/ci/version-bump/version-divergence

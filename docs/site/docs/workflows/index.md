@@ -36,7 +36,7 @@ Reference workflows using the full path to the workflow file with a rolling
 minor tag pin:
 
 ```yaml
-uses: wphillipmoore/standard-actions/.github/workflows/ci-security.yml@v1.5
+uses: vergil-project/vergil-actions/.github/workflows/ci-security.yml@v1.5
 ```
 
 !!! note "Tag pinning"
@@ -52,7 +52,7 @@ declare the permissions each workflow needs at the job level:
 ```yaml
 jobs:
   security:
-    uses: wphillipmoore/standard-actions/.github/workflows/ci-security.yml@v1.5
+    uses: vergil-project/vergil-actions/.github/workflows/ci-security.yml@v1.5
     permissions:
       contents: read
       security-events: write

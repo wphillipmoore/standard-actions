@@ -18,7 +18,7 @@ releases.
 | CD / Release | [tag-and-release](actions/cd-release-tag-and-release.md), [version-bump-pr](actions/cd-release-version-bump-pr.md) | Release tagging and post-release version bumps |
 | CD / Docs | [deploy](actions/cd-docs-deploy.md) | MkDocs Material + mike versioned deployment |
 | Shared / Security | [trivy](actions/shared-security-trivy.md) | Vulnerability scanning and SBOM generation |
-| Shared / Setup | [standard-tooling](actions/index.md) | Standard-tooling and environment setup |
+| Shared / Setup | [vergil-tooling](actions/index.md) | Standard-tooling and environment setup |
 
 ## Reusable workflows
 

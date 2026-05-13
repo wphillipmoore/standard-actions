@@ -51,7 +51,7 @@ provides integration testing without a separate test repository.
 Always use the commit script:
 
 ```bash
-st-commit \
+vrg-commit \
   --type feat \
   --scope ci \
   --message "add new validation check" \

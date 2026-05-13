@@ -1,7 +1,7 @@
 # Development
 
 This section covers development workflow, environment setup, validation, and
-contribution guidelines for the standard-actions repository.
+contribution guidelines for the vergil-actions repository.
 
 ## Pages in this section
 

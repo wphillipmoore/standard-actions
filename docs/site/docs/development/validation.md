@@ -3,16 +3,16 @@
 ## Canonical command
 
 ```bash
-st-docker-run -- st-validate
+vrg-docker-run -- vrg-validate
 ```
 
-This runs all validation inside the `ghcr.io/wphillipmoore/dev-base:latest`
+This runs all validation inside the `ghcr.io/vergil-project/dev-base:latest`
 container, which has every required tool pre-installed. No manual host
-installs needed beyond the standard-tooling host tool.
+installs needed beyond the vergil-tooling host tool.
 
 ## Architecture
 
-`st-validate` reads `primary_language` from `standard-tooling.toml` and runs
+`vrg-validate` reads `primary_language` from `vergil.toml` and runs
 common checks followed by language-specific checks from the built-in command
 registry. Common checks include repo-profile validation, markdownlint,
 shellcheck, yamllint, and actionlint.

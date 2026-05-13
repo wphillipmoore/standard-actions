@@ -35,7 +35,7 @@ permissions:
 ```yaml
 jobs:
   security:
-    uses: wphillipmoore/standard-actions/.github/workflows/ci-security.yml@v1.5
+    uses: vergil-project/vergil-actions/.github/workflows/ci-security.yml@v1.5
     permissions:
       contents: read
       security-events: write
@@ -48,7 +48,7 @@ To skip CodeQL for languages it does not support:
 ```yaml
 jobs:
   security:
-    uses: wphillipmoore/standard-actions/.github/workflows/ci-security.yml@v1.5
+    uses: vergil-project/vergil-actions/.github/workflows/ci-security.yml@v1.5
     permissions:
       contents: read
       security-events: write
@@ -60,9 +60,9 @@ jobs:
 ## Implementation notes
 
 - The `standards` and `semgrep` jobs run inside the
-  `ghcr.io/wphillipmoore/dev-base:latest` container.
-- The `standards` job installs `standard-tooling` from the version pinned in
-  `standard-tooling.toml`.
+  `ghcr.io/vergil-project/dev-base:latest` container.
+- The `standards` job installs `vergil-tooling` from the version pinned in
+  `vergil.toml`.
 - For Python repositories, the `standards` job runs `uv sync --group dev --frozen`
   to make project-installed tools available on `PATH`.
 - The Semgrep action auto-detects repository content and enables additional

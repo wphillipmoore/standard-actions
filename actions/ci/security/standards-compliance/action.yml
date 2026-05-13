@@ -2,15 +2,15 @@ name: Standards compliance
 description: >-
   PR-specific compliance checks: issue linkage and auto-close keyword
   rejection. Repository profile, markdown, and other structural
-  validations are handled by st-validate (run separately
+  validations are handled by vrg-validate (run separately
   in the CI workflow).
 
 runs:
   using: composite
   steps:
-    - name: Install standard-tooling
+    - name: Install vergil-tooling
       if: github.event_name == 'pull_request'
-      uses: ./actions/shared/setup/standard-tooling
+      uses: ./actions/shared/setup/vergil
 
     - name: Validate pull request issue linkage
       if: github.event_name == 'pull_request'
@@ -27,7 +27,7 @@ runs:
         if echo "$PR_BODY" | grep -qEi "$AUTOCLOSE_RE"; then
           echo "::error::PR body contains auto-close linkage (Fixes/Closes/Resolves)."
           echo "Use 'Ref #N' instead. Auto-close keywords cause issues to close"
-          echo "before finalization is complete. The st-finalize-repo workflow"
+          echo "before finalization is complete. The vrg-finalize-repo workflow"
           echo "handles issue closure at the right time."
           exit 1
         fi

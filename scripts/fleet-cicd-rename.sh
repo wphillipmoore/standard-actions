@@ -9,13 +9,13 @@ set -euo pipefail
 # Usage: fleet-cicd-rename.sh <repo-name|all>
 
 GITHUB_BASE="/Users/pmoore/dev/github"
-GITHUB_ORG="wphillipmoore"
+GITHUB_ORG="vergil-project"
 BRANCH="chore/383-cicd-workflow-convention"
 SA_TAG="v1.5"  # Update to actual release tag
 
 REPOS=(
-  standard-tooling-docker
-  standard-tooling-plugin
+  vergil-tooling-docker
+  vergil-tooling-plugin
   mq-rest-admin-python
   mq-rest-admin-go
   mq-rest-admin-ruby
@@ -72,7 +72,7 @@ rename_repo() {
     if ! grep -q "README.md" "$wf/ci.yml"; then
       sed -i.bak \
         "1i\\
-# https://github.com/wphillipmoore/standard-actions/blob/develop/.github/workflows/README.md" \
+# https://github.com/vergil-project/vergil-actions/blob/develop/.github/workflows/README.md" \
         "$wf/ci.yml"
       rm -f "$wf/ci.yml.bak"
     fi
@@ -110,7 +110,7 @@ rename_repo() {
 
   if $has_release || $has_docs; then
     {
-      echo "# https://github.com/wphillipmoore/standard-actions/blob/develop/.github/workflows/README.md"
+      echo "# https://github.com/vergil-project/vergil-actions/blob/develop/.github/workflows/README.md"
       echo "name: CD"
       echo ""
       echo "on:"
@@ -136,7 +136,7 @@ rename_repo() {
 
       if $has_docs; then
         echo "  docs:"
-        echo "    uses: ${GITHUB_ORG}/standard-actions/.github/workflows/cd-docs.yml@${SA_TAG}"
+        echo "    uses: ${GITHUB_ORG}/vergil-actions/.github/workflows/cd-docs.yml@${SA_TAG}"
         echo "    permissions:"
         echo "      contents: write"
       fi
@@ -149,7 +149,7 @@ rename_repo() {
         if $has_docs; then
           echo "    if: github.ref == 'refs/heads/main'"
         fi
-        echo "    uses: ${GITHUB_ORG}/standard-actions/.github/workflows/cd-release.yml@${SA_TAG}"
+        echo "    uses: ${GITHUB_ORG}/vergil-actions/.github/workflows/cd-release.yml@${SA_TAG}"
 
         # Extract the 'with:' block from publish-release.yml
         local with_block
@@ -176,14 +176,14 @@ rename_repo() {
     return
   fi
 
-  st-commit --type feat --scope ci \
+  vrg-commit --type feat --scope ci \
     --message "adopt CI/CD workflow convention (#383)" \
     --agent claude
 
   git push -u origin "$BRANCH"
 
-  st-submit-pr \
-    --issue "wphillipmoore/standard-actions#383" \
+  vrg-submit-pr \
+    --issue "vergil-project/vergil-actions#383" \
     --linkage Ref \
     --title "feat(ci): adopt CI/CD workflow convention (#383)" \
     --summary "Rename ci-release ref to ci-version-bump, merge publish workflows into cd.yml, add reference comment, remove banners"

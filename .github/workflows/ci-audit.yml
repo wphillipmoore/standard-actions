@@ -27,7 +27,7 @@ jobs:
   dependencies:
     name: dependencies / ${{ matrix.version }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/${{ inputs.container-prefix || 'prod' }}-${{ inputs.container-suffix || inputs.language }}:${{ matrix.version }}
+    container: ghcr.io/vergil-project/${{ inputs.container-prefix || 'prod' }}-${{ inputs.container-suffix || inputs.language }}:${{ matrix.version }}
     strategy:
       matrix:
         version: ${{ fromJSON(inputs.versions) }}
@@ -35,12 +35,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Install standard-tooling
-        uses: ./actions/shared/setup/standard-tooling
+      - name: Install vergil-tooling
+        uses: ./actions/shared/setup/vergil
 
       - name: Install dependencies
         if: inputs.language == 'python'
         run: uv sync --group dev --frozen
 
       - name: Run dependency audit
-        run: st-validate --check audit
+        run: vrg-validate --check audit
