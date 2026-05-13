@@ -20,7 +20,7 @@ organized by category using job name prefixes:
 
 ## Key concepts
 
-- **Reusable workflows** — v1.5.0 introduced
+- **Reusable workflows** — v2.0.0 introduced
   [reusable CI workflows](../workflows/index.md) that produce the canonical
   check names automatically. Consuming repositories call these workflows
   rather than assembling jobs by hand.

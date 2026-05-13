@@ -1,12 +1,12 @@
-# Standard Actions
+# Vergil Actions
 
 Shared GitHub Actions library providing reusable composite actions for CI/CD
 across all managed repositories.
 
 ## Status
 
-**Stable (v1.x)** — Actions and reusable workflows are consumed by pinning to
-a rolling minor tag (e.g., `@v1.5`), which automatically receives patch
+**Stable (v2.x)** — Actions and reusable workflows are consumed by pinning to
+a rolling minor tag (e.g., `@v2.0`), which automatically receives patch
 releases.
 
 ## Action categories
@@ -58,6 +58,6 @@ repositories. See [Reusable Workflows](workflows/index.md) for details.
 ## Canonical standards
 
 This repository follows the
-[Standards and Conventions](https://github.com/wphillipmoore/standards-and-conventions)
+[vergil-tooling](https://github.com/vergil-project/vergil-tooling)
 repository for commit messages, branching, versioning, and code management
 practices.
