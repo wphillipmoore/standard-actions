@@ -27,15 +27,15 @@ jobs:
   deploy:
     name: docs
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/${{ inputs.container-prefix || 'prod' }}-base:latest
+    container: ghcr.io/vergil-project/${{ inputs.container-prefix || 'prod' }}-base:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - name: Install standard-tooling
-        uses: ./actions/shared/setup/standard-tooling
+      - name: Install vergil-tooling
+        uses: ./actions/shared/setup/vergil
 
       - name: Run pre-deploy command
         if: inputs.pre-deploy-command != ''

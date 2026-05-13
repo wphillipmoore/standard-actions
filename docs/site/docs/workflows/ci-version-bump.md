@@ -22,7 +22,7 @@ Version divergence gate workflow.
 ```yaml
 jobs:
   version:
-    uses: wphillipmoore/standard-actions/.github/workflows/ci-version-bump.yml@v1.5
+    uses: vergil-project/vergil-actions/.github/workflows/ci-version-bump.yml@v1.5
     with:
       language: python
 ```
@@ -32,7 +32,7 @@ To skip version gates (e.g., for infrastructure repos that don't version):
 ```yaml
 jobs:
   version:
-    uses: wphillipmoore/standard-actions/.github/workflows/ci-version-bump.yml@v1.5
+    uses: vergil-project/vergil-actions/.github/workflows/ci-version-bump.yml@v1.5
     with:
       language: shell
       run-release: false

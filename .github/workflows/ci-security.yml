@@ -49,13 +49,13 @@ jobs:
     name: standards
     if: ${{ inputs.run-standards }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/${{ inputs.container-prefix || 'prod' }}-${{ inputs.container-suffix || 'base' }}:${{ inputs.container-tag || 'latest' }}
+    container: ghcr.io/vergil-project/${{ inputs.container-prefix || 'prod' }}-${{ inputs.container-suffix || 'base' }}:${{ inputs.container-tag || 'latest' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Install standard-tooling
-        uses: ./actions/shared/setup/standard-tooling
+      - name: Install vergil-tooling
+        uses: ./actions/shared/setup/vergil
 
       - name: Validate standards
         uses: ./actions/ci/security/standards-compliance
@@ -94,7 +94,7 @@ jobs:
     name: semgrep
     if: ${{ inputs.run-security }}
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/${{ inputs.container-prefix || 'prod' }}-base:latest
+    container: ghcr.io/vergil-project/${{ inputs.container-prefix || 'prod' }}-base:latest
     permissions:
       security-events: write
     steps:

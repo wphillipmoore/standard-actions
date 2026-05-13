@@ -73,7 +73,7 @@ jobs:
   release:
     name: release
     runs-on: ubuntu-latest
-    container: ghcr.io/wphillipmoore/${{ inputs.container-prefix || 'prod' }}-${{ inputs.language }}:${{ inputs.container-tag }}
+    container: ghcr.io/vergil-project/${{ inputs.container-prefix || 'prod' }}-${{ inputs.language }}:${{ inputs.container-tag }}
     defaults:
       run:
         shell: bash
@@ -95,8 +95,8 @@ jobs:
           container-tag: ${{ inputs.container-tag }}
           registry-publish: ${{ inputs.registry-publish }}
 
-      - name: Install standard-tooling
-        uses: wphillipmoore/standard-actions/actions/shared/setup/standard-tooling@develop
+      - name: Install vergil-tooling
+        uses: vergil-project/vergil-actions/actions/shared/setup/vergil@develop
 
       - name: Extract version
         id: version
@@ -147,7 +147,7 @@ jobs:
 
       - name: Tag and release
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/cd/release/tag-and-release@develop
+        uses: vergil-project/vergil-actions/actions/cd/release/tag-and-release@develop
         with:
           version: ${{ steps.version.outputs.version }}
           release-artifacts: ${{ steps.resolved.outputs.release-artifacts }}
@@ -178,7 +178,7 @@ jobs:
 
       - name: Version bump PR
         if: steps.tag_check.outputs.exists == 'false'
-        uses: wphillipmoore/standard-actions/actions/cd/release/version-bump-pr@develop
+        uses: vergil-project/vergil-actions/actions/cd/release/version-bump-pr@develop
         with:
           current-version: ${{ steps.version.outputs.version }}
           post-bump-command: ${{ inputs.post-bump-command }}

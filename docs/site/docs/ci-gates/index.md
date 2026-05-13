@@ -1,7 +1,7 @@
 # CI Gate Requirements
 
 This section documents the CI gate configuration for all repositories consuming
-standard-actions. It covers which checks are required and the security scanning
+vergil-actions. It covers which checks are required and the security scanning
 requirements.
 
 ## Overview
@@ -26,7 +26,7 @@ organized by category using job name prefixes:
   rather than assembling jobs by hand.
 - **Required status checks** — Configured in GitHub repository rulesets.
   PRs cannot merge until all required checks pass.
-- **Self-referencing CI** — The standard-actions repository tests its own
+- **Self-referencing CI** — The vergil-actions repository tests its own
   actions using local paths (`./actions/...`).
 
 ## Pages in this section

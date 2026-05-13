@@ -11,18 +11,18 @@
 
 ## Purpose
 
-Record the exact bootstrap steps used to initialize the standard-actions
+Record the exact bootstrap steps used to initialize the vergil-actions
 repository.
 
 ## Scope
 
-Bootstrap of the local repository at `/Users/pmoore/dev/github/standard-actions`.
+Bootstrap of the local repository at `/Users/pmoore/dev/github/vergil-actions`.
 
 ## Actions taken
 
 1. Clone the repository.
 
-   - Command: `gh repo clone wphillipmoore/standard-actions /Users/pmoore/dev/github/standard-actions`
+   - Command: `gh repo clone vergil-project/vergil-actions /Users/pmoore/dev/github/vergil-actions`
 
 1. Confirm the default branch.
 

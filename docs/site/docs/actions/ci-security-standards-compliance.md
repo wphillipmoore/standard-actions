@@ -2,12 +2,12 @@
 
 PR-specific compliance checks: issue linkage and auto-close keyword rejection.
 Repository profile, markdown, and other structural validations are handled by
-`st-validate` (run separately in the CI workflow).
+`vrg-validate` (run separately in the CI workflow).
 
 ## Usage
 
 ```yaml
-- uses: wphillipmoore/standard-actions/actions/ci/security/standards-compliance@v1.5
+- uses: vergil-project/vergil-actions/actions/ci/security/standards-compliance@v1.5
 ```
 
 ## Inputs
@@ -37,7 +37,7 @@ Both steps only run on `pull_request` events.
 - uses: actions/checkout@v6
   with:
     fetch-depth: 0
-- uses: wphillipmoore/standard-actions/actions/ci/security/standards-compliance@v1.5
+- uses: vergil-project/vergil-actions/actions/ci/security/standards-compliance@v1.5
 ```
 
 ## GitHub configuration

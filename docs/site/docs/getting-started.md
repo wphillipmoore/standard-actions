@@ -6,7 +6,7 @@ Reference actions from this repository using the full path with a rolling minor
 tag pin:
 
 ```yaml
-uses: wphillipmoore/standard-actions/actions/<action-path>@v1.5
+uses: vergil-project/vergil-actions/actions/<action-path>@v1.5
 ```
 
 !!! note "Tag pinning"
@@ -31,7 +31,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: wphillipmoore/standard-actions/actions/ci/security/standards-compliance@v1.5
+      - uses: vergil-project/vergil-actions/actions/ci/security/standards-compliance@v1.5
 ```
 
 ## Consuming reusable workflows
@@ -40,7 +40,7 @@ Reusable workflows produce canonical check names across all repositories.
 Reference workflows using the full path to the workflow file:
 
 ```yaml
-uses: wphillipmoore/standard-actions/.github/workflows/ci-security.yml@v1.5
+uses: vergil-project/vergil-actions/.github/workflows/ci-security.yml@v1.5
 ```
 
 ### CI workflow example
@@ -57,13 +57,13 @@ permissions:
 
 jobs:
   quality:
-    uses: wphillipmoore/standard-actions/.github/workflows/ci-quality.yml@v1.5
+    uses: vergil-project/vergil-actions/.github/workflows/ci-quality.yml@v1.5
     with:
       language: python
       versions: '["3.12", "3.13", "3.14"]'
 
   security:
-    uses: wphillipmoore/standard-actions/.github/workflows/ci-security.yml@v1.5
+    uses: vergil-project/vergil-actions/.github/workflows/ci-security.yml@v1.5
     permissions:
       contents: read
       security-events: write
@@ -86,13 +86,13 @@ permissions:
 
 jobs:
   docs:
-    uses: wphillipmoore/standard-actions/.github/workflows/cd-docs.yml@v1.5
+    uses: vergil-project/vergil-actions/.github/workflows/cd-docs.yml@v1.5
     permissions:
       contents: write
 
   release:
     if: github.ref == 'refs/heads/main'
-    uses: wphillipmoore/standard-actions/.github/workflows/cd-release.yml@v1.5
+    uses: vergil-project/vergil-actions/.github/workflows/cd-release.yml@v1.5
     with:
       language: python
     secrets: inherit
@@ -119,4 +119,4 @@ by the same PR that modifies them — no separate integration testing step is
 needed.
 
 Consuming repositories use the full remote reference
-(`wphillipmoore/standard-actions/actions/...@v1.5`).
+(`vergil-project/vergil-actions/actions/...@v1.5`).

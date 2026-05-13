@@ -3,8 +3,8 @@
 This file provides guidance to Claude Code (claude.ai/code) when working in this repository.
 
 **Standards reference**: <https://github.com/wphillipmoore/standards-and-conventions>
-— active standards documentation lives in the standard-tooling repository under `docs/`.
-Repository profile: `standard-tooling.toml`.
+— active standards documentation lives in the vergil-tooling repository under `docs/`.
+Repository profile: `vergil.toml`.
 
 ## Memory management
 
@@ -16,9 +16,9 @@ workflow.
 
 Available skills:
 
-- `/standard-tooling:memory-init` — set up or update the policy header
+- `/vergil-tooling:memory-init` — set up or update the policy header
   in a project's `MEMORY.md`.
-- `/standard-tooling:memory-audit` — structured collaborative review
+- `/vergil-tooling:memory-audit` — structured collaborative review
   of memory files.
 
 ## Parallel AI agent development
@@ -29,15 +29,15 @@ while preserving shared project memory (which Claude Code derives from the
 session's starting CWD).
 
 **Canonical spec:**
-[`standard-tooling/docs/specs/worktree-convention.md`](https://github.com/wphillipmoore/standard-tooling/blob/develop/docs/specs/worktree-convention.md)
+[`vergil-tooling/docs/specs/worktree-convention.md`](https://github.com/vergil-project/vergil-tooling/blob/develop/docs/specs/worktree-convention.md)
 — full rationale, trust model, failure modes, and memory-path implications.
-The canonical text lives in `standard-tooling`; this section is the local
+The canonical text lives in `vergil-tooling`; this section is the local
 on-ramp.
 
 ### Structure
 
 ```text
-~/dev/github/standard-actions/           ← sessions ALWAYS start here
+~/dev/github/vergil-actions/           ← sessions ALWAYS start here
   .git/
   CLAUDE.md, actions/, …                 ← main worktree (usually `develop`)
   .worktrees/                            ← container for parallel worktrees
@@ -48,7 +48,7 @@ on-ramp.
 ### Rules
 
 1. **Sessions always start at the project root.**
-   `cd ~/dev/github/standard-actions && claude` — never from inside
+   `cd ~/dev/github/vergil-actions && claude` — never from inside
    `.worktrees/<name>/`. This keeps the memory-path slug stable and shared.
 2. **Each parallel agent is assigned exactly one worktree.** The session
    prompt names the worktree (see Agent prompt contract below).
@@ -71,7 +71,7 @@ placeholders):
 ```text
 You are working on issue #<N>: <issue title>.
 
-Your worktree is: /Users/pmoore/dev/github/standard-actions/.worktrees/issue-<N>-<slug>/
+Your worktree is: /Users/pmoore/dev/github/vergil-actions/.worktrees/issue-<N>-<slug>/
 Your branch is:   feature/<N>-<slug>
 
 Rules for this session:
@@ -93,7 +93,7 @@ This is a shared GitHub Actions library providing reusable composite actions
 for CI/CD across all managed repositories. Actions are consumed by pinning
 to a tag or branch reference.
 
-**Project name**: standard-actions
+**Project name**: vergil-actions
 
 **Status**: v1.x (stable)
 
@@ -109,22 +109,22 @@ to a tag or branch reference.
 git config core.hooksPath .githooks  # Enable the pre-commit gate
 ```
 
-Standard-tooling CLI tools (`st-commit`, `st-validate`, etc.) are
+Standard-tooling CLI tools (`vrg-commit`, `vrg-validate`, etc.) are
 pre-installed in the dev container images. No local setup required beyond
-the host-level tool (`st-docker-run`, `st-commit`, etc.):
+the host-level tool (`vrg-docker-run`, `vrg-commit`, etc.):
 
 ```bash
-uv tool install 'standard-tooling @ git+https://github.com/wphillipmoore/standard-tooling@v1.4'
+uv tool install 'vergil-tooling @ git+https://github.com/vergil-project/vergil-tooling@v1.4'
 ```
 
 All validation tools (yamllint, shellcheck, actionlint, markdownlint, etc.)
-run inside the `ghcr.io/wphillipmoore/dev-base:latest` container — no manual
+run inside the `ghcr.io/vergil-project/dev-base:latest` container — no manual
 host installs needed.
 
 ### Validation
 
 ```bash
-st-docker-run -- st-validate   # Canonical validation (runs in dev-base container)
+vrg-docker-run -- vrg-validate   # Canonical validation (runs in dev-base container)
 ```
 
 ## Architecture
@@ -156,8 +156,8 @@ look in `actions/{phase}/{domain}/`. Cross-phase actions live in
   documentation deployment
 - `actions/shared/security/trivy` — Trivy vulnerability scanning
   (filesystem, SBOM, container image)
-- `actions/shared/setup/standard-tooling` — Installs standard-tooling
-  from the version pinned in `standard-tooling.toml`
+- `actions/shared/setup/vergil-tooling` — Installs vergil-tooling
+  from the version pinned in `vergil.toml`
 - `actions/local/freeze-internal-refs` — Freezes relative action refs
   to absolute tagged refs (repo-local)
 
@@ -184,12 +184,12 @@ action are validated by the same PR that modifies them.
 ### Standard-Tooling Integration
 
 Shared validators (`st-repo-profile`, `st-pr-issue-linkage`) and local
-validation (`st-validate`) are provided by `standard-tooling`. CI uses
-the `ghcr.io/wphillipmoore/dev-base:latest` container image which has all
-validators pre-installed. Locally, `st-docker-run` uses the same image so
+validation (`vrg-validate`) are provided by `vergil-tooling`. CI uses
+the `ghcr.io/vergil-project/dev-base:latest` container image which has all
+validators pre-installed. Locally, `vrg-docker-run` uses the same image so
 validation results match CI exactly.
 
 ### Validation
 
-All validation — including actionlint — is handled by `st-validate` via the
+All validation — including actionlint — is handled by `vrg-validate` via the
 built-in command registry. No repo-specific validation scripts are needed.

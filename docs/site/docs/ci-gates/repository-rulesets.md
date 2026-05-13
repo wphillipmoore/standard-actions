@@ -74,7 +74,7 @@ ci: standards-compliance
 ci: shellcheck
 ```
 
-The standard-actions repository additionally requires `ci: actionlint`.
+The vergil-actions repository additionally requires `ci: actionlint`.
 
 ### Documentation repositories
 
