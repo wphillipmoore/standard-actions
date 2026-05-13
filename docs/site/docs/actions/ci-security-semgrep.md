@@ -6,7 +6,7 @@ rulesets.
 ## Usage
 
 ```yaml
-- uses: vergil-project/vergil-actions/actions/ci/security/semgrep@v1.5
+- uses: vergil-project/vergil-actions/actions/ci/security/semgrep@v2.0
   with:
     language: python
     extra-config: "p/owasp-top-ten"
@@ -62,7 +62,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v6
-      - uses: vergil-project/vergil-actions/actions/ci/security/semgrep@v1.5
+      - uses: vergil-project/vergil-actions/actions/ci/security/semgrep@v2.0
         with:
           language: python
 ```
@@ -70,7 +70,7 @@ jobs:
 ### Go with additional OWASP rules
 
 ```yaml
-- uses: vergil-project/vergil-actions/actions/ci/security/semgrep@v1.5
+- uses: vergil-project/vergil-actions/actions/ci/security/semgrep@v2.0
   with:
     language: golang
     extra-config: "p/owasp-top-ten"

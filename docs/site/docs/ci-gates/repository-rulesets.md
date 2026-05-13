@@ -143,13 +143,13 @@ Rulesets can be updated programmatically using the GitHub API:
 
 ```bash
 # List rulesets for a repository
-gh api repos/wphillipmoore/{repo}/rulesets \
+gh api repos/vergil-project/{repo}/rulesets \
   --jq '.[] | {id: .id, name: .name}'
 
 # View a specific ruleset
-gh api repos/wphillipmoore/{repo}/rulesets/{id}
+gh api repos/vergil-project/{repo}/rulesets/{id}
 
 # Update required status checks
-gh api --method PUT repos/wphillipmoore/{repo}/rulesets/{id} \
+gh api --method PUT repos/vergil-project/{repo}/rulesets/{id} \
   --input payload.json
 ```

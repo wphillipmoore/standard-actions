@@ -13,7 +13,7 @@ are configured in **Settings > Secrets and variables > Actions**.
 | Secret | Required by | Purpose |
 | ------ | ----------- | ------- |
 | `PROJECT_TOKEN` | All repositories | Adds new issues to the GitHub Project via the `add-to-project` workflow |
-| `APP_ID` | Library repositories | GitHub App identifier for `publish/version-bump-pr` |
+| `APP_CLIENT_ID` | Library repositories | GitHub App Client ID for `publish/version-bump-pr` |
 | `APP_PRIVATE_KEY` | Library repositories | GitHub App signing key for `publish/version-bump-pr` |
 
 ### PROJECT_TOKEN
@@ -38,7 +38,7 @@ token with the `project` scope.
 6. Set the secret in each repository:
 
 ```bash
-gh secret set PROJECT_TOKEN --repo wphillipmoore/<repo> --body "<token>"
+gh secret set PROJECT_TOKEN --repo vergil-project/<repo> --body "<token>"
 ```
 
 !!! warning "Do not pipe tokens via stdin"
@@ -47,7 +47,7 @@ gh secret set PROJECT_TOKEN --repo wphillipmoore/<repo> --body "<token>"
     can corrupt the secret value during encryption, causing "Bad credentials"
     errors at runtime that are difficult to diagnose.
 
-### APP_ID and APP_PRIVATE_KEY
+### APP_CLIENT_ID and APP_PRIVATE_KEY
 
 These secrets are used together to generate a GitHub App installation token at
 publish time. The token is passed to the
@@ -64,6 +64,7 @@ trigger CI normally and can auto-merge.
 | ---------- | ------ | ------- |
 | Contents | Read & write | Create branches, push commits |
 | Pull requests | Read & write | Create and merge PRs |
+| Workflows | Read & write | Push commits that modify workflow files |
 | Metadata | Read-only | Required by GitHub (always enabled) |
 
 **Creation steps:**
@@ -74,7 +75,7 @@ trigger CI normally and can auto-merge.
 4. Under **Permissions > Repository permissions**, grant the permissions listed
    above.
 5. Disable webhooks (not needed).
-6. Create the app and note the **App ID** from the app's settings page.
+6. Create the app and note the **Client ID** from the app's settings page.
 7. Under **Private keys**, click **Generate a private key**. Save the downloaded
    `.pem` file.
 8. Under **Install App**, install it on your account and grant access to the
@@ -82,8 +83,8 @@ trigger CI normally and can auto-merge.
 9. Set the secrets in each library repository:
 
 ```bash
-gh secret set APP_ID --repo wphillipmoore/<repo> --body "<app-id>"
-gh secret set APP_PRIVATE_KEY --repo wphillipmoore/<repo> --body "$(cat <path-to-private-key>.pem)"
+gh secret set APP_CLIENT_ID --repo vergil-project/<repo> --body "<client-id>"
+gh secret set APP_PRIVATE_KEY --repo vergil-project/<repo> --body "$(cat <path-to-private-key>.pem)"
 ```
 
 **Key rotation:** Generate a new private key from the app's settings page, update
@@ -148,7 +149,7 @@ The `GITHUB_TOKEN` is insufficient in two cases:
 1. **GitHub Project access** — The `GITHUB_TOKEN` cannot interact with
    user-owned Projects v2. The `PROJECT_TOKEN` (classic PAT) is required.
 2. **CI-triggering PRs** — PRs created by `GITHUB_TOKEN` do not trigger
-   workflow runs. The GitHub App token (`APP_ID` + `APP_PRIVATE_KEY`) is
+   workflow runs. The GitHub App token (`APP_CLIENT_ID` + `APP_PRIVATE_KEY`) is
    required for the version bump PR to trigger CI and auto-merge.
 
 ## Auto-merge
@@ -188,12 +189,12 @@ Create three rulesets per the standard configuration:
 ### 3. Secrets
 
 - [ ] Set `PROJECT_TOKEN` (all repositories)
-- [ ] Set `APP_ID` and `APP_PRIVATE_KEY` (library repositories only)
+- [ ] Set `APP_CLIENT_ID` and `APP_PRIVATE_KEY` (library repositories only)
 
 ```bash
-gh secret set PROJECT_TOKEN --repo wphillipmoore/<repo> --body "<token>"
-gh secret set APP_ID --repo wphillipmoore/<repo> --body "<app-id>"
-gh secret set APP_PRIVATE_KEY --repo wphillipmoore/<repo> --body "$(cat <key>.pem)"
+gh secret set PROJECT_TOKEN --repo vergil-project/<repo> --body "<token>"
+gh secret set APP_CLIENT_ID --repo vergil-project/<repo> --body "<client-id>"
+gh secret set APP_PRIVATE_KEY --repo vergil-project/<repo> --body "$(cat <key>.pem)"
 ```
 
 ### 4. GitHub App installation

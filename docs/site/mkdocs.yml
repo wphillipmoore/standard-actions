@@ -1,8 +1,8 @@
-site_name: Standard Actions
-site_url: https://wphillipmoore.github.io/standard-actions/
+site_name: Vergil Actions
+site_url: https://vergil-project.github.io/vergil-actions/
 site_description: Shared GitHub Actions library for reusable CI and automation
-repo_url: https://github.com/wphillipmoore/standard-actions
-repo_name: standard-actions
+repo_url: https://github.com/vergil-project/vergil-actions
+repo_name: vergil-actions
 edit_uri: ""
 
 strict: true
