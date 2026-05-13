@@ -1,287 +1,287 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/changelog/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/changelog/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/configuration/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/configuration/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/getting-started/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/getting-started/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/actions/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/cd-docs-deploy/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/actions/cd-docs-deploy/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/cd-release-tag-and-release/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/actions/cd-release-tag-and-release/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/cd-release-version-bump-pr/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/actions/cd-release-version-bump-pr/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/ci-security-codeql/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/actions/ci-security-codeql/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/ci-security-semgrep/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/actions/ci-security-semgrep/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/ci-security-standards-compliance/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/actions/ci-security-standards-compliance/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/ci-version-bump-version-divergence/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/actions/ci-version-bump-version-divergence/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/actions/shared-security-trivy/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/actions/shared-security-trivy/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/ci-gates/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/ci-gates/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/ci-gates/repository-rulesets/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/ci-gates/repository-rulesets/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/ci-gates/required-checks/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/ci-gates/required-checks/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/ci-gates/security-scanning/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/ci-gates/security-scanning/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/development/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/development/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/development/contributing/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/development/contributing/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/development/environment-and-tooling/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/development/environment-and-tooling/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/development/validation/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/development/validation/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.1.0/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.1.0/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.1.2/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.1.2/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.1.3/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.1.3/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.2.0/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.2.0/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.2.1/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.2.1/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.3.0/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.3.0/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.3.1/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.3.1/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.3.2/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.3.2/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.3.3/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.3.3/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.4.0/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.4.0/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.4.1/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.4.1/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.4.2/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.4.2/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.4.3/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.4.3/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.4.4/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.4.4/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.4.5/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.4.5/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.4.6/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.4.6/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.4.7/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.4.7/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.4.8/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.4.8/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.0/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.0/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.1/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.1/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.10/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.10/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.11/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.11/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.12/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.12/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.13/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.13/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.14/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.14/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.15/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.15/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.16/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.16/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.17/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.17/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.18/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.18/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.19/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.19/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.2/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.2/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.20/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.20/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.21/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.21/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.22/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.22/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.23/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.23/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.3/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.3/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.4/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.4/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.5/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.5/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.6/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.6/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.7/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.7/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.8/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.8/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v1.5.9/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.9/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/releases/v2.0.2/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/releases/v2.0.2/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/workflows/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/workflows/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/workflows/ci-audit/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/workflows/ci-audit/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/workflows/ci-quality/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/workflows/ci-quality/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/workflows/ci-security/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/workflows/ci-security/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/workflows/ci-test/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/workflows/ci-test/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
     <url>
-         <loc>https://wphillipmoore.github.io/standard-actions/dev/workflows/ci-version-bump/</loc>
+         <loc>https://vergil-project.github.io/vergil-actions/dev/workflows/ci-version-bump/</loc>
          <lastmod>2026-05-13</lastmod>
     </url>
 </urlset>
