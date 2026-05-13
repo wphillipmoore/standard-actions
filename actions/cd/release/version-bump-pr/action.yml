@@ -1,10 +1,10 @@
 name: Version bump PR
 description: >-
   Computes the next patch version, creates a branch from develop that merges
-  main, bumps the version via st-version, and opens a PR.  Skips if develop
+  main, bumps the version via vrg-version, and opens a PR.  Skips if develop
   already has the expected next version.  The PR is not auto-merged — callers
   consume the `pr-url` output and drive the merge themselves (e.g. via
-  `st-merge-when-green` from a release skill) because org-wide auto-merge
+  `vrg-merge-when-green` from a release skill) because org-wide auto-merge
   is disabled.
 
 inputs:
@@ -13,7 +13,7 @@ inputs:
     required: true
   post-bump-command:
     description: >-
-      Shell command to run after st-version bump and before commit.
+      Shell command to run after vrg-version bump and before commit.
       Leave empty to skip.
     required: false
     default: ""
@@ -64,7 +64,7 @@ runs:
         print('.'.join(v))
         ")
         echo "version=$next" >> "$GITHUB_OUTPUT"
-        echo "branch=chore/bump-version-$next" >> "$GITHUB_OUTPUT"
+        echo "branch=release/bump-version-$next" >> "$GITHUB_OUTPUT"
 
     - name: Check if develop already has next version
       id: check
@@ -72,7 +72,7 @@ runs:
       run: |
         git fetch origin develop
         git worktree add --detach /tmp/develop-check origin/develop 2>/dev/null
-        develop_version=$(cd /tmp/develop-check && st-version show 2>/dev/null) || true
+        develop_version=$(cd /tmp/develop-check && vrg-version show 2>/dev/null) || true
         git worktree remove /tmp/develop-check 2>/dev/null || true
         if [ "$develop_version" = "${{ steps.next.outputs.version }}" ]; then
           echo "needed=false" >> "$GITHUB_OUTPUT"
@@ -94,7 +94,7 @@ runs:
     - name: Bump version
       if: steps.check.outputs.needed == 'true'
       shell: bash
-      run: st-version bump
+      run: vrg-version bump
 
     - name: Run post-bump command
       if: steps.check.outputs.needed == 'true' && inputs.post-bump-command != ''

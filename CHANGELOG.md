@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.2] - 2026-05-13
+
+### Bug fixes
+
+- use full action paths in reusable workflows and rename st-* to vrg-*
+- use full action path in standards-compliance composite action
+- use release/* branch prefix in version-bump-pr (#468)
+- migrate from app-id to client-id for GitHub App token (#469)
+
+### Chores
+
+- bump version to 1.5.24
+
+### Documentation
+
+- update workflow README refs to vergil-actions v2.0
+
+### Features
+
+- rename to vergil-actions under vergil-project org (#464)
+
 ## [1.5.23] - 2026-05-11
 
 ### Chores

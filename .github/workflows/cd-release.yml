@@ -48,7 +48,7 @@ on:
         type: string
         default: ""
     secrets:
-      APP_ID:
+      APP_CLIENT_ID:
         required: true
       APP_PRIVATE_KEY:
         required: true
@@ -89,7 +89,7 @@ jobs:
           fetch-depth: 0
 
       - name: Validate inputs
-        uses: ./actions/cd/release/validate-inputs
+        uses: vergil-project/vergil-actions/actions/cd/release/validate-inputs@v2.0
         with:
           language: ${{ inputs.language }}
           container-tag: ${{ inputs.container-tag }}
@@ -101,7 +101,7 @@ jobs:
       - name: Extract version
         id: version
         run: |
-          version=$(st-version show)
+          version=$(vrg-version show)
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "tag=v$version" >> "$GITHUB_OUTPUT"
 
@@ -129,7 +129,7 @@ jobs:
         if: >-
           contains(fromJSON('["python","java","ruby","rust","go"]'), inputs.language) &&
           steps.tag_check.outputs.exists == 'false'
-        uses: ./actions/cd/release/registry-publish
+        uses: vergil-project/vergil-actions/actions/cd/release/registry-publish@v2.0
         with:
           language: ${{ inputs.language }}
           version: ${{ steps.version.outputs.version }}
@@ -171,9 +171,9 @@ jobs:
       - name: Generate app token for bump PR
         if: steps.tag_check.outputs.exists == 'false'
         id: app-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@v3.2.0
         with:
-          app-id: ${{ secrets.APP_ID }}
+          client-id: ${{ secrets.APP_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Version bump PR
