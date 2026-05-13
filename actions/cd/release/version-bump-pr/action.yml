@@ -64,7 +64,7 @@ runs:
         print('.'.join(v))
         ")
         echo "version=$next" >> "$GITHUB_OUTPUT"
-        echo "branch=chore/bump-version-$next" >> "$GITHUB_OUTPUT"
+        echo "branch=release/bump-version-$next" >> "$GITHUB_OUTPUT"
 
     - name: Check if develop already has next version
       id: check
