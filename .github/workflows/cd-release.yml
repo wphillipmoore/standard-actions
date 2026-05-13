@@ -89,7 +89,7 @@ jobs:
           fetch-depth: 0
 
       - name: Validate inputs
-        uses: ./actions/cd/release/validate-inputs
+        uses: vergil-project/vergil-actions/actions/cd/release/validate-inputs@v2.0
         with:
           language: ${{ inputs.language }}
           container-tag: ${{ inputs.container-tag }}
@@ -101,7 +101,7 @@ jobs:
       - name: Extract version
         id: version
         run: |
-          version=$(st-version show)
+          version=$(vrg-version show)
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "tag=v$version" >> "$GITHUB_OUTPUT"
 
@@ -129,7 +129,7 @@ jobs:
         if: >-
           contains(fromJSON('["python","java","ruby","rust","go"]'), inputs.language) &&
           steps.tag_check.outputs.exists == 'false'
-        uses: ./actions/cd/release/registry-publish
+        uses: vergil-project/vergil-actions/actions/cd/release/registry-publish@v2.0
         with:
           language: ${{ inputs.language }}
           version: ${{ steps.version.outputs.version }}
