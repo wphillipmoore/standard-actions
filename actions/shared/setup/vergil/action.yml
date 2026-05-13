@@ -22,7 +22,7 @@ runs:
           exit 0
         fi
 
-        TAG=$(sed -n 's/^[[:space:]]*vergil[[:space:]]*=[[:space:]]*"\(.*\)"/\1/p' vergil.toml)
+        TAG=$(sed -n 's/^[[:space:]]*vergil-tooling[[:space:]]*=[[:space:]]*"\(.*\)"/\1/p' vergil.toml)
         if [ -z "${TAG:-}" ]; then
           echo "::error::vergil.toml not found or missing version tag"
           exit 1
