@@ -2672,7 +2672,7 @@
 
 <h1 id="ci-gate-requirements">CI Gate Requirements<a class="headerlink" href="#ci-gate-requirements" title="Permanent link">&para;</a></h1>
 <p>This section documents the CI gate configuration for all repositories consuming
-standard-actions. It covers which checks are required and the security scanning
+vergil-actions. It covers which checks are required and the security scanning
 requirements.</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
 <p>Every managed repository runs a common set of CI checks on pull requests. CI
@@ -2718,7 +2718,7 @@ organized by category using job name prefixes:</p>
   rather than assembling jobs by hand.</li>
 <li><strong>Required status checks</strong> — Configured in GitHub repository rulesets.
   PRs cannot merge until all required checks pass.</li>
-<li><strong>Self-referencing CI</strong> — The standard-actions repository tests its own
+<li><strong>Self-referencing CI</strong> — The vergil-actions repository tests its own
   actions using local paths (<code>./actions/...</code>).</li>
 </ul>
 <h2 id="pages-in-this-section">Pages in this section<a class="headerlink" href="#pages-in-this-section" title="Permanent link">&para;</a></h2>

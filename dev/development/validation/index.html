@@ -2741,13 +2741,13 @@
 
 <h1 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">&para;</a></h1>
 <h2 id="canonical-command">Canonical command<a class="headerlink" href="#canonical-command" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>st-docker-run<span class="w"> </span>--<span class="w"> </span>st-validate
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>vrg-docker-run<span class="w"> </span>--<span class="w"> </span>vrg-validate
 </code></pre></div>
-<p>This runs all validation inside the <code>ghcr.io/wphillipmoore/dev-base:latest</code>
+<p>This runs all validation inside the <code>ghcr.io/vergil-project/dev-base:latest</code>
 container, which has every required tool pre-installed. No manual host
-installs needed beyond the standard-tooling host tool.</p>
+installs needed beyond the vergil-tooling host tool.</p>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
-<p><code>st-validate</code> reads <code>primary_language</code> from <code>standard-tooling.toml</code> and runs
+<p><code>vrg-validate</code> reads <code>primary_language</code> from <code>vergil.toml</code> and runs
 common checks followed by language-specific checks from the built-in command
 registry. Common checks include repo-profile validation, markdownlint,
 shellcheck, yamllint, and actionlint.</p>
