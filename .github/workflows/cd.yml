@@ -29,7 +29,7 @@ jobs:
       # The App (APP_CLIENT_ID/APP_PRIVATE_KEY) has workflows:write granted.
       - name: Generate app token
         id: app-token
-        uses: actions/create-github-app-token@v3.2.0
+        uses: actions/create-github-app-token@v3
         with:
           client-id: ${{ secrets.APP_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
