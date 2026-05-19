@@ -106,7 +106,7 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.app-token }}
       run: |
-        issue=$(vrg-resolve-tracking-issue)
+        issue=$(vrg-resolve-tracking-issue --commit origin/main)
         echo "Resolved tracking issue: #${issue}"
         echo "number=$issue" >> "$GITHUB_OUTPUT"
         echo "linkage=Ref #${issue}" >> "$GITHUB_OUTPUT"
