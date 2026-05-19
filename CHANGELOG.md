@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.5] - 2026-05-19
+
+### Chores
+
+- bump version to 2.0.5
+- remove redundant vergil-tooling key from vergil.toml
+- remove per-repo templates in favor of org defaults
+- remove co-authors section, normalize vergil dep to v2.0
+
+### Features
+
+- deploy permission model configuration
+- deploy deny rules to project-level settings
+- replace title-scanning with deterministic tracking-issue lookup
+
 ## [2.0.4] - 2026-05-13
 
 ### Chores
