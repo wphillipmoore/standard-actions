@@ -15,10 +15,9 @@ plugin/skill issue) before writing. See that file for the full
 workflow.
 
 Available skills:
-
-- `/vergil-tooling:memory-init` — set up or update the policy header
+- `/vergil:memory-init` — set up or update the policy header
   in a project's `MEMORY.md`.
-- `/vergil-tooling:memory-audit` — structured collaborative review
+- `/vergil:memory-audit` — structured collaborative review
   of memory files.
 
 ## Parallel AI agent development
@@ -37,19 +36,19 @@ on-ramp.
 ### Structure
 
 ```text
-~/dev/github/vergil-actions/           ← sessions ALWAYS start here
+<project-root>/                              ← sessions ALWAYS start here
   .git/
-  CLAUDE.md, actions/, …                 ← main worktree (usually `develop`)
-  .worktrees/                            ← container for parallel worktrees
-    issue-183-adopt-worktree-convention/ ← worktree on feature/183-...
+  CLAUDE.md, …                               ← main worktree (usually `develop`)
+  .worktrees/                                ← container for parallel worktrees
+    issue-<N>-<short-slug>/                  ← worktree on feature/<N>-<short-slug>
     …
 ```
 
 ### Rules
 
 1. **Sessions always start at the project root.**
-   `cd ~/dev/github/vergil-actions && claude` — never from inside
-   `.worktrees/<name>/`. This keeps the memory-path slug stable and shared.
+   Never start Claude from inside `.worktrees/<name>/`. This keeps the
+   memory-path slug stable and shared.
 2. **Each parallel agent is assigned exactly one worktree.** The session
    prompt names the worktree (see Agent prompt contract below).
    - For Read / Edit / Write tools: use the worktree's absolute path.
@@ -71,21 +70,44 @@ placeholders):
 ```text
 You are working on issue #<N>: <issue title>.
 
-Your worktree is: /Users/pmoore/dev/github/vergil-actions/.worktrees/issue-<N>-<slug>/
+Your worktree is: <project-root>/.worktrees/issue-<N>-<slug>/
 Your branch is:   feature/<N>-<slug>
 
 Rules for this session:
 - Do all git operations from inside your worktree:
-    cd <absolute-worktree-path> && git <command>
+    cd <absolute-worktree-path> && vrg-git <command>
 - For Read / Edit / Write tools, use the absolute worktree path.
 - For Bash commands that touch files, cd into the worktree first
   or use absolute paths.
 - Do not edit files at the project root. The main worktree is
   read-only — all changes flow through your worktree on your
   feature branch.
+- When you need to run validation, run it from inside your worktree
+  (vrg-docker-run mounts the current directory).
 ```
 
 All fields are required.
+
+## Shell command policy
+
+Use `vrg-git` instead of `git` for all git operations. Use `vrg-gh`
+instead of `gh` for all GitHub CLI operations. These wrappers enforce
+subcommand allowlists, flag deny lists, credential selection, and
+audit logging.
+
+Raw `git` and `gh` are denied by the permission model. If a command
+is not available through the wrappers, explain the situation to the
+human who can run it directly via `! <command>` in the prompt.
+
+## Validation
+
+```bash
+vrg-docker-run -- vrg-validate
+```
+
+This is the **only** validation command. Do not run individual linters,
+formatters, or other tools outside of `vrg-validate`. If a tool is not
+invoked by `vrg-validate`, it is not part of the validation pipeline.
 
 ## Project Overview
 
@@ -100,17 +122,6 @@ to a tag or branch reference.
 **Canonical Standards**: This repository follows standards at
 <https://github.com/wphillipmoore/standards-and-conventions>
 (local path: `../standards-and-conventions` if available)
-
-## Shell command policy
-
-Use `vrg-git` instead of `git` for all git operations. Use `vrg-gh`
-instead of `gh` for all GitHub CLI operations. These wrappers enforce
-subcommand allowlists, flag deny lists, credential selection, and
-audit logging.
-
-Raw `git` and `gh` are denied by the permission model. If a command
-is not available through the wrappers, explain the situation to the
-human who can run it directly via `! <command>` in the prompt.
 
 ## Development Commands
 
@@ -131,12 +142,6 @@ uv tool install 'vergil-tooling @ git+https://github.com/vergil-project/vergil-t
 All validation tools (yamllint, shellcheck, actionlint, markdownlint, etc.)
 run inside the `ghcr.io/vergil-project/dev-base:latest` container — no manual
 host installs needed.
-
-### Validation
-
-```bash
-vrg-docker-run -- vrg-validate   # Canonical validation (runs in dev-base container)
-```
 
 ## Architecture
 
@@ -199,8 +204,3 @@ validation (`vrg-validate`) are provided by `vergil-tooling`. CI uses
 the `ghcr.io/vergil-project/dev-base:latest` container image which has all
 validators pre-installed. Locally, `vrg-docker-run` uses the same image so
 validation results match CI exactly.
-
-### Validation
-
-All validation — including actionlint — is handled by `vrg-validate` via the
-built-in command registry. No repo-specific validation scripts are needed.
