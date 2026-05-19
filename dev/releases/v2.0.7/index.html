@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.5/">
+        <link rel="canonical" href="https://vergil-project.github.io/vergil-actions/dev/releases/v2.0.7/">
       
       
-        <link rel="prev" href="../v1.5.6/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../v1.5.4/">
+        <link rel="next" href="../v2.0.5/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>v1.5.5 - Vergil Actions</title>
+        <title>v2.0.7 - Vergil Actions</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#release-155-2026-05-06" class="md-skip">
+        <a href="#release-207-2026-05-19" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              v1.5.5
+              v2.0.7
             
           </span>
         </div>
@@ -725,10 +725,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../v2.0.7/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v2.0.7
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -744,6 +771,48 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bug-fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bug fixes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chores
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1369,37 +1438,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    v1.5.5
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../v1.5.5/" class="md-nav__link">
         
   
   
@@ -1415,37 +1457,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#bug-fixes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Bug fixes
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -3259,6 +3270,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#chores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chores
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3276,21 +3298,14 @@
 
 
 
-<h1 id="release-155-2026-05-06">Release 1.5.5 (2026-05-06)<a class="headerlink" href="#release-155-2026-05-06" title="Permanent link">&para;</a></h1>
+<h1 id="release-207-2026-05-19">Release 2.0.7 (2026-05-19)<a class="headerlink" href="#release-207-2026-05-19" title="Permanent link">&para;</a></h1>
 <h2 id="bug-fixes">Bug fixes<a class="headerlink" href="#bug-fixes" title="Permanent link">&para;</a></h2>
 <ul>
-<li>
-<p><strong>install dev dependencies in lint and typecheck jobs</strong>
-The lint and typecheck jobs install standard-tooling but never install the calling repo's dev dependencies. For Python repos, ruff and mypy are not on PATH when st-validate invokes them. Add a conditional step to run uv sync --group dev --frozen for Python repos before running st-validate. Closes #349</p>
-</li>
-<li>
-<p><strong>install dev dependencies in test and audit reusable workflows</strong>
-Same fix as ci-quality.yml: the ci-test.yml and ci-audit.yml reusable workflows need dev dependencies installed for Python repos so that pytest, uv lock --check, and other dev tools are available when st-validate invokes them.</p>
-</li>
-<li>
-<p><strong>rename step from Install dev dependencies to Install dependencies</strong>
-uv sync --group dev installs all dependencies (main + dev), not just dev. The step name was misleading.</p>
-</li>
+<li><strong>pass --commit origin/main to vrg-resolve-tracking-issue</strong></li>
+</ul>
+<h2 id="chores">Chores<a class="headerlink" href="#chores" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>bump version to 2.0.6</strong></li>
 </ul>
 
 
