@@ -1,11 +1,12 @@
 name: Version bump PR
 description: >-
   Computes the next patch version, creates a branch from develop that merges
-  main, bumps the version via vrg-version, and opens a PR.  Skips if develop
-  already has the expected next version.  The PR is not auto-merged — callers
-  consume the `pr-url` output and drive the merge themselves (e.g. via
-  `vrg-merge-when-green` from a release skill) because org-wide auto-merge
-  is disabled.
+  main, bumps the version via vrg-version, and opens a PR.  Fails if develop
+  already has the expected next version (the upstream version-divergence gate
+  should prevent this; this check is its hard backstop).  The PR is not
+  auto-merged — callers consume the `pr-url` output and drive the merge
+  themselves (e.g. via `vrg-merge-when-green` from a release skill) because
+  org-wide auto-merge is disabled.
 
 inputs:
   current-version:
@@ -27,13 +28,6 @@ inputs:
       GitHub App token used for PR creation.  Must be passed from the caller
       because composite actions cannot access secrets directly.
     required: true
-  tracking-issue:
-    description: >-
-      Issue number for the release tracking issue (e.g. 42).  Used for PR body
-      issue linkage.  If omitted, the action searches for an open issue titled
-      "release: <current-version>" in the current repository.
-    required: false
-    default: ""
   pr-body-extra:
     description: >-
       Additional text appended to the PR body (e.g. dependency refresh notes).
@@ -45,11 +39,8 @@ outputs:
     description: The computed next patch version.
     value: ${{ steps.next.outputs.version }}
   pr-url:
-    description: URL of the created PR (empty if bump was not needed).
+    description: URL of the created PR.
     value: ${{ steps.create-pr.outputs.pr-url }}
-  bump-needed:
-    description: "'true' if a bump PR was created, 'false' if skipped."
-    value: ${{ steps.check.outputs.needed }}
 
 runs:
   using: composite
@@ -66,8 +57,7 @@ runs:
         echo "version=$next" >> "$GITHUB_OUTPUT"
         echo "branch=release/bump-version-$next" >> "$GITHUB_OUTPUT"
 
-    - name: Check if develop already has next version
-      id: check
+    - name: Assert develop does not already have next version
       shell: bash
       run: |
         git fetch origin develop
@@ -75,13 +65,13 @@ runs:
         develop_version=$(cd /tmp/develop-check && vrg-version show 2>/dev/null) || true
         git worktree remove /tmp/develop-check 2>/dev/null || true
         if [ "$develop_version" = "${{ steps.next.outputs.version }}" ]; then
-          echo "needed=false" >> "$GITHUB_OUTPUT"
-        else
-          echo "needed=true" >> "$GITHUB_OUTPUT"
+          echo "::error::develop already has version ${{ steps.next.outputs.version }}." \
+               "This should never happen — the CI version-divergence gate should" \
+               "prevent it. Investigate before retrying."
+          exit 1
         fi
 
     - name: Create bump branch and merge main
-      if: steps.check.outputs.needed == 'true'
       shell: bash
       # -X theirs resolves add/add CHANGELOG conflicts on first-release repos
       # where develop's scaffolding CHANGELOG diverges from main's generated
@@ -92,17 +82,15 @@ runs:
         git merge origin/main --no-edit -X theirs
 
     - name: Bump version
-      if: steps.check.outputs.needed == 'true'
       shell: bash
       run: vrg-version bump
 
     - name: Run post-bump command
-      if: steps.check.outputs.needed == 'true' && inputs.post-bump-command != ''
+      if: inputs.post-bump-command != ''
       shell: bash
       run: ${{ inputs.post-bump-command }}
 
     - name: Commit and push
-      if: steps.check.outputs.needed == 'true'
       shell: bash
       run: |
         git add -A
@@ -114,39 +102,17 @@ runs:
 
     - name: Resolve tracking issue
       id: tracking
-      if: steps.check.outputs.needed == 'true'
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.app-token }}
       run: |
-        issue="${{ inputs.tracking-issue }}"
-        if [ -n "$issue" ]; then
-          echo "Using explicit tracking-issue input: #${issue}"
-        else
-          echo "Searching for issue titled \"release: ${{ inputs.current-version }}\"..."
-          issue=$(gh issue list \
-            --state all \
-            --limit 200 \
-            --json number,title \
-            --jq ".[] | select(.title == \"release: ${{ inputs.current-version }}\") | .number" \
-            | head -1) || true
-          if [ -n "$issue" ]; then
-            echo "Found tracking issue: #${issue}"
-          else
-            echo "No tracking issue found — PR will have no issue linkage"
-          fi
-        fi
-        if [ -n "$issue" ]; then
-          echo "number=$issue" >> "$GITHUB_OUTPUT"
-          echo "linkage=Ref #${issue}" >> "$GITHUB_OUTPUT"
-        else
-          echo "number=" >> "$GITHUB_OUTPUT"
-          echo "linkage=" >> "$GITHUB_OUTPUT"
-        fi
+        issue=$(vrg-resolve-tracking-issue)
+        echo "Resolved tracking issue: #${issue}"
+        echo "number=$issue" >> "$GITHUB_OUTPUT"
+        echo "linkage=Ref #${issue}" >> "$GITHUB_OUTPUT"
 
     - name: Create and configure PR
       id: create-pr
-      if: steps.check.outputs.needed == 'true'
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.app-token }}
@@ -156,16 +122,12 @@ runs:
           extra=$'\n'"${{ inputs.pr-body-extra }}"
         fi
 
-        linkage="${{ steps.tracking.outputs.linkage }}"
-
         body_file=$(mktemp)
         {
           echo "Automated patch version bump after publishing ${{ inputs.current-version }}."
           echo ""
-          if [ -n "$linkage" ]; then
-            echo "$linkage"
-            echo ""
-          fi
+          echo "${{ steps.tracking.outputs.linkage }}"
+          echo ""
           echo "This merges \`main\` back into \`develop\` to pick up the release tag and any"
           echo "other release-branch artifacts, then sets the working version to the next"
           echo "expected patch release. Change this to a minor or major bump if the next"
