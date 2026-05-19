@@ -32,7 +32,7 @@ runs:
         mapfile -t files < <(find .github/workflows actions \
           -type f \( -name '*.yml' -o -name '*.yaml' \) 2>/dev/null)
         for f in "${files[@]}"; do
-          sed -i.bak -E "/uses:/s|\./actions/([^[:space:]]+)|${OWNER_REPO}/actions/\1@${RELEASE_TAG}|g" "$f"
+          sed -i.bak -E "/uses:/s|\vergil-project/vergil-actions/actions/([^[:space:]]+)|${OWNER_REPO}/actions/\1@${RELEASE_TAG}|g"@v2.0.6 "$f"
           sed -i.bak -E "/uses:/s|(${OWNER_REPO}/[^@[:space:]]+)@develop|\1@${RELEASE_TAG}|g" "$f"
           rm -f "$f.bak"
         done
@@ -47,7 +47,7 @@ runs:
           -type f \( -name '*.yml' -o -name '*.yaml' \) 2>/dev/null)
         failed=0
         for f in "${files[@]}"; do
-          if grep -nE 'uses:\s+\./actions/' "$f"; then
+          if grep -nE 'uses:\s+\vergil-project/vergil-actions/actions/'@v2.0.6 "$f"; then
             echo "::error file=${f}::Unfrozen relative action ref (./actions/)"
             failed=1
           fi
