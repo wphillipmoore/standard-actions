@@ -71,13 +71,18 @@ ghcr.io/vergil-project/<prefix>-<suffix>:<tag>
 
 The **prefix** defaults to `prod` and selects which image variant to use.
 Every reusable workflow accepts a `container-prefix` input that overrides
-this default.
+this default. The Docker images are part of the development and deployment
+environment only — there is no runtime dependency on them from the
+artifacts these workflows produce.
 
 ### Overriding the prefix
 
-When validating changes to the dev Docker images, consumer workflows can
-pass `container-prefix: dev` to run CI against the development images
-instead of the production images:
+To test against development Docker images, pass `container-prefix: dev`
+to the reusable workflow calls in the consumer's `ci.yml`, `cd.yml`, or
+`ops.yml`. Override a single workflow call to test one phase, or override
+all calls in a file to run the full CI/CD pipeline against dev images.
+
+**Single workflow override:**
 
 ```yaml
 jobs:
@@ -89,14 +94,38 @@ jobs:
       container-prefix: dev
 ```
 
-Add `container-prefix: dev` to each reusable workflow call in the
-consumer's `ci.yml`, `cd.yml`, or `ops.yml`. When done testing, remove the
-overrides to return to the production images.
+**Full CI file override** (add `container-prefix: dev` to every call):
 
-!!! warning "Do not commit dev overrides"
-    The `container-prefix: dev` override is for local validation of Docker
-    image changes. Do not merge it to `develop` or `main` — production
-    workflows must always use the `prod` images.
+```yaml
+jobs:
+  quality:
+    uses: vergil-project/vergil-actions/.github/workflows/ci-quality.yml@v2.0
+    with:
+      language: python
+      versions: '["3.12", "3.13", "3.14"]'
+      container-prefix: dev
+
+  security:
+    uses: vergil-project/vergil-actions/.github/workflows/ci-security.yml@v2.0
+    with:
+      language: python
+      container-prefix: dev
+
+  test:
+    uses: vergil-project/vergil-actions/.github/workflows/ci-test.yml@v2.0
+    with:
+      language: python
+      versions: '["3.12", "3.13", "3.14"]'
+      container-prefix: dev
+```
+
+Committing and pushing the overrides is expected when running a full
+end-to-end integration test of the dev images through CI and CD. Remove
+the overrides once the dev images have been validated and promoted to
+prod.
+
+For local-only validation, `vrg-docker-run` uses the dev-base image by
+default — no workflow changes are needed.
 
 ## Reference freezing
 
