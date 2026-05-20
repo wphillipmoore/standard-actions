@@ -2,6 +2,13 @@ name: Ops — GitHub Config
 
 on:
   workflow_call:
+    inputs:
+      container-prefix:
+        type: string
+        required: false
+        default: prod
+        description: >-
+          Container image name prefix (prod or dev). Defaults to "prod".
 
 permissions:
   contents: read
@@ -10,6 +17,7 @@ jobs:
   github-config:
     name: github-config
     runs-on: ubuntu-latest
+    container: ghcr.io/vergil-project/${{ inputs.container-prefix || 'prod' }}-base:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
