@@ -60,6 +60,44 @@ jobs:
       language: python
 ```
 
+## Container image prefix
+
+All reusable workflows run inside container images from the
+`ghcr.io/vergil-project/` registry. The image name follows the pattern:
+
+```text
+ghcr.io/vergil-project/<prefix>-<suffix>:<tag>
+```
+
+The **prefix** defaults to `prod` and selects which image variant to use.
+Every reusable workflow accepts a `container-prefix` input that overrides
+this default.
+
+### Overriding the prefix
+
+When validating changes to the dev Docker images, consumer workflows can
+pass `container-prefix: dev` to run CI against the development images
+instead of the production images:
+
+```yaml
+jobs:
+  quality:
+    uses: vergil-project/vergil-actions/.github/workflows/ci-quality.yml@v2.0
+    with:
+      language: python
+      versions: '["3.12", "3.13", "3.14"]'
+      container-prefix: dev
+```
+
+Add `container-prefix: dev` to each reusable workflow call in the
+consumer's `ci.yml`, `cd.yml`, or `ops.yml`. When done testing, remove the
+overrides to return to the production images.
+
+!!! warning "Do not commit dev overrides"
+    The `container-prefix: dev` override is for local validation of Docker
+    image changes. Do not merge it to `develop` or `main` — production
+    workflows must always use the `prod` images.
+
 ## Reference freezing
 
 The workflow source files reference composite actions via `@develop` during

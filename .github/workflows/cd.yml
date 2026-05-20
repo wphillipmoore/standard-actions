@@ -4,6 +4,12 @@ on:
   push:
     branches: [develop, main]
   workflow_dispatch:
+    inputs:
+      container-prefix:
+        type: string
+        default: prod
+        description: >-
+          Container image name prefix (prod or dev). Defaults to "prod".
 
 permissions:
   contents: write
@@ -18,7 +24,7 @@ jobs:
     name: "cd / release"
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    container: ghcr.io/vergil-project/prod-base:latest
+    container: ghcr.io/vergil-project/${{ inputs.container-prefix || 'prod' }}-base:latest
     defaults:
       run:
         shell: bash
@@ -80,5 +86,7 @@ jobs:
 
   docs:
     uses: ./.github/workflows/cd-docs.yml
+    with:
+      container-prefix: ${{ inputs.container-prefix || 'prod' }}
     permissions:
       contents: write
