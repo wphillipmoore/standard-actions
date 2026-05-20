@@ -60,6 +60,74 @@ jobs:
       language: python
 ```
 
+## Container image prefix
+
+All reusable workflows run inside container images from the
+`ghcr.io/vergil-project/` registry. The image name follows the pattern:
+
+```text
+ghcr.io/vergil-project/<prefix>-<suffix>:<tag>
+```
+
+The **prefix** defaults to `prod` and selects which image variant to use.
+Every reusable workflow accepts a `container-prefix` input that overrides
+this default. The Docker images are part of the development and deployment
+environment only — there is no runtime dependency on them from the
+artifacts these workflows produce.
+
+### Overriding the prefix
+
+To test against development Docker images, pass `container-prefix: dev`
+to the reusable workflow calls in the consumer's `ci.yml`, `cd.yml`, or
+`ops.yml`. Override a single workflow call to test one phase, or override
+all calls in a file to run the full CI/CD pipeline against dev images.
+
+**Single workflow override:**
+
+```yaml
+jobs:
+  quality:
+    uses: vergil-project/vergil-actions/.github/workflows/ci-quality.yml@v2.0
+    with:
+      language: python
+      versions: '["3.12", "3.13", "3.14"]'
+      container-prefix: dev
+```
+
+**Full CI file override** (add `container-prefix: dev` to every call):
+
+```yaml
+jobs:
+  quality:
+    uses: vergil-project/vergil-actions/.github/workflows/ci-quality.yml@v2.0
+    with:
+      language: python
+      versions: '["3.12", "3.13", "3.14"]'
+      container-prefix: dev
+
+  security:
+    uses: vergil-project/vergil-actions/.github/workflows/ci-security.yml@v2.0
+    with:
+      language: python
+      container-prefix: dev
+
+  test:
+    uses: vergil-project/vergil-actions/.github/workflows/ci-test.yml@v2.0
+    with:
+      language: python
+      versions: '["3.12", "3.13", "3.14"]'
+      container-prefix: dev
+```
+
+Committing and pushing the overrides is expected when running a full
+end-to-end integration test of the dev images through CI and CD. Remove
+the overrides once the dev images have been validated and promoted to
+prod.
+
+For local validation using development containers, see the
+[`vrg-docker-run` documentation](https://vergil-project.github.io/vergil-tooling/reference/cli-tools-overview/#vrg-docker-run)
+for instructions on specifying the container prefix.
+
 ## Reference freezing
 
 The workflow source files reference composite actions via `@develop` during
