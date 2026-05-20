@@ -10,6 +10,7 @@ jobs:
   github-config:
     name: github-config
     runs-on: ubuntu-latest
+    container: ghcr.io/vergil-project/dev-base:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
