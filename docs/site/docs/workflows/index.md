@@ -124,16 +124,9 @@ end-to-end integration test of the dev images through CI and CD. Remove
 the overrides once the dev images have been validated and promoted to
 prod.
 
-For local validation via `vrg-docker-run`, set the image prefix in
-`vergil.toml`:
-
-```toml
-[docker]
-image-prefix = "dev"
-```
-
-`vrg-docker-run` reads this value and selects the corresponding container
-image. The default is `prod` when the `[docker]` section is absent.
+For local validation using development containers, see the
+[`vrg-docker-run` documentation](https://vergil-project.github.io/vergil-tooling/cli/vrg-docker-run/)
+for instructions on specifying the container prefix.
 
 ## Reference freezing
 
