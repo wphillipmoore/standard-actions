@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.8] - 2026-05-20
+
+### Bug fixes
+
+- align CLAUDE.md with canonical consumer template
+- add dev-base container to github-config job
+- replace hardcoded container images with input-driven prefix
+- revert cd.yml overrides and update container prefix docs
+- correct container prefix docs for local validation
+- replace vergil.toml prefix instructions with vrg-docker-run reference
+- correct vrg-docker-run documentation URL
+
+### Chores
+
+- bump version to 2.0.8
+
 ## [2.0.7] - 2026-05-19
 
 ### Bug fixes
