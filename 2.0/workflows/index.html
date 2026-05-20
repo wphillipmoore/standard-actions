@@ -657,6 +657,8 @@
       
         
       
+        
+      
     
     
     
@@ -709,6 +711,34 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../releases/v2.0.8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v2.0.8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -3241,6 +3271,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#container-image-prefix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Container image prefix
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Container image prefix">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overriding-the-prefix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overriding the prefix
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#reference-freezing" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3361,6 +3419,59 @@ declare the permissions each workflow needs at the job level:</p>
 <a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">      </span><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python</span>
 </code></pre></div>
+<h2 id="container-image-prefix">Container image prefix<a class="headerlink" href="#container-image-prefix" title="Permanent link">&para;</a></h2>
+<p>All reusable workflows run inside container images from the
+<code>ghcr.io/vergil-project/</code> registry. The image name follows the pattern:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>ghcr.io/vergil-project/&lt;prefix&gt;-&lt;suffix&gt;:&lt;tag&gt;
+</code></pre></div>
+<p>The <strong>prefix</strong> defaults to <code>prod</code> and selects which image variant to use.
+Every reusable workflow accepts a <code>container-prefix</code> input that overrides
+this default. The Docker images are part of the development and deployment
+environment only — there is no runtime dependency on them from the
+artifacts these workflows produce.</p>
+<h3 id="overriding-the-prefix">Overriding the prefix<a class="headerlink" href="#overriding-the-prefix" title="Permanent link">&para;</a></h3>
+<p>To test against development Docker images, pass <code>container-prefix: dev</code>
+to the reusable workflow calls in the consumer's <code>ci.yml</code>, <code>cd.yml</code>, or
+<code>ops.yml</code>. Override a single workflow call to test one phase, or override
+all calls in a file to run the full CI/CD pipeline against dev images.</p>
+<p><strong>Single workflow override:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">jobs</span><span class="p">:</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">quality</span><span class="p">:</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vergil-project/vergil-actions/.github/workflows/ci-quality.yml@v2.0</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">      </span><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">      </span><span class="nt">versions</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[&quot;3.12&quot;,</span><span class="nv"> </span><span class="s">&quot;3.13&quot;,</span><span class="nv"> </span><span class="s">&quot;3.14&quot;]&#39;</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">      </span><span class="nt">container-prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev</span>
+</code></pre></div>
+<p><strong>Full CI file override</strong> (add <code>container-prefix: dev</code> to every call):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">jobs</span><span class="p">:</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">quality</span><span class="p">:</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vergil-project/vergil-actions/.github/workflows/ci-quality.yml@v2.0</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">      </span><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">      </span><span class="nt">versions</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[&quot;3.12&quot;,</span><span class="nv"> </span><span class="s">&quot;3.13&quot;,</span><span class="nv"> </span><span class="s">&quot;3.14&quot;]&#39;</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">      </span><span class="nt">container-prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span><span class="nt">security</span><span class="p">:</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vergil-project/vergil-actions/.github/workflows/ci-security.yml@v2.0</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">      </span><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">      </span><span class="nt">container-prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">  </span><span class="nt">test</span><span class="p">:</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vergil-project/vergil-actions/.github/workflows/ci-test.yml@v2.0</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">      </span><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">      </span><span class="nt">versions</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[&quot;3.12&quot;,</span><span class="nv"> </span><span class="s">&quot;3.13&quot;,</span><span class="nv"> </span><span class="s">&quot;3.14&quot;]&#39;</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">      </span><span class="nt">container-prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev</span>
+</code></pre></div>
+<p>Committing and pushing the overrides is expected when running a full
+end-to-end integration test of the dev images through CI and CD. Remove
+the overrides once the dev images have been validated and promoted to
+prod.</p>
+<p>For local validation using development containers, see the
+<a href="https://vergil-project.github.io/vergil-tooling/reference/cli-tools-overview/#vrg-docker-run"><code>vrg-docker-run</code> documentation</a>
+for instructions on specifying the container prefix.</p>
 <h2 id="reference-freezing">Reference freezing<a class="headerlink" href="#reference-freezing" title="Permanent link">&para;</a></h2>
 <p>The workflow source files reference composite actions via <code>@develop</code> during
 development. At release time, the publish workflow freezes all <code>@develop</code>

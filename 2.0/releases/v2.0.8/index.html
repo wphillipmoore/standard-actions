@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://vergil-project.github.io/vergil-actions/2.0/releases/v1.5.5/">
+        <link rel="canonical" href="https://vergil-project.github.io/vergil-actions/2.0/releases/v2.0.8/">
       
       
-        <link rel="prev" href="../v1.5.6/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../v1.5.4/">
+        <link rel="next" href="../v2.0.7/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>v1.5.5 - Vergil Actions</title>
+        <title>v2.0.8 - Vergil Actions</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#release-155-2026-05-06" class="md-skip">
+        <a href="#release-208-2026-05-20" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              v1.5.5
+              v2.0.8
             
           </span>
         </div>
@@ -727,10 +727,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../v2.0.8/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v2.0.8
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -746,6 +773,48 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bug-fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bug fixes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chores
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1399,37 +1468,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    v1.5.5
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../v1.5.5/" class="md-nav__link">
         
   
   
@@ -1445,37 +1487,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#bug-fixes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Bug fixes
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -3289,6 +3300,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#chores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chores
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3306,21 +3328,64 @@
 
 
 
-<h1 id="release-155-2026-05-06">Release 1.5.5 (2026-05-06)<a class="headerlink" href="#release-155-2026-05-06" title="Permanent link">&para;</a></h1>
+<h1 id="release-208-2026-05-20">Release 2.0.8 (2026-05-20)<a class="headerlink" href="#release-208-2026-05-20" title="Permanent link">&para;</a></h1>
 <h2 id="bug-fixes">Bug fixes<a class="headerlink" href="#bug-fixes" title="Permanent link">&para;</a></h2>
 <ul>
+<li><strong>align CLAUDE.md with canonical consumer template</strong></li>
 <li>
-<p><strong>install dev dependencies in lint and typecheck jobs</strong>
-The lint and typecheck jobs install standard-tooling but never install the calling repo's dev dependencies. For Python repos, ruff and mypy are not on PATH when st-validate invokes them. Add a conditional step to run uv sync --group dev --frozen for Python repos before running st-validate. Closes #349</p>
+<p><strong>add dev-base container to github-config job</strong>
+The ops-github-config workflow ran on bare ubuntu-latest without a container image, so uv was not available for the vergil-tooling setup action. All other reusable workflows use the dev-base container which has uv pre-installed.</p>
 </li>
 <li>
-<p><strong>install dev dependencies in test and audit reusable workflows</strong>
-Same fix as ci-quality.yml: the ci-test.yml and ci-audit.yml reusable workflows need dev dependencies installed for Python repos so that pytest, uv lock --check, and other dev tools are available when st-validate invokes them.</p>
+<p><strong>replace hardcoded container images with input-driven prefix</strong>
+The ops-github-config and cd workflows hardcoded their container image
+references instead of using the container-prefix input pattern. This
+prevented consumers from overriding the image prefix when validating
+dev Docker image changes.</p>
 </li>
 <li>
-<p><strong>rename step from Install dev dependencies to Install dependencies</strong>
-uv sync --group dev installs all dependencies (main + dev), not just dev. The step name was misleading.</p>
+<p>ops-github-config.yml: add container-prefix input, replace hardcoded
+  dev-base with the standard input-driven pattern</p>
 </li>
+<li>cd.yml: add container-prefix workflow_dispatch input, replace
+  hardcoded prod-base, propagate prefix to cd-docs.yml call</li>
+<li>
+<p>Document the container prefix override mechanism in the reusable
+  workflows docs</p>
+</li>
+<li>
+<p><strong>revert cd.yml overrides and update container prefix docs</strong>
+Remove the workflow_dispatch input and pass-through from cd.yml — the
+override mechanism is editing the consumer workflow files, not runtime
+inputs. The cd.yml self-referencing file correctly hardcodes prod-base.</p>
+</li>
+</ul>
+<p>Update the container prefix documentation to explain both use cases:
+local validation via vrg-docker-run, and full end-to-end CI/CD testing
+by committing container-prefix overrides to consumer workflow files.</p>
+<ul>
+<li>
+<p><strong>correct container prefix docs for local validation</strong>
+vrg-docker-run reads the image prefix from vergil.toml [docker]
+image-prefix, defaulting to prod. Document this as the local override
+mechanism instead of the incorrect claim that it defaults to dev.</p>
+</li>
+<li>
+<p><strong>replace vergil.toml prefix instructions with vrg-docker-run reference</strong>
+The vergil.toml docker image-prefix setting is being removed in favor of
+a CLI flag on vrg-docker-run (vergil-project/vergil-tooling#883). Replace
+the vergil.toml instructions with a reference to the vrg-docker-run
+documentation for local validation with dev containers.</p>
+</li>
+<li>
+<p><strong>correct vrg-docker-run documentation URL</strong>
+Point to the actual CLI tools overview page in the vergil-tooling docs
+site rather than a fabricated URL path.</p>
+</li>
+</ul>
+<h2 id="chores">Chores<a class="headerlink" href="#chores" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>bump version to 2.0.8</strong></li>
 </ul>
 
 
