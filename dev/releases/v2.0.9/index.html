@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://vergil-project.github.io/vergil-actions/dev/releases/v1.5.4/">
+        <link rel="canonical" href="https://vergil-project.github.io/vergil-actions/dev/releases/v2.0.9/">
       
       
-        <link rel="prev" href="../v1.5.5/">
+        <link rel="prev" href="../v2.0.10/">
       
       
-        <link rel="next" href="../v1.5.3/">
+        <link rel="next" href="../v2.0.8/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>v1.5.4 - Vergil Actions</title>
+        <title>v2.0.9 - Vergil Actions</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#release-154-2026-05-06" class="md-skip">
+        <a href="#release-209-2026-05-21" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              v1.5.4
+              v2.0.9
             
           </span>
         </div>
@@ -761,10 +761,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../v2.0.9/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v2.0.9
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -780,6 +807,48 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bug-fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bug fixes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chores
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1489,37 +1558,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    v1.5.4
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../v1.5.4/" class="md-nav__link">
         
   
   
@@ -1535,37 +1577,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#bug-fixes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Bug fixes
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -3351,6 +3362,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#chores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chores
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3368,15 +3390,17 @@
 
 
 
-<h1 id="release-154-2026-05-06">Release 1.5.4 (2026-05-06)<a class="headerlink" href="#release-154-2026-05-06" title="Permanent link">&para;</a></h1>
+<h1 id="release-209-2026-05-21">Release 2.0.9 (2026-05-21)<a class="headerlink" href="#release-209-2026-05-21" title="Permanent link">&para;</a></h1>
 <h2 id="bug-fixes">Bug fixes<a class="headerlink" href="#bug-fixes" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>use relative action refs in CI workflows, freeze to tagged refs at publish time</strong>
-Convert @develop remote refs in CI gate workflows to ./actions/ relative
-paths so standard-actions tests its own action code during development.
-Update the publish.yml freeze step to rewrite ./actions/ refs to
-fully-qualified tagged refs at release time, and add a validation step
-to assert no unfrozen refs survive in the tagged commit.</li>
+<li><strong>use correct vrg-github-repo-config command name in ops workflow</strong></li>
+<li><strong>align CLAUDE.md shell policy with canonical template</strong>
+Remove extra 'and audit logging' text that drifted from the vergil-tooling claude_md_consumer.md template, causing the vrg-github-repo-config audit to fail during release preflight. Ref #521</li>
+</ul>
+<h2 id="chores">Chores<a class="headerlink" href="#chores" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>bump version to 2.0.9</strong></li>
+<li><strong>add label to version selector in site header</strong></li>
 </ul>
 
 
