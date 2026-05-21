@@ -14,8 +14,8 @@ on:
         required: false
         description: >-
           Container image name suffix (e.g. python, go, base). Defaults
-          to the language input. Callers whose language is "shell" or
-          "none" should pass "base".
+          to "base". Callers should pass their language-specific suffix
+          (e.g. "python", "go") when needed.
       container-prefix:
         type: string
         required: false
@@ -27,7 +27,7 @@ jobs:
   dependencies:
     name: dependencies / ${{ matrix.version }}
     runs-on: ubuntu-latest
-    container: ghcr.io/vergil-project/${{ inputs.container-prefix || 'prod' }}-${{ inputs.container-suffix || inputs.language }}:${{ matrix.version }}
+    container: ghcr.io/vergil-project/${{ inputs.container-prefix || 'prod' }}-${{ inputs.container-suffix || 'base' }}:${{ matrix.version }}
     strategy:
       matrix:
         version: ${{ fromJSON(inputs.versions) }}
