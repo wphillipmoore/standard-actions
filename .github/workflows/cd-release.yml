@@ -96,7 +96,7 @@ jobs:
           registry-publish: ${{ inputs.registry-publish }}
 
       - name: Install vergil-tooling
-        uses: vergil-project/vergil-actions/actions/shared/setup/vergil@develop
+        uses: vergil-project/vergil-actions/actions/shared/setup/vergil@v2.0.10
 
       - name: Extract version
         id: version
@@ -147,7 +147,7 @@ jobs:
 
       - name: Tag and release
         if: steps.tag_check.outputs.exists == 'false'
-        uses: vergil-project/vergil-actions/actions/cd/release/tag-and-release@develop
+        uses: vergil-project/vergil-actions/actions/cd/release/tag-and-release@v2.0.10
         with:
           version: ${{ steps.version.outputs.version }}
           release-artifacts: ${{ steps.resolved.outputs.release-artifacts }}
@@ -178,7 +178,7 @@ jobs:
 
       - name: Version bump PR
         if: steps.tag_check.outputs.exists == 'false'
-        uses: vergil-project/vergil-actions/actions/cd/release/version-bump-pr@develop
+        uses: vergil-project/vergil-actions/actions/cd/release/version-bump-pr@v2.0.10
         with:
           current-version: ${{ steps.version.outputs.version }}
           post-bump-command: ${{ inputs.post-bump-command }}
