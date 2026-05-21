@@ -28,4 +28,4 @@ jobs:
       - name: Audit GitHub configuration
         env:
           GH_TOKEN: ${{ github.token }}
-        run: vrg-github-config audit --repo "${{ github.repository }}"
+        run: vrg-github-repo-config audit --repo "${{ github.repository }}"
