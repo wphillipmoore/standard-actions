@@ -16,6 +16,13 @@ on:
           Container image name suffix (e.g. python, go, base). Defaults
           to "base". Callers should pass their language-specific suffix
           (e.g. "python", "go") when needed.
+      container-tag:
+        type: string
+        required: false
+        description: >-
+          Container image tag. Accepted for interface consistency with
+          other CI workflows; matrix jobs use the versions input for
+          their container tag.
       container-prefix:
         type: string
         required: false
