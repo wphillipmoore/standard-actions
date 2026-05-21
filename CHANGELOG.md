@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.13] - 2026-05-21
+
+### Bug fixes
+
+- accept container-tag input in ci-audit and ci-test workflows
+- sync pre-commit hook with canonical vergil-tooling template
+
+### Chores
+
+- bump version to 2.0.13
+
 ## [2.0.12] - 2026-05-21
 
 ### Bug fixes
