@@ -37,6 +37,8 @@ rulesets.
 3. **Run scan** — Executes `semgrep scan` with the following config rulesets:
     - `p/ci` — CI pipeline security rules (injection, secrets in workflows,
       unsafe patterns)
+    - `p/command-injection` — Unsafe shell construction and command injection
+      patterns
     - `p/security-audit` — Cross-cutting security audit rules
     - `p/secrets` — Secret detection rules
     - `p/<language>` — Language-specific rules (if available in the registry)
@@ -81,3 +83,10 @@ jobs:
 - **GitHub Advanced Security (GHAS)** — Must be enabled for SARIF upload.
 - **Code scanning alerts** — Results appear in the repository's **Security >
   Code scanning alerts** tab alongside CodeQL results.
+
+## Future rulesets
+
+Additional Semgrep rulesets (such as `p/owasp-top-ten` for web application
+security) can be enabled per-repo via the `extra-config` input. These are not
+included in the base config because they target specific application types that
+not all repos in the fleet share.
