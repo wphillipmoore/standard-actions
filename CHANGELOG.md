@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.14] - 2026-05-22
+
+### Bug fixes
+
+- use app token for github-config audit
+
+### Chores
+
+- bump version to 2.0.14
+
+### Documentation
+
+- add design spec for command-injection ruleset expansion
+
+### Features
+
+- add p/command-injection to base config
+
 ## [2.0.13] - 2026-05-21
 
 ### Bug fixes
