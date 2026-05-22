@@ -9,6 +9,11 @@ on:
         default: prod
         description: >-
           Container image name prefix (prod or dev). Defaults to "prod".
+    secrets:
+      APP_CLIENT_ID:
+        required: true
+      APP_PRIVATE_KEY:
+        required: true
 
 permissions:
   contents: read
@@ -19,6 +24,13 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/vergil-project/${{ inputs.container-prefix || 'prod' }}-base:latest
     steps:
+      - name: Generate app token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Checkout code
         uses: actions/checkout@v6
 
@@ -27,5 +39,5 @@ jobs:
 
       - name: Audit GitHub configuration
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: vrg-github-repo-config audit --repo "${{ github.repository }}"
