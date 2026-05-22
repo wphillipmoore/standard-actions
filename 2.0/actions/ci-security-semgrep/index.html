@@ -671,6 +671,8 @@
       
         
       
+        
+      
     
     
     
@@ -723,6 +725,34 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../releases/v2.0.14/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v2.0.14
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -2639,6 +2669,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#future-rulesets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future rulesets
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3613,6 +3654,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#future-rulesets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future rulesets
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3684,6 +3736,8 @@ rulesets.</p>
 <li><strong>Run scan</strong> — Executes <code>semgrep scan</code> with the following config rulesets:<ul>
 <li><code>p/ci</code> — CI pipeline security rules (injection, secrets in workflows,
   unsafe patterns)</li>
+<li><code>p/command-injection</code> — Unsafe shell construction and command injection
+  patterns</li>
 <li><code>p/security-audit</code> — Cross-cutting security audit rules</li>
 <li><code>p/secrets</code> — Secret detection rules</li>
 <li><code>p/&lt;language&gt;</code> — Language-specific rules (if available in the registry)</li>
@@ -3724,6 +3778,11 @@ rulesets.</p>
 <li><strong>Code scanning alerts</strong> — Results appear in the repository's <strong>Security &gt;
   Code scanning alerts</strong> tab alongside CodeQL results.</li>
 </ul>
+<h2 id="future-rulesets">Future rulesets<a class="headerlink" href="#future-rulesets" title="Permanent link">&para;</a></h2>
+<p>Additional Semgrep rulesets (such as <code>p/owasp-top-ten</code> for web application
+security) can be enabled per-repo via the <code>extra-config</code> input. These are not
+included in the base config because they target specific application types that
+not all repos in the fleet share.</p>
 
 
 
