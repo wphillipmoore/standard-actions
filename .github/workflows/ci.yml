@@ -18,6 +18,7 @@ jobs:
       language: shell
       versions: '["latest"]'
       container-suffix: base
+      container-tag: 'latest'
 
   security:
     uses: ./.github/workflows/ci-security.yml
@@ -27,8 +28,12 @@ jobs:
     with:
       language: shell
       run-codeql: false
+      container-suffix: base
+      container-tag: 'latest'
 
   version:
     uses: ./.github/workflows/ci-version-bump.yml
     with:
       language: shell
+      container-suffix: base
+      container-tag: 'latest'
