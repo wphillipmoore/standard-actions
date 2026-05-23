@@ -65,6 +65,7 @@ jobs:
     if: ${{ inputs.run-security && inputs.run-codeql }}
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       security-events: write
     steps:
       - name: Checkout code
@@ -80,6 +81,7 @@ jobs:
     if: ${{ inputs.run-security }}
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       security-events: write
     steps:
       - name: Checkout code
@@ -96,6 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/vergil-project/${{ inputs.container-prefix || 'prod' }}-base:latest
     permissions:
+      contents: read
       security-events: write
     steps:
       - name: Checkout code
