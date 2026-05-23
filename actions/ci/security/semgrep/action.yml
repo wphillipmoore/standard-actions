@@ -8,7 +8,8 @@ inputs:
   language:
     description: >-
       Language ruleset to enable (maps to "p/<language>", e.g. "python",
-      "java", "golang").
+      "java", "golang"). Languages without a Semgrep registry ruleset
+      are silently skipped.
     required: true
   extra-config:
     description: >-
@@ -28,10 +29,10 @@ runs:
       run: |
         config="p/ci p/command-injection p/security-audit p/secrets"
 
-        if curl -sf "https://semgrep.dev/c/p/$LANGUAGE" -o /dev/null 2>/dev/null; then
+        # Languages with a known Semgrep registry ruleset (p/<language>).
+        semgrep_languages="c csharp go golang java javascript kotlin php python ruby rust scala swift typescript"
+        if echo " $semgrep_languages " | grep -q " $LANGUAGE "; then
           config="p/$LANGUAGE $config"
-        else
-          echo "::notice::Semgrep ruleset p/$LANGUAGE not found in registry — skipping language-specific rules"
         fi
 
         if find . -name "Dockerfile*" -not -path './.git/*' | head -1 | grep -q .; then
