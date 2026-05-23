@@ -33,7 +33,10 @@ runs:
 
     - name: Fetch main branch
       shell: bash
-      run: git fetch origin main --depth=1
+      run: |
+        if ! git rev-parse --verify origin/main >/dev/null 2>&1; then
+          git fetch origin main --depth=1
+        fi
 
     - name: Compare versions
       id: compare
