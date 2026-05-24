@@ -2791,17 +2791,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Usage
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#inputs" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2817,78 +2806,6 @@
     <span class="md-ellipsis">
       
         Outputs
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#permissions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Permissions
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#behavior" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Behavior
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Examples
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Examples">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#minimal" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Minimal
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#python-project-with-lock-file-refresh" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Python project with lock file refresh
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#github-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GitHub configuration
       
     </span>
   </a>
@@ -3621,17 +3538,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Usage
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#inputs" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3647,78 +3553,6 @@
     <span class="md-ellipsis">
       
         Outputs
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#permissions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Permissions
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#behavior" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Behavior
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Examples
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Examples">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#minimal" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Minimal
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#python-project-with-lock-file-refresh" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Python project with lock file refresh
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#github-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        GitHub configuration
       
     </span>
   </a>
@@ -3743,22 +3577,17 @@
 
 
 <h1 id="publishversion-bump-pr">publish/version-bump-pr<a class="headerlink" href="#publishversion-bump-pr" title="Permanent link">&para;</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Deprecated</p>
+<p>This action is no longer invoked by the CD release pipeline. The release
+orchestrator (<code>vrg-release</code>) now handles back-merge and version bump
+directly via its <code>back-merge-bump</code> phase. See
+<a href="https://github.com/vergil-project/vergil-tooling/issues/1069">vergil-tooling#1069</a>.</p>
+</div>
 <p>Computes the next patch version, creates a branch from develop that merges main,
 updates the version file(s) via <code>vrg-version bump</code>, and opens a PR. Fails if
 develop already has the expected next version — the upstream version-divergence
 CI gate should prevent this; this check is its hard backstop.</p>
-<p>The tracking issue is resolved deterministically from the merge commit on main
-via <code>vrg-resolve-tracking-issue</code>. If the tool cannot find the tracking issue,
-the action fails — no PR is created without issue linkage.</p>
-<p>The PR is <strong>not auto-merged</strong> — org-wide auto-merge is disabled. Callers
-consume the <code>pr-url</code> output and drive the merge themselves (for example,
-via <code>vrg-merge-when-green</code> from a release skill).</p>
-<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vergil-project/vergil-actions/actions/cd/release/version-bump-pr@v2.0</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">current-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1.2.3&quot;</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">app-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.app-token.outputs.token }}</span>
-</code></pre></div>
 <h2 id="inputs">Inputs<a class="headerlink" href="#inputs" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3780,13 +3609,13 @@ via <code>vrg-merge-when-green</code> from a release skill).</p>
 <td><code>app-token</code></td>
 <td><strong>Yes</strong></td>
 <td>—</td>
-<td>GitHub App token for PR creation. Must be passed from the caller because composite actions cannot access secrets directly.</td>
+<td>GitHub App token for PR creation.</td>
 </tr>
 <tr>
 <td><code>post-bump-command</code></td>
 <td>No</td>
 <td><code>""</code></td>
-<td>Shell command to run after <code>vrg-version bump</code> and before commit (e.g. <code>uv lock --upgrade</code>).</td>
+<td>Shell command to run after <code>vrg-version bump</code> and before commit.</td>
 </tr>
 <tr>
 <td><code>extra-files</code></td>
@@ -3821,65 +3650,6 @@ via <code>vrg-merge-when-green</code> from a release skill).</p>
 </tr>
 </tbody>
 </table>
-<h2 id="permissions">Permissions<a class="headerlink" href="#permissions" title="Permanent link">&para;</a></h2>
-<ul>
-<li><code>contents: write</code> (required for branch creation and pushing)</li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">App token required</p>
-<p>The <code>app-token</code> input must be a GitHub App installation token (not the
-default <code>GITHUB_TOKEN</code>). This is necessary because PRs created by
-<code>GITHUB_TOKEN</code> do not trigger CI workflows.</p>
-</div>
-<h2 id="behavior">Behavior<a class="headerlink" href="#behavior" title="Permanent link">&para;</a></h2>
-<ol>
-<li><strong>Compute next version</strong> — Increments the patch component of
-   <code>current-version</code> (e.g. <code>1.2.3</code> becomes <code>1.2.4</code>).</li>
-<li><strong>Assert develop version</strong> — Fetches <code>origin/develop</code> and extracts the
-   current version via <code>vrg-version show</code>. If it already matches the next
-   version, the action <strong>fails</strong> with a diagnostic error. This is a backstop
-   for the CI version-divergence gate — if it fires, something has gone wrong
-   and requires human investigation.</li>
-<li><strong>Create bump branch</strong> — Creates <code>release/bump-version-&lt;next&gt;</code> from
-   <code>origin/develop</code> and merges <code>origin/main</code> to pick up release artifacts.</li>
-<li><strong>Bump version</strong> — Runs <code>vrg-version bump</code> to update version files.</li>
-<li><strong>Post-bump command</strong> — Optionally runs a command (e.g. lock file refresh).</li>
-<li><strong>Commit and push</strong> — Commits the version file (and any extra files) with
-   message <code>chore: bump version to &lt;next&gt;</code>.</li>
-<li><strong>Resolve tracking issue</strong> — Calls <code>vrg-resolve-tracking-issue</code> to
-   deterministically extract the release tracking issue number from the merge
-   commit on main. The tool reads the merge commit message, extracts the PR
-   number, reads the PR body, and extracts the <code>Ref #N</code> linkage. If the tool
-   fails, the action fails — no PR is created without issue linkage.</li>
-<li><strong>Create PR</strong> — Opens a PR targeting <code>develop</code> with <code>Ref #&lt;issue&gt;</code> linkage
-   in the body, and emits its URL as the <code>pr-url</code> output. Does not attempt to
-   merge — callers drive the merge once CI is green.</li>
-</ol>
-<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
-<h3 id="minimal">Minimal<a class="headerlink" href="#minimal" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vergil-project/vergil-actions/actions/cd/release/version-bump-pr@v2.0</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">current-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.release.outputs.version }}</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">app-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.app-token.outputs.token }}</span>
-</code></pre></div>
-<h3 id="python-project-with-lock-file-refresh">Python project with lock file refresh<a class="headerlink" href="#python-project-with-lock-file-refresh" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vergil-project/vergil-actions/actions/cd/release/version-bump-pr@v2.0</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">current-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1.0.0&quot;</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">post-bump-command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;uv</span><span class="nv"> </span><span class="s">lock</span><span class="nv"> </span><span class="s">--upgrade</span><span class="nv"> </span><span class="s">&amp;&amp;</span><span class="nv"> </span><span class="s">uv</span><span class="nv"> </span><span class="s">export</span><span class="nv"> </span><span class="s">--no-hashes</span><span class="nv"> </span><span class="s">-o</span><span class="nv"> </span><span class="s">requirements.txt&quot;</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">extra-files</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;uv.lock</span><span class="nv"> </span><span class="s">requirements.txt&quot;</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">app-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.app-token.outputs.token }}</span>
-</code></pre></div>
-<h2 id="github-configuration">GitHub configuration<a class="headerlink" href="#github-configuration" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>GitHub App</strong> — A GitHub App installation token is required for the
-  <code>app-token</code> input. The app must have permissions to create branches, push
-  commits, and create/merge pull requests.</li>
-<li><strong>Merge policy</strong> — The PR is not auto-merged. The release workflow agent
-  drives the merge via <code>vrg-merge-when-green</code> after CI passes.</li>
-<li><strong>Branch protection</strong> — The <code>develop</code> branch must allow PR merges from the
-  GitHub App.</li>
-</ul>
 
 
 
