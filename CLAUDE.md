@@ -164,9 +164,10 @@ look in `actions/{phase}/{domain}/`. Cross-phase actions live in
   validation
 - `actions/cd/release/registry-publish` — Build and publish pipeline
   for any supported language ecosystem
-- `actions/cd/release/tag-and-release` — Annotated git tags, rolling
-  minor tags, and GitHub Releases
-- `actions/cd/release/version-bump-pr` — Post-release version bump PRs
+- `actions/cd/release/tag-and-release` — Annotated git tags, changelog
+  boundary tags, and GitHub Releases
+- `actions/cd/release/version-bump-pr` — **(deprecated)** Post-release
+  version bump PRs; now handled by `vrg-release` orchestrator
 - `actions/cd/docs/deploy` — MkDocs Material + mike versioned
   documentation deployment
 - `actions/shared/security/trivy` — Trivy vulnerability scanning

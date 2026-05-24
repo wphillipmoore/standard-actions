@@ -39,19 +39,7 @@ on:
         description: Files to attach to release ($VERSION placeholder).
         type: string
         default: ""
-      post-bump-command:
-        description: Override post-bump command for version-bump-pr.
-        type: string
-        default: ""
-      extra-files:
-        description: Additional files for version bump commit.
-        type: string
-        default: ""
     secrets:
-      APP_CLIENT_ID:
-        required: true
-      APP_PRIVATE_KEY:
-        required: true
       CARGO_REGISTRY_TOKEN:
         required: false
       RUBYGEMS_API_KEY:
@@ -79,7 +67,6 @@ jobs:
         shell: bash
     permissions:
       contents: write
-      pull-requests: write
       id-token: write
       attestations: write
     steps:
@@ -167,20 +154,3 @@ jobs:
           git push --no-thin origin "$TAG" --force
           git clone --depth 1 --branch "$TAG" "$repo_url" "$tmp"
           rm -rf "$tmp"
-
-      - name: Generate app token for bump PR
-        if: steps.tag_check.outputs.exists == 'false'
-        id: app-token
-        uses: actions/create-github-app-token@v3
-        with:
-          app-id: ${{ secrets.APP_CLIENT_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
-      - name: Version bump PR
-        if: steps.tag_check.outputs.exists == 'false'
-        uses: vergil-project/vergil-actions/actions/cd/release/version-bump-pr@develop
-        with:
-          current-version: ${{ steps.version.outputs.version }}
-          post-bump-command: ${{ inputs.post-bump-command }}
-          extra-files: ${{ inputs.extra-files }}
-          app-token: ${{ steps.app-token.outputs.token }}
