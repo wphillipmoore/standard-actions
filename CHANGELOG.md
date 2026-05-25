@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.17] - 2026-05-25
+
+### Chores
+
+- bump version to 2.0.17
+
+### Documentation
+
+- sync template with vrg-container-run rename
+
+### Refactoring
+
+- remove version-bump-pr and rolling-tag from release pipeline
+
 ## [2.0.16] - 2026-05-23
 
 ### Bug fixes
