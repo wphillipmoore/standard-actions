@@ -83,7 +83,7 @@ Rules for this session:
   read-only — all changes flow through your worktree on your
   feature branch.
 - When you need to run validation, run it from inside your worktree
-  (vrg-docker-run mounts the current directory).
+  (vrg-container-run mounts the current directory).
 ```
 
 All fields are required.
@@ -101,7 +101,7 @@ human who can run it directly via `! <command>` in the prompt.
 ## Validation
 
 ```bash
-vrg-docker-run -- vrg-validate
+vrg-container-run -- vrg-validate
 ```
 
 This is the **only** validation command. Do not run individual linters,
@@ -164,9 +164,10 @@ look in `actions/{phase}/{domain}/`. Cross-phase actions live in
   validation
 - `actions/cd/release/registry-publish` — Build and publish pipeline
   for any supported language ecosystem
-- `actions/cd/release/tag-and-release` — Annotated git tags, rolling
-  minor tags, and GitHub Releases
-- `actions/cd/release/version-bump-pr` — Post-release version bump PRs
+- `actions/cd/release/tag-and-release` — Annotated git tags, changelog
+  boundary tags, and GitHub Releases
+- `actions/cd/release/version-bump-pr` — **(deprecated)** Post-release
+  version bump PRs; now handled by `vrg-release` orchestrator
 - `actions/cd/docs/deploy` — MkDocs Material + mike versioned
   documentation deployment
 - `actions/shared/security/trivy` — Trivy vulnerability scanning

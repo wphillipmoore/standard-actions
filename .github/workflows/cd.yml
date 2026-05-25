@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 concurrency:
   group: cd
@@ -70,13 +69,6 @@ jobs:
         uses: vergil-project/vergil-actions/actions/cd/release/tag-and-release@develop
         with:
           version: ${{ steps.version.outputs.version }}
-
-      - name: Version bump PR
-        if: steps.tag_check.outputs.exists == 'false'
-        uses: vergil-project/vergil-actions/actions/cd/release/version-bump-pr@develop
-        with:
-          current-version: ${{ steps.version.outputs.version }}
-          app-token: ${{ steps.app-token.outputs.token }}
 
   docs:
     uses: ./.github/workflows/cd-docs.yml
