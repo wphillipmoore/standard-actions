@@ -61,9 +61,11 @@ override everything else to `base`.
 ### Approach: Fix defaults + make `language` optional
 
 Make `language` optional across all reusable workflows. When omitted,
-workflows run only language-agnostic checks. When provided, it must be a
+workflows run only language-agnostic checks. When provided, it should be a
 real language (python, go, java, ruby, rust) and drives container selection,
-conditional steps, and build/publish behavior.
+conditional steps, and build/publish behavior. No runtime validation is
+added (that was Approach C) — passing an unsupported value fails at
+container pull time, which is a clear enough signal.
 
 ### Changes to vergil-actions workflows
 
@@ -72,12 +74,16 @@ conditional steps, and build/publish behavior.
 - Change `language` from `required: true` to `required: false`.
 - Change inline fallback from `|| 'base'` to `|| inputs.language`.
 - Update input description.
+- No `if` guard added — callers without a language should not invoke
+  ci-audit. If called without `language`, the container expression
+  resolves to an invalid image name and fails at pull time (fail-fast).
 
 #### ci-test.yml
 
 - Change `language` from `required: true` to `required: false`.
 - Change inline fallback from `|| 'base'` to `|| inputs.language`.
 - Update input description.
+- Same fail-fast contract as ci-audit.
 
 #### ci-quality.yml
 
