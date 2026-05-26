@@ -54,6 +54,34 @@ runs:
 
         semgrep scan $config_args --sarif --output semgrep-results.sarif
 
+    - name: Fail on Semgrep findings
+      shell: bash
+      run: |
+        sarif_file="semgrep-results.sarif"
+
+        if [ ! -f "$sarif_file" ]; then
+          echo "::error::SARIF file not found: $sarif_file"
+          exit 1
+        fi
+
+        count=$(jq \
+          '[.runs[]?.results[]?
+            | select(.level == "warning" or .level == "error")]
+          | length' \
+          "$sarif_file")
+
+        if [ "$count" -gt 0 ]; then
+          echo "::error::Semgrep found $count finding(s) at warning level or above"
+          jq -r \
+            '.runs[]?.results[]?
+              | select(.level == "warning" or .level == "error")
+              | "  \(.level): \(.ruleId) — \(.message.text)"' \
+            "$sarif_file"
+          exit 1
+        fi
+
+        echo "No Semgrep findings at warning level or above."
+
     - name: Upload SARIF
       if: always()
       uses: github/codeql-action/upload-sarif@v4
