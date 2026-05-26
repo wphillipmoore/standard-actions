@@ -94,9 +94,9 @@ Use `vrg-git` instead of `git` for all git operations. Use `vrg-gh`
 instead of `gh` for all GitHub CLI operations. These wrappers enforce
 subcommand allowlists, flag deny lists, and credential selection.
 
-Raw `git` and `gh` are denied by the permission model. If a command
-is not available through the wrappers, explain the situation to the
-human who can run it directly via `! <command>` in the prompt.
+Raw `git` and `gh` are blocked by the `PreToolUse` hook guard. If a
+command is not available through the wrappers, explain the situation to
+the human who can run it directly via `! <command>` in the prompt.
 
 ## Validation
 
@@ -125,10 +125,6 @@ to a tag or branch reference.
 ## Development Commands
 
 ### Environment Setup
-
-```bash
-git config core.hooksPath .githooks  # Enable the pre-commit gate
-```
 
 Standard-tooling CLI tools (`vrg-commit`, `vrg-validate`, etc.) are
 pre-installed in the dev container images. No local setup required beyond
