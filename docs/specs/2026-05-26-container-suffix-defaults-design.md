@@ -89,6 +89,9 @@ container pull time, which is a clear enough signal.
 
 - Change `language` from `required: true` to `required: false`.
 - Add `if: inputs.language != ''` to lint and typecheck jobs.
+- `versions` stays `required: true` for interface consistency. Non-language
+  repos pass `'["latest"]'` — the value is unused when lint/typecheck are
+  skipped, but keeping it required avoids a second interface change.
 - Update input description.
 
 #### ci-security.yml
@@ -107,8 +110,16 @@ container pull time, which is a clear enough signal.
 
 - Change `language` default from `"base"` to `""`.
 - Change container expression to `${{ inputs.language || 'base' }}`.
-- Update `validate-inputs` action to accept empty language as valid
-  (equivalent to current `"base"` behavior).
+- Update `validate-inputs` action to treat empty language the same as
+  `"base"`:
+  - Check 1 (container-tag guard): currently rejects when language is
+    not `"base"` and container-tag is `"latest"`. Add `|| [ -z
+    "$INPUT_LANGUAGE" ]` so empty language passes the same way `"base"`
+    does.
+  - Check 2 (registry-publish guard): currently rejects when
+    registry-publish is true and language is `"base"`. Add `|| [ -z
+    "$INPUT_LANGUAGE" ]` so empty language is also rejected for
+    publishing.
 
 ### Consuming repo cleanup (follow-up sweep)
 
