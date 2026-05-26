@@ -126,10 +126,6 @@ to a tag or branch reference.
 
 ### Environment Setup
 
-```bash
-git config core.hooksPath .githooks  # Enable the pre-commit gate
-```
-
 Standard-tooling CLI tools (`vrg-commit`, `vrg-validate`, etc.) are
 pre-installed in the dev container images. No local setup required beyond
 the host-level tool (`vrg-docker-run`, `vrg-commit`, etc.):
