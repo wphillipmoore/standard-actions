@@ -29,10 +29,15 @@ runs:
       run: |
         config="p/ci p/command-injection p/security-audit p/secrets"
 
-        # Languages with a known Semgrep registry ruleset (p/<language>).
-        semgrep_languages="c csharp go golang java javascript kotlin php python ruby rust scala swift typescript"
-        if echo " $semgrep_languages " | grep -q " $LANGUAGE "; then
-          config="p/$LANGUAGE $config"
+        # Map language names to Semgrep registry ruleset names where they differ.
+        case "$LANGUAGE" in
+          go) semgrep_lang="golang" ;;
+          *)  semgrep_lang="$LANGUAGE" ;;
+        esac
+
+        semgrep_languages="c csharp golang java javascript kotlin php python ruby rust scala swift typescript"
+        if echo " $semgrep_languages " | grep -q " $semgrep_lang "; then
+          config="p/$semgrep_lang $config"
         fi
 
         if find . -name "Dockerfile*" -not -path './.git/*' | head -1 | grep -q .; then
@@ -52,7 +57,16 @@ runs:
           config_args="$config_args --config $c"
         done
 
-        semgrep scan $config_args --sarif --output semgrep-results.sarif
+        rc=0
+        semgrep scan $config_args --sarif --output semgrep-results.sarif || rc=$?
+
+        if [ "$rc" -ne 0 ]; then
+          echo "::warning::semgrep scan exited with code $rc"
+          if [ ! -f semgrep-results.sarif ]; then
+            echo "::error::semgrep scan failed (exit $rc) and produced no SARIF output"
+            exit 1
+          fi
+        fi
 
     - name: Fail on Semgrep findings
       shell: bash
