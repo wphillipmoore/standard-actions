@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.19] - 2026-05-26
+
+### CI
+
+- migrate from git hook to Claude Code hook guard
+- add SARIF warning-level enforcement
+
+### Chores
+
+- align shell command policy with upstream template
+
+### Documentation
+
+- address self-review findings in container-suffix spec
+- apply pushback findings to container-suffix spec
+- add container-suffix defaults implementation plan
+
 ## [2.0.18] - 2026-05-25
 
 ### Chores
