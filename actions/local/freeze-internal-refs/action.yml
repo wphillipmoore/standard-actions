@@ -22,44 +22,15 @@ runs:
         git config user.name "github-actions[bot]"
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-    - name: Freeze refs
+    - name: Freeze and validate refs
       shell: bash
       env:
         RELEASE_TAG: ${{ inputs.tag }}
         OWNER_REPO: ${{ inputs.owner-repo }}
-      run: |
-        set -euo pipefail
-        mapfile -t files < <(find .github/workflows actions \
-          -type f \( -name '*.yml' -o -name '*.yaml' \) 2>/dev/null)
-        for f in "${files[@]}"; do
-          sed -i.bak -E "/uses:/s|\./actions/([^[:space:]]+)|${OWNER_REPO}/actions/\1@${RELEASE_TAG}|g" "$f"
-          sed -i.bak -E "/uses:/s|(${OWNER_REPO}/[^@[:space:]]+)@develop|\1@${RELEASE_TAG}|g" "$f"
-          rm -f "$f.bak"
-        done
-
-    - name: Validate no unfrozen refs
-      shell: bash
-      env:
-        OWNER_REPO: ${{ inputs.owner-repo }}
-      run: |
-        set -euo pipefail
-        mapfile -t files < <(find .github/workflows actions \
-          -type f \( -name '*.yml' -o -name '*.yaml' \) 2>/dev/null)
-        failed=0
-        for f in "${files[@]}"; do
-          if grep -nE 'uses:\s+\./actions/' "$f"; then
-            echo "::error file=${f}::Unfrozen relative action ref (./actions/)"
-            failed=1
-          fi
-          if grep -nE "${OWNER_REPO}/[^@[:space:]]+@develop" "$f"; then
-            echo "::error file=${f}::Unfrozen @develop action ref"
-            failed=1
-          fi
-        done
-        if [ "${failed}" -ne 0 ]; then
-          echo "::error::Internal refs were not fully frozen — aborting"
-          exit 1
-        fi
+      run: >-
+        vrg-freeze-refs
+        --owner-repo "$OWNER_REPO"
+        --tag "$RELEASE_TAG"
 
     - name: Commit frozen refs
       shell: bash
