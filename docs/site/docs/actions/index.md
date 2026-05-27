@@ -21,8 +21,6 @@ definition and optional supporting scripts.
 
 - **[cd/release/tag-and-release](cd-release-tag-and-release.md)** — Creates
   annotated git tags and GitHub Releases.
-- **[cd/release/version-bump-pr](cd-release-version-bump-pr.md)** — Automates
-  post-release version bump PRs.
 - **[cd/docs/deploy](cd-docs-deploy.md)** — Deploys MkDocs documentation using
   mike for versioned documentation.
 

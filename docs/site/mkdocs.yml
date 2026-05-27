@@ -73,7 +73,6 @@ nav:
           - ci/version-bump/version-divergence: actions/ci-version-bump-version-divergence.md
       - CD:
           - cd/release/tag-and-release: actions/cd-release-tag-and-release.md
-          - cd/release/version-bump-pr: actions/cd-release-version-bump-pr.md
           - cd/docs/deploy: actions/cd-docs-deploy.md
       - Shared:
           - shared/security/trivy: actions/shared-security-trivy.md
