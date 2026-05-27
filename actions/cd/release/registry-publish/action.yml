@@ -79,43 +79,30 @@ runs:
         INPUT_PUBLISH_COMMAND: ${{ inputs.publish-command }}
       run: |
         build="$INPUT_BUILD_COMMAND"
-        if [ -z "$build" ]; then
-          case "$INPUT_LANGUAGE" in
-            python) build="uv build" ;;
-            rust)   build="cargo build --release" ;;
-            ruby)   build="gem build *.gemspec" ;;
-            java)   build="./mvnw -B package -DskipTests" ;;
-            go)     build="go build ./..." ;;
-            *)
-              echo "::error::unrecognized language '${INPUT_LANGUAGE}' — cannot derive build command"
-              exit 1
-              ;;
-          esac
-        fi
-        echo "build=$build" >> "$GITHUB_OUTPUT"
-
         publish="$INPUT_PUBLISH_COMMAND"
-        if [ -z "$publish" ]; then
-          case "$INPUT_LANGUAGE" in
-            python) publish="uv publish dist/*" ;;
-            rust)   publish="cargo publish" ;;
-            ruby)   publish="gem push *.gem" ;;
-            java)   publish="./mvnw -B deploy -DskipTests" ;;
-            go)     publish="" ;;
-            *)
-              echo "::error::unrecognized language '${INPUT_LANGUAGE}' — cannot derive publish command"
-              exit 1
-              ;;
-          esac
-        fi
-        echo "publish=$publish" >> "$GITHUB_OUTPUT"
 
-        case "$INPUT_LANGUAGE" in
-          rust) echo "credential-secret=CARGO_REGISTRY_TOKEN" >> "$GITHUB_OUTPUT" ;;
-          ruby) echo "credential-secret=RUBYGEMS_API_KEY" >> "$GITHUB_OUTPUT" ;;
-          java) echo "credential-secret=CENTRAL_TOKEN" >> "$GITHUB_OUTPUT" ;;
-          *)    echo "credential-secret=" >> "$GITHUB_OUTPUT" ;;
-        esac
+        if [ -z "$build" ] || [ -z "$publish" ]; then
+          resolved=$(GITHUB_OUTPUT= vrg-ecosystem-resolve "$INPUT_LANGUAGE") \
+            || exit $?
+
+          as_shell() {
+            python3 -c \
+              "import json,sys;d=sys.argv[1];print(' '.join(json.loads(d)) if d else '')" \
+              "${1:-}"
+          }
+
+          if [ -z "$build" ]; then
+            build=$(as_shell "$(echo "$resolved" | sed -n 's/^build_cmd: //p')")
+          fi
+          if [ -z "$publish" ]; then
+            publish=$(as_shell "$(echo "$resolved" | sed -n 's/^publish_cmd: //p')")
+          fi
+          cred=$(echo "$resolved" | sed -n 's/^publish_env_var: //p' | tr -d '[:space:]')
+        fi
+
+        echo "build=${build}" >> "$GITHUB_OUTPUT"
+        echo "publish=${publish}" >> "$GITHUB_OUTPUT"
+        echo "credential-secret=${cred:-}" >> "$GITHUB_OUTPUT"
 
     - name: Configure Maven credentials
       if: inputs.language == 'java'
