@@ -76,7 +76,7 @@ jobs:
           fetch-depth: 0
 
       - name: Validate inputs
-        uses: vergil-project/vergil-actions/actions/cd/release/validate-inputs@v2.0
+        uses: vergil-project/vergil-actions/actions/cd/release/validate-inputs@develop
         with:
           language: ${{ inputs.language }}
           container-tag: ${{ inputs.container-tag }}
@@ -116,7 +116,7 @@ jobs:
         if: >-
           contains(fromJSON('["python","java","ruby","rust","go"]'), inputs.language) &&
           steps.tag_check.outputs.exists == 'false'
-        uses: vergil-project/vergil-actions/actions/cd/release/registry-publish@v2.0
+        uses: vergil-project/vergil-actions/actions/cd/release/registry-publish@develop
         with:
           language: ${{ inputs.language }}
           version: ${{ steps.version.outputs.version }}
