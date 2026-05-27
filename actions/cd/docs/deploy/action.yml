@@ -82,112 +82,16 @@ runs:
       shell: bash
       working-directory: ${{ github.workspace }}
       run: |
-        DOCS_DIR=$(dirname "${{ inputs.mkdocs-config }}")/docs
-
-        # Stage CHANGELOG.md with TOC hidden
-        if [ -f CHANGELOG.md ]; then
-          printf -- '---\nhide:\n  - toc\n---\n' > "$DOCS_DIR/changelog.md"
-          cat CHANGELOG.md >> "$DOCS_DIR/changelog.md"
-        fi
-
-        # Stage release notes
-        mkdir -p "$DOCS_DIR/releases"
-        if [ -d releases ] && ls releases/*.md >/dev/null 2>&1; then
-          cp releases/*.md "$DOCS_DIR/releases/"
-
-          # Generate releases/index.md with version table (semver descending).
-          # Inlined rather than `python3 ${{ github.action_path }}/script.py`
-          # because in container jobs with setup-python skipped (mike pre-
-          # installed), the action_path file lookup fails inside the
-          # container even though sibling bash steps see the same dir.
-          # Issue #204.
-          # Absolute path: the system Python has pyyaml and other packages
-          # baked into dev-base. A project venv (e.g. vergil-tooling
-          # self-install) can shadow python3 with one that lacks them.
-          /usr/local/bin/python3 - "$DOCS_DIR" <<'PY'
-        """Generate releases/index.md with a version table sorted by semver descending."""
-        import pathlib
-        import re
-        import sys
-
-        release_dir = pathlib.Path(sys.argv[1]) / "releases"
-        files = sorted(
-            release_dir.glob("v*.md"),
-            key=lambda f: [int(x) for x in re.findall(r"\d+", f.stem)],
-            reverse=True,
-        )
-
-        lines = ["# Release Notes", "", "| Version | Date |", "|---------|------|"]
-        for f in files:
-            stem = f.stem
-            version = stem.lstrip("v")
-            text = f.read_text()
-            m = re.search(r"\d{4}-\d{2}-\d{2}", text[:200])
-            date = m.group(0) if m else ""
-            lines.append(f"| [{version}]({stem}.md) | {date} |")
-
-        (release_dir / "index.md").write_text("\n".join(lines) + "\n")
-        PY
-        else
-          # Bootstrap: create placeholder index when no releases exist yet
-          printf '# Release Notes\n\nNo releases yet.\n' > "$DOCS_DIR/releases/index.md"
-        fi
+        vrg-docs-stage --docs-dir "$(dirname "${{ inputs.mkdocs-config }}")/docs"
 
     - name: Patch mkdocs nav with release versions
       shell: bash
       working-directory: ${{ github.workspace }}
       run: |
         DOCS_DIR=$(dirname "${{ inputs.mkdocs-config }}")/docs
-
-        # Only patch if release note files were staged
-        if [ ! -d "$DOCS_DIR/releases" ] || ! ls "$DOCS_DIR/releases"/v*.md >/dev/null 2>&1; then
-          echo "No release notes found — skipping nav patch"
-          exit 0
-        fi
-
-        # Inlined for the same reason as the index-generation script
-        # above (see issue #204).
-        # Absolute path: same rationale as the index script above —
-        # a project venv can shadow python3 with one lacking pyyaml.
-        /usr/local/bin/python3 - "${{ inputs.mkdocs-config }}" "$DOCS_DIR" <<'PY'
-        """Patch mkdocs.yml nav to inject release version entries under Release Notes."""
-        import pathlib
-        import re
-        import sys
-
-        import yaml
-
-        config_path = pathlib.Path(sys.argv[1])
-        docs_dir = pathlib.Path(sys.argv[2]) / "releases"
-
-        # Collect version files sorted by semver descending
-        versions = sorted(
-            [f.stem for f in docs_dir.glob("v*.md")],
-            key=lambda s: [int(x) for x in re.findall(r"\d+", s)],
-            reverse=True,
-        )
-
-        config = yaml.safe_load(config_path.read_text())
-        nav = config.get("nav", [])
-
-        # Find the Releases section
-        for i, item in enumerate(nav):
-            if isinstance(item, dict) and "Releases" in item:
-                release_entries = [
-                    {"Changelog": "changelog.md"},
-                    {
-                        "Release Notes": [
-                            "releases/index.md",
-                            *[{v: f"releases/{v}.md"} for v in versions],
-                        ]
-                    },
-                ]
-                nav[i] = {"Releases": release_entries}
-                break
-
-        config["nav"] = nav
-        config_path.write_text(yaml.dump(config, default_flow_style=False, sort_keys=False))
-        PY
+        vrg-docs-patch-nav \
+          --mkdocs-yml "${{ inputs.mkdocs-config }}" \
+          --releases-dir "$DOCS_DIR/releases"
 
     - name: Deploy docs
       shell: bash
