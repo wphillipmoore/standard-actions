@@ -27,74 +27,23 @@ runs:
         LANGUAGE: ${{ inputs.language }}
         EXTRA_CONFIG: ${{ inputs.extra-config }}
       run: |
-        config="p/ci p/command-injection p/security-audit p/secrets"
-
-        # Map language names to Semgrep registry ruleset names where they differ.
-        case "$LANGUAGE" in
-          go) semgrep_lang="golang" ;;
-          *)  semgrep_lang="$LANGUAGE" ;;
-        esac
-
-        semgrep_languages="c csharp golang java javascript kotlin php python ruby rust scala swift typescript"
-        if echo " $semgrep_languages " | grep -q " $semgrep_lang "; then
-          config="p/$semgrep_lang $config"
-        fi
+        args=(--language "$LANGUAGE")
 
         if find . -name "Dockerfile*" -not -path './.git/*' | head -1 | grep -q .; then
-          config="$config p/dockerfile"
+          args+=(--has-dockerfiles)
         fi
 
-        if find .github/workflows -name "*.yml" -o -name "*.yaml" 2>/dev/null | head -1 | grep -q .; then
-          config="$config p/github-actions"
+        if find .github/workflows -name "*.yml" -o -name "*.yaml" 2>/dev/null \
+            | head -1 | grep -q .; then
+          args+=(--has-workflows)
         fi
 
         if [ -n "$EXTRA_CONFIG" ]; then
-          config="$config $EXTRA_CONFIG"
+          read -ra extra <<< "$EXTRA_CONFIG"
+          args+=(--extra-config "${extra[@]}")
         fi
 
-        config_args=""
-        for c in $config; do
-          config_args="$config_args --config $c"
-        done
-
-        rc=0
-        semgrep scan $config_args --sarif --output semgrep-results.sarif || rc=$?
-
-        if [ "$rc" -ne 0 ]; then
-          echo "::warning::semgrep scan exited with code $rc"
-          if [ ! -f semgrep-results.sarif ]; then
-            echo "::error::semgrep scan failed (exit $rc) and produced no SARIF output"
-            exit 1
-          fi
-        fi
-
-    - name: Fail on Semgrep findings
-      shell: bash
-      run: |
-        sarif_file="semgrep-results.sarif"
-
-        if [ ! -f "$sarif_file" ]; then
-          echo "::error::SARIF file not found: $sarif_file"
-          exit 1
-        fi
-
-        count=$(jq \
-          '[.runs[]?.results[]?
-            | select(.level == "warning" or .level == "error")]
-          | length' \
-          "$sarif_file")
-
-        if [ "$count" -gt 0 ]; then
-          echo "::error::Semgrep found $count finding(s) at warning level or above"
-          jq -r \
-            '.runs[]?.results[]?
-              | select(.level == "warning" or .level == "error")
-              | "  \(.level): \(.ruleId) — \(.message.text)"' \
-            "$sarif_file"
-          exit 1
-        fi
-
-        echo "No Semgrep findings at warning level or above."
+        vrg-semgrep-scan "${args[@]}"
 
     - name: Upload SARIF
       if: always()
