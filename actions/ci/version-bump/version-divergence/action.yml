@@ -41,9 +41,12 @@ runs:
     - name: Compare versions
       id: compare
       shell: bash
+      env:
+        HEAD_VERSION_CMD: ${{ inputs.head-version-command }}
+        MAIN_VERSION_CMD: ${{ inputs.main-version-command }}
       run: |
-        head_version=$(${{ inputs.head-version-command }})
-        main_version=$(${{ inputs.main-version-command }} 2>/dev/null) || main_version=""
+        head_version=$(eval "$HEAD_VERSION_CMD")
+        main_version=$(eval "$MAIN_VERSION_CMD" 2>/dev/null) || main_version=""
         if vrg-version-divergence "$head_version" ${main_version:+"$main_version"}; then
           echo "diverged=true" >> "$GITHUB_OUTPUT"
         else

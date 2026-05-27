@@ -168,12 +168,16 @@ runs:
     - name: Generate SBOM
       if: inputs.scan-type == 'sbom'
       shell: bash
+      env:
+        TRIVY_IMAGE: ${{ inputs.trivy-image }}
+        OUTPUT_FILE: ${{ inputs.output-file }}
+        SCAN_REF: ${{ inputs.scan-ref }}
       run: |
         docker run --rm \
           -v "$GITHUB_WORKSPACE:/workspace" \
           -w /workspace \
-          "${{ inputs.trivy-image }}" \
+          "$TRIVY_IMAGE" \
           fs \
           --format cyclonedx \
-          --output "/workspace/${{ inputs.output-file }}" \
-          "${{ inputs.scan-ref }}"
+          --output "/workspace/$OUTPUT_FILE" \
+          "$SCAN_REF"
