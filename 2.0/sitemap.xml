@@ -29,10 +29,6 @@
          <lastmod>2026-05-27</lastmod>
     </url>
     <url>
-         <loc>https://vergil-project.github.io/vergil-actions/2.0/actions/cd-release-version-bump-pr/</loc>
-         <lastmod>2026-05-27</lastmod>
-    </url>
-    <url>
          <loc>https://vergil-project.github.io/vergil-actions/2.0/actions/ci-security-codeql/</loc>
          <lastmod>2026-05-27</lastmod>
     </url>
@@ -302,6 +298,10 @@
     </url>
     <url>
          <loc>https://vergil-project.github.io/vergil-actions/2.0/releases/v2.0.20/</loc>
+         <lastmod>2026-05-27</lastmod>
+    </url>
+    <url>
+         <loc>https://vergil-project.github.io/vergil-actions/2.0/releases/v2.0.21/</loc>
          <lastmod>2026-05-27</lastmod>
     </url>
     <url>
