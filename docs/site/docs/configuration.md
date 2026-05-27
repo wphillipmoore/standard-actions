@@ -13,8 +13,8 @@ are configured in **Settings > Secrets and variables > Actions**.
 | Secret | Required by | Purpose |
 | ------ | ----------- | ------- |
 | `PROJECT_TOKEN` | All repositories | Adds new issues to the GitHub Project via the `add-to-project` workflow |
-| `APP_CLIENT_ID` | Library repositories | GitHub App Client ID for `publish/version-bump-pr` |
-| `APP_PRIVATE_KEY` | Library repositories | GitHub App signing key for `publish/version-bump-pr` |
+| `APP_CLIENT_ID` | Library repositories | GitHub App Client ID for release workflows |
+| `APP_PRIVATE_KEY` | Library repositories | GitHub App signing key for release workflows |
 
 ### PROJECT_TOKEN
 
@@ -50,8 +50,8 @@ gh secret set PROJECT_TOKEN --repo vergil-project/<repo> --body "<token>"
 ### APP_CLIENT_ID and APP_PRIVATE_KEY
 
 These secrets are used together to generate a GitHub App installation token at
-publish time. The token is passed to the
-[`publish/version-bump-pr`](actions/cd-release-version-bump-pr.md) action.
+publish time. The token is used by the CD release workflow to push workflow
+file changes that `GITHUB_TOKEN` cannot.
 
 **Why a GitHub App?** Pull requests created by the default `GITHUB_TOKEN` do not
 trigger CI workflows. This is a GitHub security measure to prevent recursive

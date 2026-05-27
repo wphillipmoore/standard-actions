@@ -15,7 +15,7 @@ releases.
 | ---------- | --------- | --------- |
 | CI / Security | [standards-compliance](actions/ci-security-standards-compliance.md), [codeql](actions/ci-security-codeql.md), [semgrep](actions/ci-security-semgrep.md) | Compliance checks and SAST scanning |
 | CI / Version Bump | [version-divergence](actions/ci-version-bump-version-divergence.md) | Pre-merge version validation |
-| CD / Release | [tag-and-release](actions/cd-release-tag-and-release.md), [version-bump-pr](actions/cd-release-version-bump-pr.md) | Release tagging and post-release version bumps |
+| CD / Release | [tag-and-release](actions/cd-release-tag-and-release.md) | Release tagging and GitHub Releases |
 | CD / Docs | [deploy](actions/cd-docs-deploy.md) | MkDocs Material + mike versioned deployment |
 | Shared / Security | [trivy](actions/shared-security-trivy.md) | Vulnerability scanning and SBOM generation |
 | Shared / Setup | [vergil-tooling](actions/index.md) | Standard-tooling and environment setup |
