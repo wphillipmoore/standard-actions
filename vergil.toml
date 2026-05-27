@@ -3,7 +3,6 @@ repository-type = "library"
 versioning-scheme = "semver"
 branching-model = "library-release"
 release-model = "tagged-release"
-primary-language = "shell"
 [ci]
 versions = ["latest"]
 integration-tests = false

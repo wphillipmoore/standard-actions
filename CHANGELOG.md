@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.21] - 2026-05-27
+
+### Bug fixes
+
+- handle missing primary-language in vergil.toml
+- revert internal refs to @develop and replace trivy shell with vrg-trivy-scan
+- use local action paths for true self-referencing CI
+- run trivy job in prod-base container
+- revert trivy action to original inline Docker approach
+- use dev container prefix for CI
+- eliminate shell injection patterns in action YAML files
+- replace Docker orchestration with vrg-trivy-scan direct invocation
+
+### Chores
+
+- remove invalid primary-language from vergil.toml
+- remove deprecated version-bump-pr action
+
+### Refactoring
+
+- replace inline shell with vrg-semgrep-scan
+- replace inline SARIF evaluation with vrg-sarif-evaluate
+- replace inlined Python scripts with vrg-docs-stage and vrg-docs-patch-nav
+- replace case-statement command derivation with vrg-ecosystem-resolve
+- replace inline validation with vrg-release-validate-inputs
+- replace inline sed/grep logic with vrg-freeze-refs
+- remove redundant auto-close check already handled by vrg-pr-issue-linkage
+- replace inline comparison with vrg-version-divergence
+- replace sed TOML parsing with python3 tomllib
+
 ## [2.0.20] - 2026-05-27
 
 ### Bug fixes

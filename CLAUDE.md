@@ -162,8 +162,6 @@ look in `actions/{phase}/{domain}/`. Cross-phase actions live in
   for any supported language ecosystem
 - `actions/cd/release/tag-and-release` — Annotated git tags, changelog
   boundary tags, and GitHub Releases
-- `actions/cd/release/version-bump-pr` — **(deprecated)** Post-release
-  version bump PRs; now handled by `vrg-release` orchestrator
 - `actions/cd/docs/deploy` — MkDocs Material + mike versioned
   documentation deployment
 - `actions/shared/security/trivy` — Trivy vulnerability scanning

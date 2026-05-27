@@ -32,30 +32,6 @@ runs:
 
     - name: Fail on CodeQL findings
       shell: bash
-      run: |
-        sarif_dir="${{ runner.temp }}/codeql-sarif"
-
-        shopt -s nullglob
-        sarif_files=("$sarif_dir"/*.sarif)
-        if [ "${#sarif_files[@]}" -eq 0 ]; then
-          echo "::error::No SARIF files found in $sarif_dir"
-          exit 1
-        fi
-
-        count=$(jq --slurp \
-          '[.[].runs[]?.results[]?
-            | select(.level == "warning" or .level == "error")]
-          | length' \
-          "${sarif_files[@]}")
-
-        if [ "$count" -gt 0 ]; then
-          echo "::error::CodeQL found $count finding(s) at warning level or above"
-          jq --slurp -r \
-            '.[].runs[]?.results[]?
-              | select(.level == "warning" or .level == "error")
-              | "  \(.level): \(.ruleId) — \(.message.text)"' \
-            "${sarif_files[@]}"
-          exit 1
-        fi
-
-        echo "No CodeQL findings at warning level or above."
+      env:
+        SARIF_DIR: ${{ runner.temp }}/codeql-sarif
+      run: vrg-sarif-evaluate "$SARIF_DIR"
