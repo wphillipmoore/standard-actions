@@ -55,7 +55,7 @@ runs:
           lang=$(/usr/local/bin/python3 -c "
           import tomllib, pathlib
           cfg = tomllib.loads(pathlib.Path('vergil.toml').read_text())
-          print(cfg['project']['primary-language'])
+          print(cfg.get('project', {}).get('primary-language', ''))
           ")
           if [ "$lang" = "python" ]; then
             echo "cmd=uv run mike" >> "$GITHUB_OUTPUT"
