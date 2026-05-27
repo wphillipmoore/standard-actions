@@ -32,4 +32,6 @@ runs:
 
     - name: Fail on CodeQL findings
       shell: bash
-      run: vrg-sarif-evaluate "${{ runner.temp }}/codeql-sarif"
+      env:
+        SARIF_DIR: ${{ runner.temp }}/codeql-sarif
+      run: vrg-sarif-evaluate "$SARIF_DIR"

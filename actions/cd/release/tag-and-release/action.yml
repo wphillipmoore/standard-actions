@@ -44,14 +44,19 @@ runs:
     - name: Compute tag name
       id: meta
       shell: bash
+      env:
+        TAG_PREFIX: ${{ inputs.tag-prefix }}
+        VERSION: ${{ inputs.version }}
       run: |
-        echo "tag=${{ inputs.tag-prefix }}${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+        echo "tag=${TAG_PREFIX}${VERSION}" >> "$GITHUB_OUTPUT"
 
     - name: Check if tag already exists
       id: check
       shell: bash
+      env:
+        TAG: ${{ steps.meta.outputs.tag }}
       run: |
-        if git rev-parse "${{ steps.meta.outputs.tag }}" >/dev/null 2>&1; then
+        if git rev-parse "$TAG" >/dev/null 2>&1; then
           echo "created=false" >> "$GITHUB_OUTPUT"
         else
           echo "created=true" >> "$GITHUB_OUTPUT"
@@ -67,18 +72,23 @@ runs:
     - name: Create annotated tag
       if: steps.check.outputs.created == 'true'
       shell: bash
+      env:
+        TAG: ${{ steps.meta.outputs.tag }}
+        VERSION: ${{ inputs.version }}
       run: |
-        git tag -a "${{ steps.meta.outputs.tag }}" \
-          -m "Release ${{ inputs.version }}"
-        git push origin "${{ steps.meta.outputs.tag }}"
+        git tag -a "$TAG" \
+          -m "Release $VERSION"
+        git push origin "$TAG"
 
     - name: Tag develop for changelog boundaries
       if: steps.check.outputs.created == 'true'
       shell: bash
+      env:
+        TAG: ${{ steps.meta.outputs.tag }}
       run: |
         git fetch origin develop
-        git tag "develop-${{ steps.meta.outputs.tag }}" origin/develop
-        git push origin "develop-${{ steps.meta.outputs.tag }}"
+        git tag "develop-$TAG" origin/develop
+        git push origin "develop-$TAG"
 
     - name: Create GitHub Release
       if: steps.check.outputs.created == 'true'
@@ -87,27 +97,28 @@ runs:
         GH_TOKEN: ${{ github.token }}
         INPUT_RELEASE_NOTES: ${{ inputs.release-notes }}
         INPUT_RELEASE_TITLE: ${{ inputs.release-title }}
+        INPUT_RELEASE_ARTIFACTS: ${{ inputs.release-artifacts }}
+        REPO_NAME: ${{ github.event.repository.name }}
+        REPO_OWNER: ${{ github.repository_owner }}
+        TAG: ${{ steps.meta.outputs.tag }}
       run: |
-        repo_name="${{ github.event.repository.name }}"
-        owner="${{ github.repository_owner }}"
-
         title="$INPUT_RELEASE_TITLE"
         if [ -z "$title" ]; then
-          title="${repo_name} ${{ steps.meta.outputs.tag }}"
+          title="${REPO_NAME} ${TAG}"
         fi
 
         notes="$INPUT_RELEASE_NOTES"
         if [ -z "$notes" ]; then
-          notes="Documentation: https://${owner}.github.io/${repo_name}/"
+          notes="Documentation: https://${REPO_OWNER}.github.io/${REPO_NAME}/"
         fi
 
         release_args=(
-          "${{ steps.meta.outputs.tag }}"
+          "$TAG"
           --title "$title"
           --notes "$notes"
         )
-        if [ -n "${{ inputs.release-artifacts }}" ]; then
-          release_args+=( ${{ inputs.release-artifacts }} )
+        if [ -n "$INPUT_RELEASE_ARTIFACTS" ]; then
+          release_args+=( $INPUT_RELEASE_ARTIFACTS )
         fi
         gh release create "${release_args[@]}"
 

@@ -66,10 +66,6 @@ runs:
         if [ -n "$TRIVYIGNORES" ]; then
           TRIVYIGNORE_ARGS="--ignorefile $TRIVYIGNORES"
         fi
-        # Single docker session: scan once to JSON, then convert to both
-        # table (stdout, never gates) and SARIF (file, gates per input).
-        # `trivy convert` operates on the cached JSON — no re-scan, no
-        # extra DB download, no extra vuln matching.
         docker run --rm \
           -v "$GITHUB_WORKSPACE:/workspace" \
           -w /workspace \
@@ -127,10 +123,6 @@ runs:
         if [ -n "$TRIVYIGNORES" ]; then
           TRIVYIGNORE_ARGS="--ignorefile $TRIVYIGNORES"
         fi
-        # Single docker session: scan once to JSON, then convert to both
-        # table (stdout, never gates) and SARIF (file, gates per input).
-        # `trivy convert` operates on the cached JSON — no re-scan, no
-        # extra DB download, no extra vuln matching.
         docker run --rm \
           -v "$GITHUB_WORKSPACE:/workspace" \
           -v /var/run/docker.sock:/var/run/docker.sock \
@@ -176,12 +168,16 @@ runs:
     - name: Generate SBOM
       if: inputs.scan-type == 'sbom'
       shell: bash
+      env:
+        TRIVY_IMAGE: ${{ inputs.trivy-image }}
+        OUTPUT_FILE: ${{ inputs.output-file }}
+        SCAN_REF: ${{ inputs.scan-ref }}
       run: |
         docker run --rm \
           -v "$GITHUB_WORKSPACE:/workspace" \
           -w /workspace \
-          "${{ inputs.trivy-image }}" \
+          "$TRIVY_IMAGE" \
           fs \
           --format cyclonedx \
-          --output "/workspace/${{ inputs.output-file }}" \
-          "${{ inputs.scan-ref }}"
+          --output "/workspace/$OUTPUT_FILE" \
+          "$SCAN_REF"

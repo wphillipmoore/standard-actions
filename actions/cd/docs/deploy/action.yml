@@ -47,7 +47,7 @@ runs:
       shell: bash
       working-directory: ${{ github.workspace }}
       env:
-        INPUT_MIKE_COMMAND: ${{ steps.mike-cmd.outputs.cmd }}
+        INPUT_MIKE_COMMAND: ${{ inputs.mike-command }}
       run: |
         if [ -n "$INPUT_MIKE_COMMAND" ]; then
           echo "cmd=$INPUT_MIKE_COMMAND" >> "$GITHUB_OUTPUT"
@@ -68,9 +68,12 @@ runs:
       id: version
       shell: bash
       working-directory: ${{ github.workspace }}
+      env:
+        GIT_REF: ${{ github.ref }}
+        VERSION_COMMAND: ${{ inputs.version-command }}
       run: |
-        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-          VERSION=$(${{ inputs.version-command }})
+        if [ "$GIT_REF" = "refs/heads/main" ]; then
+          VERSION=$(eval "$VERSION_COMMAND")
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "alias=latest" >> "$GITHUB_OUTPUT"
         else
@@ -81,36 +84,44 @@ runs:
     - name: Stage changelog and release notes
       shell: bash
       working-directory: ${{ github.workspace }}
+      env:
+        MKDOCS_CONFIG: ${{ inputs.mkdocs-config }}
       run: |
-        vrg-docs-stage --docs-dir "$(dirname "${{ inputs.mkdocs-config }}")/docs"
+        vrg-docs-stage --docs-dir "$(dirname "$MKDOCS_CONFIG")/docs"
 
     - name: Patch mkdocs nav with release versions
       shell: bash
       working-directory: ${{ github.workspace }}
+      env:
+        MKDOCS_CONFIG: ${{ inputs.mkdocs-config }}
       run: |
-        DOCS_DIR=$(dirname "${{ inputs.mkdocs-config }}")/docs
+        DOCS_DIR=$(dirname "$MKDOCS_CONFIG")/docs
         vrg-docs-patch-nav \
-          --mkdocs-yml "${{ inputs.mkdocs-config }}" \
+          --mkdocs-yml "$MKDOCS_CONFIG" \
           --releases-dir "$DOCS_DIR/releases"
 
     - name: Deploy docs
       shell: bash
       working-directory: ${{ github.workspace }}
+      env:
+        MIKE_CMD: ${{ steps.mike-cmd.outputs.cmd }}
+        MKDOCS_CONFIG: ${{ inputs.mkdocs-config }}
+        DOC_VERSION: ${{ steps.version.outputs.version }}
+        DOC_ALIAS: ${{ steps.version.outputs.alias }}
       run: |
-        if [ -n "${{ steps.version.outputs.alias }}" ]; then
-          ${{ steps.mike-cmd.outputs.cmd }} deploy \
-            -F ${{ inputs.mkdocs-config }} --push --update-aliases \
-            ${{ steps.version.outputs.version }} \
-            ${{ steps.version.outputs.alias }}
-          ${{ steps.mike-cmd.outputs.cmd }} set-default \
-            -F ${{ inputs.mkdocs-config }} --push latest
+        if [ -n "$DOC_ALIAS" ]; then
+          $MIKE_CMD deploy \
+            -F "$MKDOCS_CONFIG" --push --update-aliases \
+            "$DOC_VERSION" \
+            "$DOC_ALIAS"
+          $MIKE_CMD set-default \
+            -F "$MKDOCS_CONFIG" --push latest
         else
-          ${{ steps.mike-cmd.outputs.cmd }} deploy -F ${{ inputs.mkdocs-config }} --push ${{ steps.version.outputs.version }}
-          # Set dev as default if no default exists yet (pre-release repos)
-          CURRENT_DEFAULT=$(${{ steps.mike-cmd.outputs.cmd }} list \
-            -F ${{ inputs.mkdocs-config }} 2>/dev/null \
+          $MIKE_CMD deploy -F "$MKDOCS_CONFIG" --push "$DOC_VERSION"
+          CURRENT_DEFAULT=$($MIKE_CMD list \
+            -F "$MKDOCS_CONFIG" 2>/dev/null \
             | grep '\[default\]' || true)
           if [ -z "$CURRENT_DEFAULT" ]; then
-            ${{ steps.mike-cmd.outputs.cmd }} set-default -F ${{ inputs.mkdocs-config }} --push dev
+            $MIKE_CMD set-default -F "$MKDOCS_CONFIG" --push dev
           fi
         fi
