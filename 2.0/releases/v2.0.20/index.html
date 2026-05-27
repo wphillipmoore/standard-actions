@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://vergil-project.github.io/vergil-actions/2.0/releases/v1.4.5/">
+        <link rel="canonical" href="https://vergil-project.github.io/vergil-actions/2.0/releases/v2.0.20/">
       
       
-        <link rel="prev" href="../v1.4.6/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../v1.4.4/">
+        <link rel="next" href="../v2.0.19/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>v1.4.5 - Vergil Actions</title>
+        <title>v2.0.20 - Vergil Actions</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#release-145-2026-04-30" class="md-skip">
+        <a href="#release-2020-2026-05-27" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              v1.4.5
+              v2.0.20
             
           </span>
         </div>
@@ -753,10 +753,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../v2.0.20/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v2.0.20
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -772,6 +799,37 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bug-fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bug fixes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2013,19 +2071,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../v1.4.5/" class="md-nav__link">
         
   
   
@@ -2041,7 +2090,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -3586,6 +3634,25 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bug-fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bug fixes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -3601,7 +3668,12 @@
 
 
 
-<h1 id="release-145-2026-04-30">Release 1.4.5 (2026-04-30)<a class="headerlink" href="#release-145-2026-04-30" title="Permanent link">&para;</a></h1>
+<h1 id="release-2020-2026-05-27">Release 2.0.20 (2026-05-27)<a class="headerlink" href="#release-2020-2026-05-27" title="Permanent link">&para;</a></h1>
+<h2 id="bug-fixes">Bug fixes<a class="headerlink" href="#bug-fixes" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>map go to p/golang and capture scan exit codes</strong>
+The Semgrep registry uses p/golang, not p/go (HTTP 404). Added a language-name mapping so callers passing language: go get the correct ruleset. Also capture semgrep scan exit codes instead of letting bash -e kill the step, so the SARIF analysis step can provide diagnostics when the scan fails.</li>
+</ul>
 
 
 
