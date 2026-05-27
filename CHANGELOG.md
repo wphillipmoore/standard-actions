@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.20] - 2026-05-27
+
+### Bug fixes
+
+- map go to p/golang and capture scan exit codes
+
 ## [2.0.19] - 2026-05-26
 
 ### CI
