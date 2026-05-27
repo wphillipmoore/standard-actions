@@ -83,12 +83,16 @@ jobs:
     name: trivy
     if: ${{ inputs.run-security }}
     runs-on: ubuntu-latest
+    container: ghcr.io/vergil-project/${{ inputs.container-prefix || 'prod' }}-base:latest
     permissions:
       contents: read
       security-events: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+
+      - name: Install vergil-tooling
+        uses: ./actions/shared/setup/vergil
 
       - name: Run Trivy vulnerability scan
         uses: ./actions/shared/security/trivy
