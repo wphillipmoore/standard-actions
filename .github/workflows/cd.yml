@@ -66,7 +66,7 @@ jobs:
 
       - name: Tag and release
         if: steps.tag_check.outputs.exists == 'false'
-        uses: vergil-project/vergil-actions/actions/cd/release/tag-and-release@develop
+        uses: ./actions/cd/release/tag-and-release
         with:
           version: ${{ steps.version.outputs.version }}
 

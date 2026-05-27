@@ -76,14 +76,14 @@ jobs:
           fetch-depth: 0
 
       - name: Validate inputs
-        uses: vergil-project/vergil-actions/actions/cd/release/validate-inputs@develop
+        uses: ./actions/cd/release/validate-inputs
         with:
           language: ${{ inputs.language }}
           container-tag: ${{ inputs.container-tag }}
           registry-publish: ${{ inputs.registry-publish }}
 
       - name: Install vergil-tooling
-        uses: vergil-project/vergil-actions/actions/shared/setup/vergil@develop
+        uses: ./actions/shared/setup/vergil
 
       - name: Extract version
         id: version
@@ -116,7 +116,7 @@ jobs:
         if: >-
           contains(fromJSON('["python","java","ruby","rust","go"]'), inputs.language) &&
           steps.tag_check.outputs.exists == 'false'
-        uses: vergil-project/vergil-actions/actions/cd/release/registry-publish@develop
+        uses: ./actions/cd/release/registry-publish
         with:
           language: ${{ inputs.language }}
           version: ${{ steps.version.outputs.version }}
@@ -134,7 +134,7 @@ jobs:
 
       - name: Tag and release
         if: steps.tag_check.outputs.exists == 'false'
-        uses: vergil-project/vergil-actions/actions/cd/release/tag-and-release@develop
+        uses: ./actions/cd/release/tag-and-release
         with:
           version: ${{ steps.version.outputs.version }}
           release-artifacts: ${{ steps.resolved.outputs.release-artifacts }}

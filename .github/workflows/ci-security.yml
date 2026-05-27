@@ -55,10 +55,10 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Install vergil-tooling
-        uses: vergil-project/vergil-actions/actions/shared/setup/vergil@develop
+        uses: ./actions/shared/setup/vergil
 
       - name: Validate standards
-        uses: vergil-project/vergil-actions/actions/ci/security/standards-compliance@develop
+        uses: ./actions/ci/security/standards-compliance
 
   codeql:
     name: codeql
@@ -72,10 +72,10 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Install vergil-tooling
-        uses: vergil-project/vergil-actions/actions/shared/setup/vergil@develop
+        uses: ./actions/shared/setup/vergil
 
       - name: Run CodeQL analysis
-        uses: vergil-project/vergil-actions/actions/ci/security/codeql@develop
+        uses: ./actions/ci/security/codeql
         with:
           language: ${{ inputs.language }}
 
@@ -91,10 +91,10 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Install vergil-tooling
-        uses: vergil-project/vergil-actions/actions/shared/setup/vergil@develop
+        uses: ./actions/shared/setup/vergil
 
       - name: Run Trivy vulnerability scan
-        uses: vergil-project/vergil-actions/actions/shared/security/trivy@develop
+        uses: ./actions/shared/security/trivy
         with:
           scan-type: fs
 
@@ -111,9 +111,9 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Install vergil-tooling
-        uses: vergil-project/vergil-actions/actions/shared/setup/vergil@develop
+        uses: ./actions/shared/setup/vergil
 
       - name: Run Semgrep SAST scan
-        uses: vergil-project/vergil-actions/actions/ci/security/semgrep@develop
+        uses: ./actions/ci/security/semgrep
         with:
           language: ${{ inputs.language }}
