@@ -22,9 +22,13 @@ runs:
           exit 0
         fi
 
-        TAG=$(sed -n 's/^[[:space:]]*vergil[[:space:]]*=[[:space:]]*"\(.*\)"/\1/p' vergil.toml)
+        TAG=$(python3 -c "
+        import tomllib, pathlib
+        cfg = tomllib.loads(pathlib.Path('vergil.toml').read_text())
+        print(cfg['dependencies']['vergil'])
+        ")
         if [ -z "${TAG:-}" ]; then
-          echo "::error::vergil.toml not found or missing version tag"
+          echo "::error::vergil.toml not found or missing vergil version"
           exit 1
         fi
         uv tool install "vergil-tooling @ git+https://github.com/vergil-project/vergil-tooling@${TAG}"
