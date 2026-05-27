@@ -83,6 +83,7 @@ jobs:
     name: trivy
     if: ${{ inputs.run-security }}
     runs-on: ubuntu-latest
+    container: ghcr.io/vergil-project/${{ inputs.container-prefix || 'prod' }}-base:latest
     permissions:
       contents: read
       security-events: write
