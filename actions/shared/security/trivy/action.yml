@@ -56,7 +56,7 @@ runs:
       if: >-
         (inputs.scan-type == 'fs' || inputs.scan-type == 'image')
         && steps.check-tooling.outputs.available == 'false'
-      uses: ./actions/shared/setup/vergil
+      uses: vergil-project/vergil-actions/actions/shared/setup/vergil@v2.0.24
 
     - name: Run Trivy filesystem scan
       if: inputs.scan-type == 'fs'
