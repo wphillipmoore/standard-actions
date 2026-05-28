@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.24] - 2026-05-28
+
+### Bug fixes
+
+- install uv via setup-uv when not present on bare runners
+- use astral-sh/setup-uv@v7 (v8 has no rolling major tag)
+- use pip to install uv on bare runners instead of astral-sh/setup-uv
+
 ## [2.0.23] - 2026-05-28
 
 ### Bug fixes
