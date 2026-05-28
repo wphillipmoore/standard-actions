@@ -24,7 +24,8 @@ runs:
 
     - name: Install uv
       if: steps.check-uv.outputs.found == 'false'
-      uses: astral-sh/setup-uv@v7
+      shell: bash
+      run: pip install --break-system-packages uv
 
     - name: Install vergil-tooling
       shell: bash
