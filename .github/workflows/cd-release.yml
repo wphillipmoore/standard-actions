@@ -4,9 +4,13 @@ on:
   workflow_call:
     inputs:
       language:
-        description: Primary language (matches container image suffix).
+        description: Programming language ecosystem (go, java, python, ruby, rust). Omit for non-language projects.
         type: string
-        default: "base"
+        default: ""
+      container-suffix:
+        description: Container image suffix (e.g. python, base). Defaults to language, then "base".
+        type: string
+        default: ""
       container-tag:
         description: Container image tag (e.g. 3.14, 1.26).
         type: string
@@ -61,7 +65,7 @@ jobs:
   release:
     name: release
     runs-on: ubuntu-latest
-    container: ghcr.io/vergil-project/${{ inputs.container-prefix || 'prod' }}-${{ inputs.language }}:${{ inputs.container-tag }}
+    container: ghcr.io/vergil-project/${{ inputs.container-prefix || 'prod' }}-${{ inputs.container-suffix || inputs.language || 'base' }}:${{ inputs.container-tag }}
     defaults:
       run:
         shell: bash

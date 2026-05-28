@@ -5,14 +5,17 @@ description: >-
 
 inputs:
   language:
-    description: Primary language string.
-    required: true
+    description: Programming language (go, java, python, ruby, rust). Empty for non-language projects.
+    required: false
+    default: ""
   container-tag:
-    description: Dev container image tag.
-    required: true
+    description: Container image tag.
+    required: false
+    default: ""
   registry-publish:
     description: Whether publishing is enabled.
-    required: true
+    required: false
+    default: "false"
 
 runs:
   using: composite
@@ -24,7 +27,11 @@ runs:
         INPUT_CONTAINER_TAG: ${{ inputs.container-tag }}
         INPUT_REGISTRY_PUBLISH: ${{ inputs.registry-publish }}
       run: |
-        args=("$INPUT_LANGUAGE")
+        args=()
+
+        if [ -n "$INPUT_LANGUAGE" ]; then
+          args+=("$INPUT_LANGUAGE")
+        fi
 
         if [ -n "$INPUT_CONTAINER_TAG" ]; then
           args+=(--container-tag "$INPUT_CONTAINER_TAG")
