@@ -75,15 +75,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install vergil-tooling
+        uses: ./actions/shared/setup/vergil
+
       - name: Validate inputs
         uses: ./actions/cd/release/validate-inputs
         with:
           language: ${{ inputs.language }}
           container-tag: ${{ inputs.container-tag }}
           registry-publish: ${{ inputs.registry-publish }}
-
-      - name: Install vergil-tooling
-        uses: ./actions/shared/setup/vergil
 
       - name: Extract version
         id: version
