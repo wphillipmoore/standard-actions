@@ -64,6 +64,7 @@ jobs:
     name: codeql
     if: ${{ inputs.run-security && inputs.run-codeql }}
     runs-on: ubuntu-latest
+    container: ghcr.io/vergil-project/${{ inputs.container-prefix || 'prod' }}-base:latest
     permissions:
       contents: read
       security-events: write
