@@ -1,8 +1,8 @@
 name: Trivy security scan
 description: >-
   Runs Trivy vulnerability scanning, SBOM generation, or container image
-  scanning via vrg-trivy-scan. The calling workflow must grant
-  security-events: write permission when scan-type is "fs" or "image".
+  scanning. The calling workflow must grant security-events: write permission
+  when scan-type is "fs" or "image".
 
 inputs:
   scan-type:
@@ -22,6 +22,10 @@ inputs:
     description: Exit code when vulnerabilities are found (0 = advisory only).
     required: false
     default: "1"
+  scanners:
+    description: Comma-separated Trivy scanners to enable.
+    required: false
+    default: "vuln"
   output-file:
     description: Output file path for SARIF or SBOM results.
     required: false
@@ -34,53 +38,67 @@ inputs:
     required: false
     default: ""
   trivyignores:
-    description: Path to .trivyignore file for suppressing violations.
+    description: Comma-separated list of .trivyignore file paths.
     required: false
     default: ""
+  trivy-image:
+    description: >-
+      Docker image to use for Trivy. Override to pin a specific version.
+    required: false
+    default: "aquasec/trivy:0.70.0"
 
 runs:
   using: composite
   steps:
-    - name: Check vergil-tooling availability
-      id: check-tooling
-      if: inputs.scan-type == 'fs' || inputs.scan-type == 'image'
-      shell: bash
-      run: |
-        if command -v vrg-trivy-scan &>/dev/null; then
-          echo "available=true" >> "$GITHUB_OUTPUT"
-        else
-          echo "available=false" >> "$GITHUB_OUTPUT"
-        fi
-
-    - name: Install vergil-tooling
-      if: >-
-        (inputs.scan-type == 'fs' || inputs.scan-type == 'image')
-        && steps.check-tooling.outputs.available == 'false'
-      uses: ./actions/shared/setup/vergil
-
     - name: Run Trivy filesystem scan
       if: inputs.scan-type == 'fs'
       shell: bash
       env:
+        TRIVY_IMAGE: ${{ inputs.trivy-image }}
         SCAN_REF: ${{ inputs.scan-ref }}
+        SCANNERS: ${{ inputs.scanners }}
         SEVERITY: ${{ inputs.severity }}
         EXIT_CODE: ${{ inputs.exit-code }}
         OUTPUT_FILE: ${{ inputs.output-file }}
         TRIVYIGNORES: ${{ inputs.trivyignores }}
       run: |
-        args=(--type filesystem --target "$SCAN_REF" --output-dir .)
-        args+=(--severity "$SEVERITY")
+        TRIVYIGNORE_ARGS=""
         if [ -n "$TRIVYIGNORES" ]; then
-          args+=(--trivyignore "$TRIVYIGNORES")
+          TRIVYIGNORE_ARGS="--ignorefile $TRIVYIGNORES"
         fi
-        vrg-trivy-scan "${args[@]}" || rc=$?
-        if [ -f trivy-results.sarif ] && [ "$OUTPUT_FILE" != "trivy-results.sarif" ]; then
-          mv trivy-results.sarif "$OUTPUT_FILE"
-        fi
-        if [ "${rc:-0}" -eq 1 ] && [ "$EXIT_CODE" = "0" ]; then
-          exit 0
-        fi
-        exit "${rc:-0}"
+        docker run --rm \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          -e SCANNERS \
+          -e SEVERITY \
+          -e EXIT_CODE \
+          -e OUTPUT_FILE \
+          -e SCAN_REF \
+          -e TRIVYIGNORE_ARGS \
+          --entrypoint sh \
+          "$TRIVY_IMAGE" \
+          -c '
+            set -e
+            trivy fs \
+              --scanners "$SCANNERS" \
+              --severity "$SEVERITY" \
+              --exit-code 0 \
+              --format json \
+              --output /tmp/trivy-raw.json \
+              $TRIVYIGNORE_ARGS \
+              "$SCAN_REF"
+            trivy convert \
+              --severity "$SEVERITY" \
+              --format table \
+              --exit-code 0 \
+              /tmp/trivy-raw.json
+            trivy convert \
+              --severity "$SEVERITY" \
+              --format sarif \
+              --exit-code "$EXIT_CODE" \
+              --output "/workspace/$OUTPUT_FILE" \
+              /tmp/trivy-raw.json
+          '
 
     - name: Upload SARIF (filesystem scan)
       if: inputs.scan-type == 'fs' && always()
@@ -93,25 +111,52 @@ runs:
       if: inputs.scan-type == 'image'
       shell: bash
       env:
+        TRIVY_IMAGE: ${{ inputs.trivy-image }}
         SCAN_REF: ${{ inputs.scan-ref }}
+        SCANNERS: ${{ inputs.scanners }}
         SEVERITY: ${{ inputs.severity }}
         EXIT_CODE: ${{ inputs.exit-code }}
         OUTPUT_FILE: ${{ inputs.output-file }}
         TRIVYIGNORES: ${{ inputs.trivyignores }}
       run: |
-        args=(--type image --target "$SCAN_REF" --output-dir .)
-        args+=(--severity "$SEVERITY")
+        TRIVYIGNORE_ARGS=""
         if [ -n "$TRIVYIGNORES" ]; then
-          args+=(--trivyignore "$TRIVYIGNORES")
+          TRIVYIGNORE_ARGS="--ignorefile $TRIVYIGNORES"
         fi
-        vrg-trivy-scan "${args[@]}" || rc=$?
-        if [ -f trivy-results.sarif ] && [ "$OUTPUT_FILE" != "trivy-results.sarif" ]; then
-          mv trivy-results.sarif "$OUTPUT_FILE"
-        fi
-        if [ "${rc:-0}" -eq 1 ] && [ "$EXIT_CODE" = "0" ]; then
-          exit 0
-        fi
-        exit "${rc:-0}"
+        docker run --rm \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -w /workspace \
+          -e SCANNERS \
+          -e SEVERITY \
+          -e EXIT_CODE \
+          -e OUTPUT_FILE \
+          -e SCAN_REF \
+          -e TRIVYIGNORE_ARGS \
+          --entrypoint sh \
+          "$TRIVY_IMAGE" \
+          -c '
+            set -e
+            trivy image \
+              --scanners "$SCANNERS" \
+              --severity "$SEVERITY" \
+              --exit-code 0 \
+              --format json \
+              --output /tmp/trivy-raw.json \
+              $TRIVYIGNORE_ARGS \
+              "$SCAN_REF"
+            trivy convert \
+              --severity "$SEVERITY" \
+              --format table \
+              --exit-code 0 \
+              /tmp/trivy-raw.json
+            trivy convert \
+              --severity "$SEVERITY" \
+              --format sarif \
+              --exit-code "$EXIT_CODE" \
+              --output "/workspace/$OUTPUT_FILE" \
+              /tmp/trivy-raw.json
+          '
 
     - name: Upload SARIF (image scan)
       if: inputs.scan-type == 'image' && always()
@@ -124,6 +169,15 @@ runs:
       if: inputs.scan-type == 'sbom'
       shell: bash
       env:
+        TRIVY_IMAGE: ${{ inputs.trivy-image }}
         OUTPUT_FILE: ${{ inputs.output-file }}
         SCAN_REF: ${{ inputs.scan-ref }}
-      run: trivy fs --format cyclonedx --output "$OUTPUT_FILE" "$SCAN_REF"
+      run: |
+        docker run --rm \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          "$TRIVY_IMAGE" \
+          fs \
+          --format cyclonedx \
+          --output "/workspace/$OUTPUT_FILE" \
+          "$SCAN_REF"
