@@ -41,23 +41,22 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Ensure vergil-tooling is available
+    - name: Check vergil-tooling availability
+      id: check-tooling
       if: inputs.scan-type == 'fs' || inputs.scan-type == 'image'
       shell: bash
       run: |
         if command -v vrg-trivy-scan &>/dev/null; then
-          exit 0
+          echo "available=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "available=false" >> "$GITHUB_OUTPUT"
         fi
-        TAG=$(python3 -c "
-        import tomllib, pathlib
-        cfg = tomllib.loads(pathlib.Path('vergil.toml').read_text())
-        print(cfg['dependencies']['vergil'])
-        ")
-        if [ -z "${TAG:-}" ]; then
-          echo "::error::vergil.toml not found or missing vergil version"
-          exit 1
-        fi
-        uv tool install "vergil-tooling @ git+https://github.com/vergil-project/vergil-tooling@${TAG}"
+
+    - name: Install vergil-tooling
+      if: >-
+        (inputs.scan-type == 'fs' || inputs.scan-type == 'image')
+        && steps.check-tooling.outputs.available == 'false'
+      uses: ./actions/shared/setup/vergil
 
     - name: Run Trivy filesystem scan
       if: inputs.scan-type == 'fs'

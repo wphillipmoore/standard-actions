@@ -12,6 +12,21 @@ runs:
       shell: bash
       run: git config --global --add safe.directory "${GITHUB_WORKSPACE:-$(pwd)}"
 
+    - name: Check for uv
+      id: check-uv
+      shell: bash
+      run: |
+        if command -v uv &>/dev/null; then
+          echo "found=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "found=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Install uv
+      if: steps.check-uv.outputs.found == 'false'
+      shell: bash
+      run: pip install --break-system-packages uv
+
     - name: Install vergil-tooling
       shell: bash
       run: |
