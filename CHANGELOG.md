@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.26] - 2026-05-28
+
+### Bug fixes
+
+- separate language and container-suffix inputs in cd-release.yml
+
 ## [2.0.25] - 2026-05-28
 
 ### Bug fixes
